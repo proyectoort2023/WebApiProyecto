@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33712.159
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiTorneus", "WebApiTorneus\WebApiTorneus.csproj", "{6C1FA28F-2C77-4237-8CC8-1BD01A25FF5D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BDTorneus", "BDTorneus\BDTorneus.csproj", "{7FEDE38E-521E-4AFA-BC37-7FC7F72B77E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Negocio", "Negocio\Negocio.csproj", "{70C35BE6-9334-4400-9848-95AF4113D574}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C1FA28F-2C77-4237-8CC8-1BD01A25FF5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C1FA28F-2C77-4237-8CC8-1BD01A25FF5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C1FA28F-2C77-4237-8CC8-1BD01A25FF5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C1FA28F-2C77-4237-8CC8-1BD01A25FF5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FEDE38E-521E-4AFA-BC37-7FC7F72B77E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FEDE38E-521E-4AFA-BC37-7FC7F72B77E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FEDE38E-521E-4AFA-BC37-7FC7F72B77E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FEDE38E-521E-4AFA-BC37-7FC7F72B77E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70C35BE6-9334-4400-9848-95AF4113D574}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70C35BE6-9334-4400-9848-95AF4113D574}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70C35BE6-9334-4400-9848-95AF4113D574}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70C35BE6-9334-4400-9848-95AF4113D574}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E1EF811-657B-4E53-8C15-836627F52BE6}
+	EndGlobalSection
+EndGlobal
