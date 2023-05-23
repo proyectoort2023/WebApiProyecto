@@ -4,20 +4,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Negocio;
 using Negocio.DTOs;
+using WebApiTorneus.Services;
 
 namespace WebApiTorneus.Controllers
 {
     [ApiController]
-    [Route("[controller]/api")]
+    [Route("api/[controller]")]
     public class UsuarioController : Controller
     {
         private readonly IMapper _mapper;
         private readonly UsuarioService _usuarioService;
-
-        public UsuarioController(IMapper mapper, UsuarioService usuarioService)
+        private readonly IConfiguration _config;
+        public UsuarioController(IMapper mapper, UsuarioService usuarioService, IConfiguration config)
         {
            _mapper = mapper;
            _usuarioService = usuarioService;
+           _config = config;
         }
 
         [HttpPost("Login")]
@@ -25,9 +27,15 @@ namespace WebApiTorneus.Controllers
         {
             try
             {
-                loginDTO.Mail.ToLower().Trim();
+                loginDTO.Mail.ToLower().Trim(); 
                 Usuario login = await _usuarioService.LoginUsuario(loginDTO);
-                return Ok(_mapper.Map<UsuarioLogueado>(login));
+                var usuarioLogueado = _mapper.Map<UsuarioLogueado>(login);
+
+                var secretkey = _config["Jwt:SecretKey"];
+
+                var token = GeneradorToken.CrearToken(usuarioLogueado, _config);
+
+                return Ok(token);
             }
             catch (Exception ex)
             {
@@ -42,8 +50,11 @@ namespace WebApiTorneus.Controllers
             {
                 var usuario = _mapper.Map<RegistroDTO, Usuario>(registroDTO);
                 usuario.Mail.ToLower().Trim();
-                UsuarioLogueado login = await _usuarioService.RegistroUsuario(usuario);
-                return Ok(login);
+                UsuarioLogueado registrado = await _usuarioService.RegistroUsuario(usuario);
+
+                var token = GeneradorToken.CrearToken(registrado, _config);
+
+                return Ok(token);
             }
             catch (Exception ex)
             {
@@ -51,7 +62,7 @@ namespace WebApiTorneus.Controllers
             }
         }
 
-
+            
 
 
     }

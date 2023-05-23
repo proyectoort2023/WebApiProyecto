@@ -11,5 +11,6 @@ namespace Negocio.DTOs
         public string Mail { get; set; }
         public string Pass { get; set; }
         public string Rol { get; set; }
+        public string Tel { get; set; }
     }
 }
