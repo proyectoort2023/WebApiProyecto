@@ -22,6 +22,7 @@ namespace WebApiTorneus.Controllers
            _config = config;
         }
 
+             
         [HttpPost("Login")]
         public async Task<IActionResult> PostLogin([FromBody] LoginDTO loginDTO)
         {
@@ -61,6 +62,7 @@ namespace WebApiTorneus.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
             
 
