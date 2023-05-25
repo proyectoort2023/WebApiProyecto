@@ -60,7 +60,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 //Dependencias de Negocio
 builder.Services.AddScoped<UsuarioService>();
-
+builder.Services.AddScoped<TorneoService>();
 
 
 var app = builder.Build();
