@@ -56,7 +56,7 @@ namespace Negocio
                     throw new Exception(mensajeError);
                 }
 
-                var usuarioNuevo = await _db.AddAsync(registro);
+                var usuarioNuevo = await _db.Usuarios.AddAsync(registro);
                 await _db.SaveChangesAsync();
 
                 UsuarioLogueado usuarioLogueado = new()
