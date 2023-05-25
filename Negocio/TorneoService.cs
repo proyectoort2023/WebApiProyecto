@@ -51,16 +51,17 @@ namespace Negocio
         }
 
 
-        public async Task<bool> SuspenderTorneo(Torneo torneo)
+        public async Task<bool> SuspenderTorneo(int torneoId)
         {
             try
             {
+                Torneo torneo = await _db.Torneos.FindAsync(torneoId);
+
                 if (torneo == null) throw new Exception("El torneo no tiene datos para salvar");
                
                 torneo.HabilitacionInscripcion = false;
                 torneo.Suspendido = true;
 
-                //var torneoNuevo = _db.Torneos.Update(torneo);
                 int updateRealizado = await _db.SaveChangesAsync();
 
                 // Hay que resolver el tema del reembolso de aquellos que pagaron por pasarela de pago online

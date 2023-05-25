@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BDTorneus\BDTorneus.csproj" />
     <ProjectReference Include="..\Negocio\Negocio.csproj" />
+    <ProjectReference Include="..\Utilidades\Utilidades.csproj" />
   </ItemGroup>
 
 </Project>
