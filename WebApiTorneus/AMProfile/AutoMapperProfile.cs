@@ -10,6 +10,8 @@ namespace WebApiTorneus.AMProfile
         {
             CreateMap<RegistroDTO, Usuario>();
             CreateMap<Usuario, UsuarioLogueado>();
+            CreateMap<Torneo, TorneoCreacionDTO>().ReverseMap();
+            CreateMap<Torneo, TorneoActualizacionDTO>().ReverseMap();
         }
     }
 }
