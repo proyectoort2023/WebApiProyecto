@@ -22,7 +22,7 @@ namespace Negocio.DTOs
         public string ConfiguracionEquipos { get; set; }
         public int SetsMax { get; set; }
         public int PuntajeMax { get; set; }
-        public int PuntajeMaxUltimoSet { get; set; x}
+        public int PuntajeMaxUltimoSet { get; set;}
         public int MaxEquiposInscriptos { get; set; }
         public int MaxJugadoresPorEquipo { get; set; }
         public bool Indoor { get; set; }
