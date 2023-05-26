@@ -7,7 +7,6 @@ using Negocio;
 using WebApiTorneus.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Authorization;
-using Utilidades;
 
 namespace WebApiTorneus.Controllers
 {
@@ -20,6 +19,7 @@ namespace WebApiTorneus.Controllers
         private readonly IMapper _mapper;
         private readonly TorneoService _torneoService;
         private readonly IConfiguration _config;
+        private const string claveRutaImagen = "Rutaimagen";
 
         public TorneoController(IMapper mapper, TorneoService torneoService, IConfiguration config)
         {
@@ -39,8 +39,8 @@ namespace WebApiTorneus.Controllers
                 torneoDTO.Nombre.ToUpper().Trim();
                 
                 Torneo torneo = _mapper.Map<Torneo>(torneoDTO);
-
-                int idTorneo = await _torneoService.CrearTorneo(torneo);
+                string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
+                int idTorneo = await _torneoService.CrearTorneo(torneo, urlImagenBase);
 
                 return Ok(idTorneo);
             }
@@ -77,6 +77,26 @@ namespace WebApiTorneus.Controllers
                 bool suspendido = await _torneoService.EliminarTorneo(torneoId);
 
                 return Ok(suspendido);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("Modificar")]
+        public async Task<IActionResult> ModificarTorneo([FromBody] TorneoActualizacionDTO torneoActualizacionDTO)
+        {
+            try
+            {
+                if (torneoActualizacionDTO == null) BadRequest("No existe el torneo para editarlo");
+
+                Torneo torneo = _mapper.Map<TorneoActualizacionDTO, Torneo>(torneoActualizacionDTO);
+
+                string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
+                bool torneoModificado = await _torneoService.ModificarTorneo(torneo, urlImagenBase);
+
+                return Ok(torneoModificado);
             }
             catch (Exception ex)
             {

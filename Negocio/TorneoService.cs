@@ -24,14 +24,14 @@ namespace Negocio
         }
 
 
-        public async Task<int> CrearTorneo(Torneo torneo)
+        public async Task<int> CrearTorneo(Torneo torneo, string urlImagen)
         {
             try
             {
                 if (torneo == null)  throw new Exception("El torneo no tiene datos para salvar"); 
                 string mensajeError = "";
 
-                ValidadorTorneo validacion = new(_db, _configuration);
+                ValidadorTorneo validacion = new(_db, urlImagen);
                 ValidationResult result = validacion.Validate(torneo);
                 if (!result.IsValid)
                 {
@@ -89,6 +89,55 @@ namespace Negocio
 
                 // Hay que resolver el tema del reembolso de aquellos que pagaron por pasarela de pago online
                 return eliminacionRealizada > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<bool> ModificarTorneo(Torneo torneo, string urlImagen)
+        {
+            try
+            {
+                if (torneo == null) throw new Exception("El torneo no tiene datos para editar");
+                string mensajeError = "";
+
+                ValidadorTorneo validacion = new(_db, urlImagen);
+                ValidationResult result = validacion.Validate(torneo);
+                if (!result.IsValid)
+                {
+                    result.Errors.ForEach(f => mensajeError += f.ErrorMessage);
+                    throw new Exception(mensajeError);
+                }
+                Torneo torneoBuscado = await _db.Torneos.FindAsync(torneo.Id);
+                if (torneoBuscado == null) throw new Exception("El torneo no existe");
+
+                torneoBuscado.Nombre = torneo.Nombre;
+                torneoBuscado.Fecha = torneo.Fecha;
+                torneoBuscado.HoraComienzo = torneo.HoraComienzo;
+                torneoBuscado.NombreContacto = torneo.NombreContacto;
+                torneoBuscado.TelContacto = torneo.TelContacto;
+                torneoBuscado.Logo = torneo.Logo;
+                torneoBuscado.Banner = torneo.Banner;
+                torneoBuscado.Precio = torneo.Precio;
+                torneoBuscado.TipoPrecio = torneo.TipoPrecio;
+                torneoBuscado.SetsMax = torneo.SetsMax;
+                torneoBuscado.PuntajeMax = torneo.PuntajeMax;
+                torneoBuscado.PuntajeMaxUltimoSet = torneo.PuntajeMaxUltimoSet;
+                torneoBuscado.ConfiguracionEquipos = torneo.ConfiguracionEquipos;
+                torneoBuscado.Otros = torneo.Otros;
+                torneoBuscado.MaxEquiposInscriptos = torneo.MaxEquiposInscriptos;
+                torneoBuscado.MaxJugadoresPorEquipo = torneo.MaxJugadoresPorEquipo;
+                torneoBuscado.CantidadCanchas = torneo.CantidadCanchas;
+
+
+                
+                var torneoNuevo = _db.Update(torneoBuscado);
+                var registrosActualizados = await _db.SaveChangesAsync();
+
+                return registrosActualizados > 0;
             }
             catch (Exception ex)
             {
