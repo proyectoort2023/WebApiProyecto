@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BDTorneus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,5 +31,6 @@ namespace Negocio.DTOs
         public int CantidadCanchas { get; set; }
         public string Otros { get; set; }
         public bool Suspendido { get; set; }
+        public int UsuarioId { get; set; }
     }
 }

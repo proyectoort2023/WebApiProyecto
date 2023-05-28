@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDTorneus.Migrations
 {
     [DbContext(typeof(TorneoContext))]
-    [Migration("20230521010216_inicial")]
+    [Migration("20230528155024_inicial")]
     partial class inicial
     {
         /// <inheritdoc />
@@ -310,7 +310,7 @@ namespace BDTorneus.Migrations
                     b.Property<string>("UbicacionGPS")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UsuarioId")
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -351,6 +351,21 @@ namespace BDTorneus.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("EquipoJugador", b =>
+                {
+                    b.Property<int>("EquiposId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JugadoresId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EquiposId", "JugadoresId");
+
+                    b.HasIndex("JugadoresId");
+
+                    b.ToTable("EquipoJugador");
+                });
+
             modelBuilder.Entity("BDTorneus.Equipo", b =>
                 {
                     b.HasOne("BDTorneus.Usuario", "Usuario")
@@ -364,17 +379,21 @@ namespace BDTorneus.Migrations
 
             modelBuilder.Entity("BDTorneus.Inscripcion", b =>
                 {
-                    b.HasOne("BDTorneus.Equipo", null)
+                    b.HasOne("BDTorneus.Equipo", "Equipo")
                         .WithMany("Inscripciones")
                         .HasForeignKey("EquipoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BDTorneus.Torneo", null)
+                    b.HasOne("BDTorneus.Torneo", "Torneo")
                         .WithMany("Inscripciones")
                         .HasForeignKey("TorneoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Equipo");
+
+                    b.Navigation("Torneo");
                 });
 
             modelBuilder.Entity("BDTorneus.Notificacion", b =>
@@ -409,9 +428,28 @@ namespace BDTorneus.Migrations
 
             modelBuilder.Entity("BDTorneus.Torneo", b =>
                 {
-                    b.HasOne("BDTorneus.Usuario", null)
+                    b.HasOne("BDTorneus.Usuario", "Usuario")
                         .WithMany("Torneos")
-                        .HasForeignKey("UsuarioId");
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("EquipoJugador", b =>
+                {
+                    b.HasOne("BDTorneus.Equipo", null)
+                        .WithMany()
+                        .HasForeignKey("EquiposId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BDTorneus.Jugador", null)
+                        .WithMany()
+                        .HasForeignKey("JugadoresId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BDTorneus.Equipo", b =>

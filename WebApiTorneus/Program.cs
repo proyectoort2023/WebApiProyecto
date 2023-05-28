@@ -8,6 +8,8 @@ using WebApiTorneus.AMProfile;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddControllersWithViews().AddNewtonsoftJson();
+
 builder.Services.AddControllers();
 
 
@@ -41,7 +43,7 @@ builder.Services.AddCors(opciones => {
     }
     );
 });
-string cadenaConexionBD = "LocalConnection";
+string cadenaConexionBDLocal = "LocalConnection";
 string cadenaConexionAzureBD = "ProduccionConnection";
 
 builder.Services.AddDbContext<TorneoContext>(opciones =>

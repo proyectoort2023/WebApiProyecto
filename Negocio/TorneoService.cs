@@ -24,20 +24,25 @@ namespace Negocio
         }
 
 
-        public async Task<int> CrearTorneo(Torneo torneo, string urlImagen)
+        public async Task<int> CrearTorneo(Torneo torneo)
         {
             try
             {
                 if (torneo == null)  throw new Exception("El torneo no tiene datos para salvar"); 
                 string mensajeError = "";
 
-                ValidadorTorneo validacion = new(_db, urlImagen);
+                ValidadorTorneo validacion = new(_db);
                 ValidationResult result = validacion.Validate(torneo);
                 if (!result.IsValid)
                 {
                     result.Errors.ForEach(f => mensajeError += f.ErrorMessage);
                     throw new Exception(mensajeError);
                 }
+                var usuarioBuscado = await _db.Usuarios.FindAsync(torneo.Usuario.Id);
+                if (usuarioBuscado == null) throw new Exception("El usuario organizador no existe");
+
+                torneo.Usuario = usuarioBuscado;
+                _db.Entry(torneo.Usuario).State = EntityState.Unchanged;
 
                 var torneoNuevo = await _db.Torneos.AddAsync(torneo);
                 await _db.SaveChangesAsync();
@@ -97,14 +102,14 @@ namespace Negocio
         }
 
 
-        public async Task<bool> ModificarTorneo(Torneo torneo, string urlImagen)
+        public async Task<bool> ModificarTorneo(Torneo torneo)
         {
             try
             {
                 if (torneo == null) throw new Exception("El torneo no tiene datos para editar");
                 string mensajeError = "";
 
-                ValidadorTorneo validacion = new(_db, urlImagen);
+                ValidadorActualizacionTorneo validacion = new(_db);
                 ValidationResult result = validacion.Validate(torneo);
                 if (!result.IsValid)
                 {
@@ -143,6 +148,20 @@ namespace Negocio
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+
+        public async Task<List<Torneo>> MisTorneosOrganizador(int idOrganizador)
+        {
+            var listaTorneos = await _db.Torneos.Where(w => w.Usuario.Id == idOrganizador).ToListAsync();
+
+            return listaTorneos;
+        }
+        public async Task<List<Torneo>> ObtenerTorneosVigentes()
+        {
+            var listaTorneos = await _db.Torneos.ToListAsync();
+
+            return listaTorneos;
         }
 
 

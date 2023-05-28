@@ -51,9 +51,10 @@ namespace WebApiTorneus.Controllers
             {
                 var usuario = _mapper.Map<RegistroDTO, Usuario>(registroDTO);
                 usuario.Mail.ToLower().Trim();
-                UsuarioLogueado registrado = await _usuarioService.RegistroUsuario(usuario);
+                Usuario registro = await _usuarioService.RegistroUsuario(usuario);
+                var registradoRealizado = _mapper.Map<UsuarioLogueado>(registro);
 
-                var token = GeneradorToken.CrearToken(registrado, _config);
+                var token = GeneradorToken.CrearToken(registradoRealizado, _config);
 
                 return Ok(token);
             }
@@ -64,7 +65,27 @@ namespace WebApiTorneus.Controllers
         }
 
 
-            
+        [HttpGet("LoginEspectador")]
+        public async Task<IActionResult> GetLoginEspectador()
+        {
+            try
+            {
+                Usuario login = await _usuarioService.LoginUsuarioEspectador();
+                var usuarioLogueado = _mapper.Map<UsuarioLogueado>(login);
+
+                var secretkey = _config["Jwt:SecretKey"];
+
+                var token = GeneradorToken.CrearToken(usuarioLogueado, _config);
+
+                return Ok(token);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
 
     }

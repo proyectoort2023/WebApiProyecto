@@ -113,7 +113,7 @@ namespace BDTorneus.Migrations
                     CantidadCanchas = table.Column<int>(type: "int", nullable: false),
                     Otros = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Suspendido = table.Column<bool>(type: "bit", nullable: false),
-                    UsuarioId = table.Column<int>(type: "int", nullable: true)
+                    UsuarioId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -122,7 +122,32 @@ namespace BDTorneus.Migrations
                         name: "FK_Torneos_Usuarios_UsuarioId",
                         column: x => x.UsuarioId,
                         principalTable: "Usuarios",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EquipoJugador",
+                columns: table => new
+                {
+                    EquiposId = table.Column<int>(type: "int", nullable: false),
+                    JugadoresId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EquipoJugador", x => new { x.EquiposId, x.JugadoresId });
+                    table.ForeignKey(
+                        name: "FK_EquipoJugador_Equipos_EquiposId",
+                        column: x => x.EquiposId,
+                        principalTable: "Equipos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EquipoJugador_Jugadores_JugadoresId",
+                        column: x => x.JugadoresId,
+                        principalTable: "Jugadores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -143,13 +168,13 @@ namespace BDTorneus.Migrations
                         column: x => x.EquipoId,
                         principalTable: "Equipos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Inscripciones_Torneos_TorneoId",
                         column: x => x.TorneoId,
                         principalTable: "Torneos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -173,13 +198,13 @@ namespace BDTorneus.Migrations
                         column: x => x.EquipoId,
                         principalTable: "Equipos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_Notificaciones_Torneos_TorneoId",
                         column: x => x.TorneoId,
                         principalTable: "Torneos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -219,6 +244,11 @@ namespace BDTorneus.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_EquipoJugador_JugadoresId",
+                table: "EquipoJugador",
+                column: "JugadoresId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Equipos_UsuarioId",
                 table: "Equipos",
                 column: "UsuarioId");
@@ -253,10 +283,10 @@ namespace BDTorneus.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Inscripciones");
+                name: "EquipoJugador");
 
             migrationBuilder.DropTable(
-                name: "Jugadores");
+                name: "Inscripciones");
 
             migrationBuilder.DropTable(
                 name: "Medallas");
@@ -266,6 +296,9 @@ namespace BDTorneus.Migrations
 
             migrationBuilder.DropTable(
                 name: "Partidos");
+
+            migrationBuilder.DropTable(
+                name: "Jugadores");
 
             migrationBuilder.DropTable(
                 name: "Equipos");

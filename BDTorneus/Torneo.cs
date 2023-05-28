@@ -32,6 +32,8 @@ namespace BDTorneus
         public string Otros { get; set; }
         public bool Suspendido { get; set; }
 
+        public int UsuarioId { get; set; }
+        public Usuario Usuario { get; set; }
         public List<Inscripcion> Inscripciones { get; set; } = new List<Inscripcion>();
         public List<Partido> Fixture { get; set; }
 
