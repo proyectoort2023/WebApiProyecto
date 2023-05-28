@@ -13,5 +13,6 @@ namespace BDTorneus
         public string Cedula { get; set; }
         public DateTime FechaNacimiento { get; set; }
         public bool Capitan { get; set; }
+        public List<Equipo> Equipos { get; set; }
     }
 }

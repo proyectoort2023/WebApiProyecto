@@ -26,7 +26,6 @@ namespace Negocio.DTOs
         public string Otros { get; set; }
         public int MaxEquiposInscriptos { get; set; }
         public int MaxJugadoresPorEquipo { get; set; }
-        public UsuarioDTO Usuario { get; set; }
         public int CantidadCanchas { get; set; }
     }
 }

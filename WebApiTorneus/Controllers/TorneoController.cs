@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace WebApiTorneus.Controllers
 {
-    [Authorize(Roles = "ORGANIZADOR")]
+    //[Authorize(Roles = "ORGANIZADOR")]
     [Route("api/[controller]")]
     [ApiController]
     public class TorneoController : ControllerBase
@@ -39,8 +39,12 @@ namespace WebApiTorneus.Controllers
                 torneoDTO.Nombre.ToUpper().Trim();
                 
                 Torneo torneo = _mapper.Map<Torneo>(torneoDTO);
-                string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
-                int idTorneo = await _torneoService.CrearTorneo(torneo, urlImagenBase);
+                torneo.Usuario = new Usuario()
+                {
+                    Id = torneoDTO.UsuarioId
+                };
+                //string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
+                int idTorneo = await _torneoService.CrearTorneo(torneo);
 
                 return Ok(idTorneo);
             }
@@ -94,7 +98,7 @@ namespace WebApiTorneus.Controllers
                 Torneo torneo = _mapper.Map<TorneoActualizacionDTO, Torneo>(torneoActualizacionDTO);
 
                 string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
-                bool torneoModificado = await _torneoService.ModificarTorneo(torneo, urlImagenBase);
+                bool torneoModificado = await _torneoService.ModificarTorneo(torneo);
 
                 return Ok(torneoModificado);
             }
@@ -104,7 +108,7 @@ namespace WebApiTorneus.Controllers
             }
         }
 
-        [HttpGet("torneos/mistorneos/{id}")]
+        [HttpGet("MisTorneos/{usuarioId}")]
         public async Task<IActionResult> GetMisTorneosOrganizador(int usuarioId)
         {
             try
@@ -119,7 +123,7 @@ namespace WebApiTorneus.Controllers
             }
         }
 
-        [HttpGet("torneos/vigentes")]
+        [HttpGet("TorneosVigentes")]
         public async Task<IActionResult> GetTorneos(int usuarioId)
         {
             try

@@ -17,6 +17,7 @@ namespace BDTorneus
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
         public List<Inscripcion> Inscripciones { get; set; } = new List<Inscripcion>();
+        public List<Jugador> Jugadores { get; set; } = new List<Jugador>();
 
     }
 }
