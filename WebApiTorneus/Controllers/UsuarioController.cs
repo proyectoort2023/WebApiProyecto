@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Negocio;
 using Negocio.DTOs;
+using Swashbuckle.AspNetCore.Annotations;
+using System.Net;
 using WebApiTorneus.Services;
 
 namespace WebApiTorneus.Controllers
@@ -17,12 +19,19 @@ namespace WebApiTorneus.Controllers
         private readonly IConfiguration _config;
         public UsuarioController(IMapper mapper, UsuarioService usuarioService, IConfiguration config)
         {
-           _mapper = mapper;
-           _usuarioService = usuarioService;
-           _config = config;
+            _mapper = mapper;
+            _usuarioService = usuarioService;
+            _config = config;
         }
 
-             
+        /// <summary>
+        /// Obtiene un objeto de ejemplo por su ID.
+        /// </summary>
+        /// <param name="id">ID del objeto de ejemplo.</param>
+        /// <returns>Objeto de ejemplo encontrado.</returns>
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[SwaggerOperation("ObtenerEjemploPorId", "Obtiene un objeto de ejemplo por su ID.")]
         [HttpPost("Login")]
         public async Task<IActionResult> PostLogin([FromBody] LoginDTO loginDTO)
         {
