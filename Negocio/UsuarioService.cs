@@ -42,7 +42,7 @@ namespace Negocio
             }
         }
 
-        public async Task<UsuarioLogueado> RegistroUsuario(Usuario registro)
+        public async Task<Usuario> RegistroUsuario(Usuario registro)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace Negocio
                 var usuarioNuevo = await _db.Usuarios.AddAsync(registro);
                 await _db.SaveChangesAsync();
 
-                UsuarioLogueado usuarioLogueado = new()
+                Usuario usuarioLogueado = new()
                 {
                     Id = usuarioNuevo.Entity.Id,
                     Mail = usuarioNuevo.Entity.Mail,
@@ -75,7 +75,25 @@ namespace Negocio
         }
 
 
+        public async Task<Usuario> LoginUsuarioEspectador()
+        {
+            try
+            {
+                Usuario usuarioLogueado = new()
+                {
+                    Id = -1,
+                    Mail = "",
+                    Rol = "ESPECTADOR",
+                    Token =""
+                };
 
+                return usuarioLogueado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 }
