@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BDTorneus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,7 @@ namespace Negocio.DTOs
         public string Otros { get; set; }
         public int MaxEquiposInscriptos { get; set; }
         public int MaxJugadoresPorEquipo { get; set; }
+        public UsuarioDTO Usuario { get; set; }
         public int CantidadCanchas { get; set; }
     }
 }

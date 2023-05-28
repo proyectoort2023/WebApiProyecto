@@ -104,6 +104,36 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+        [HttpGet("torneos/mistorneos/{id}")]
+        public async Task<IActionResult> GetMisTorneosOrganizador(int usuarioId)
+        {
+            try
+            {
+                var listaTorneos = await _torneoService.MisTorneosOrganizador(usuarioId);
+
+                return Ok(listaTorneos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("torneos/vigentes")]
+        public async Task<IActionResult> GetTorneos(int usuarioId)
+        {
+            try
+            {
+                var listaTorneosVigentes = await _torneoService.ObtenerTorneosVigentes();
+
+                return Ok(listaTorneosVigentes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
 

@@ -18,6 +18,8 @@ namespace Negocio.Validaciones
             _db = db;
             _urlImagenBase = urlImagenBase;
 
+            RuleFor(t => t.Usuario).NotNull().NotEmpty().WithMessage("El usuario no se puede encontrar");
+            RuleFor(t => t.Usuario.Id).NotEmpty();
             RuleFor(t => t.Nombre).MinimumLength(3).MaximumLength(40).WithMessage("El nombre debe tener entre 3 y 40 caracteres. ");
             RuleFor(t => t.Nombre).NotEmpty().Must(TorneoNoExiste).WithMessage("El nombre de torneo que quiere registrar ya existe. ");
             RuleFor(t => t.Fecha).NotEmpty().NotNull().Must(ValidarFechaTorneo).WithMessage("La fecha del torneo debe ser al dia de hoy. ");

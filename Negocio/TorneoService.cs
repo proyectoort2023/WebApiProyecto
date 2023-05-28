@@ -146,5 +146,21 @@ namespace Negocio
         }
 
 
+        public async Task<List<Torneo>> MisTorneosOrganizador(int idOrganizador)
+        {
+            var listaTorneos = await _db.Torneos.Include(u => u.Usuario)
+                       .Where(w => w.Usuario.Id == idOrganizador)
+                       .ToListAsync();
+
+            return listaTorneos;
+        }
+        public async Task<List<Torneo>> ObtenerTorneosVigentes()
+        {
+            var listaTorneos = await _db.Torneos.ToListAsync();
+
+            return listaTorneos;
+        }
+
+
     }
 }
