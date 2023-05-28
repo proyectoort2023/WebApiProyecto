@@ -61,6 +61,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 //Dependencias de Negocio
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TorneoService>();
+builder.Services.AddScoped<ImagenService>();
 
 
 var app = builder.Build();
