@@ -2,8 +2,10 @@
 using BDTorneus;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 using Negocio;
 using Negocio.DTOs;
+using Negocio.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using WebApiTorneus.Services;
@@ -25,13 +27,17 @@ namespace WebApiTorneus.Controllers
         }
 
         /// <summary>
-        /// Obtiene un objeto de ejemplo por su ID.
+        /// Permite a un usuario con rol ORGANIZADOR o EQUIPO loguearse en la app
         /// </summary>
-        /// <param name="id">ID del objeto de ejemplo.</param>
-        /// <returns>Objeto de ejemplo encontrado.</returns>
-        [ProducesResponseType(typeof(string), 200)]
+        /// <returns> Devuelve un string que conetiene un token JWT</returns>
+        /// <remarks>
+        /// Este endpoint devuelve un string que conetiene un token JWT de tipo
+        /// { Id = int, Mail = string, Rol = "ESPECTADOR" o "EQUIPO" o "ESPECTADOR" o "PLANILLERO", Token = string }
+        /// </remarks>
+        /// <response code="200">OK. El usuario se encontró correctamente. Se devuelve un token JWT</response>
+        /// <response code="400">No encontrado</response>
+        [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[SwaggerOperation("ObtenerEjemploPorId", "Obtiene un objeto de ejemplo por su ID.")]
         [HttpPost("Login")]
         public async Task<IActionResult> PostLogin([FromBody] LoginDTO loginDTO)
         {
@@ -43,7 +49,10 @@ namespace WebApiTorneus.Controllers
 
                 var secretkey = _config["Jwt:SecretKey"];
 
-                var token = GeneradorToken.CrearToken(usuarioLogueado, _config);
+                var token = new TokenModel()
+                {
+                    Token = GeneradorToken.CrearToken(usuarioLogueado, _config)
+                };
 
                 return Ok(token);
             }
@@ -53,6 +62,20 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Permite el registro de un usuario para rol ORGANIZADOR o EQUIPO
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve token de tipo JWT con el usuario registrado
+        /// { Id = int, Mail = string, Rol = "ESPECTADOR" o "EQUIPO" o "ESPECTADOR" o "PLANILLERO", Token = string }
+        /// </remarks>
+        /// <response code="200">OK. El usuario se encontró correctamente. Se devuelve un token JWT</response>
+        /// <response code="400">No encontrado</response>
+        /// <response code="409">El usuario con el ID especificado ya existe.</response>
+        [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
         [HttpPost("Registro")]
         public async Task<IActionResult> PostRegistro([FromBody] RegistroDTO registroDTO)
         {
@@ -63,17 +86,40 @@ namespace WebApiTorneus.Controllers
                 Usuario registro = await _usuarioService.RegistroUsuario(usuario);
                 var registradoRealizado = _mapper.Map<UsuarioLogueado>(registro);
 
-                var token = GeneradorToken.CrearToken(registradoRealizado, _config);
+                var token = new TokenModel()
+                {
+                    Token = GeneradorToken.CrearToken(registradoRealizado, _config)
+                };
 
                 return Ok(token);
             }
             catch (Exception ex)
             {
+                if (ex.Message == "DUPLICADO")
+                {
+                    return Conflict("El usuario ya existe");
+                }
+                else
+                {
                 return BadRequest(ex.Message);
+
+                }
             }
         }
 
 
+
+        /// <summary>
+        /// Permite el login de un usuario con rol Espectador
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve token de tipo JWT con el usuario logueado
+        /// { Id = int, Mail = string, Rol = "ESPECTADOR" o "EQUIPO" o "ESPECTADOR" o "PLANILLERO", Token = string }
+        /// </remarks>
+        /// <response code="200">OK. El usuario se encontró correctamente. Se devuelve un token JWT</response>
+        /// <response code="400">Validaciones varias erroneas</response>
+        [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("LoginEspectador")]
         public async Task<IActionResult> GetLoginEspectador()
         {
@@ -84,7 +130,10 @@ namespace WebApiTorneus.Controllers
 
                 var secretkey = _config["Jwt:SecretKey"];
 
-                var token = GeneradorToken.CrearToken(usuarioLogueado, _config);
+                var token = new TokenModel()
+                {
+                    Token = GeneradorToken.CrearToken(usuarioLogueado, _config)
+                };
 
                 return Ok(token);
             }

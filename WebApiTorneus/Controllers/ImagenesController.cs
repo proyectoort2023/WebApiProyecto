@@ -26,6 +26,17 @@ namespace WebApiTorneus.Controllers
             _storageNameAzure = _config.GetValue<string>("AzureStorageName");
         }
 
+
+        /// <summary>
+        /// Permite a un usuario con rol ORGANIZADOR o EQUIPO subir una imagen para el banner o logo
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve un string que contiene el nombre de la imagen que figura en Azure Storage. 
+        /// </remarks>
+        /// <response code="200">OK. El archivo de imagen se ha subido</response>
+        /// <response code="400">No encontrado</response>
+        [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("SubirImagen")]
         public async Task<IActionResult> SubirImagen([FromForm] ImagenModel imagenModel)
         {
@@ -33,11 +44,23 @@ namespace WebApiTorneus.Controllers
 
 
             string nombreArchivo = await _imagenService.SubirImagen(_conexionStorage, _storageNameAzure, imagenModel.Archivo);
+            StringModel archivo = new(nombreArchivo);
             if (nombreArchivo == null) return NoContent();
 
-            return Ok(nombreArchivo); 
+            return Ok(archivo); 
         }
 
+
+        /// <summary>
+        /// Permite a un usuario con rol ORGANIZADOR o EQUIPO actualizar la imagen de un banner o logo
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve un string que contiene el nombre de la imagen que figura en Azure Storage. 
+        /// </remarks>
+        /// <response code="200">OK. El archivo de imagen se ha actualizado</response>
+        /// <response code="400">No encontrado</response>
+        [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("ActualizarImagen")]
         public async Task<IActionResult> ActualizarImagen([FromForm] ImagenModel imagenModel)
         {

@@ -48,7 +48,16 @@ namespace Negocio
             {
                 string mensajeError = "";
 
-                ValidadorUsuarioRegistro validacion = new(_db);
+
+                ValidadorUsuarioDuplicado validacionDuplicado = new(_db);
+                ValidationResult resultDuplicado = validacionDuplicado.Validate(registro);
+                if (!resultDuplicado.IsValid)
+                {
+                    resultDuplicado.Errors.ForEach(f => mensajeError += f.ErrorMessage);
+                    throw new Exception(mensajeError);
+                }
+
+                ValidadorUsuarioRegistro validacion = new();
                 ValidationResult result = validacion.Validate(registro);
                 if (!result.IsValid)
                 {
