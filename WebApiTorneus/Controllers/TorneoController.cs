@@ -7,10 +7,11 @@ using Negocio;
 using WebApiTorneus.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Authorization;
+using Negocio.Models;
 
 namespace WebApiTorneus.Controllers
 {
-    //[Authorize(Roles = "ORGANIZADOR")]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class TorneoController : ControllerBase
@@ -28,7 +29,20 @@ namespace WebApiTorneus.Controllers
             _config = config;
         }
 
-       
+
+        /// <summary>
+        /// Permite la creación de un torneo para el rol ORGANIZADOR
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve un idModel { Id = int } que contiene el Id del torneo creado
+        /// </remarks>
+        /// <response code="200">OK.El torneo se ha creado</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        /// <response code="409">El torneo que quiere crear ya existe.</response>
+        [ProducesResponseType(typeof(IdModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpPost("Crear")]
         public async Task<IActionResult> PostCreacion([FromBody] TorneoCreacionDTO torneoDTO)
         {
@@ -46,23 +60,44 @@ namespace WebApiTorneus.Controllers
                 //string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
                 int idTorneo = await _torneoService.CrearTorneo(torneo);
 
-                return Ok(idTorneo);
+                IdModel idModel = new(idTorneo);
+
+                return Ok(idModel);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                if (ex.Message == "DUPLICADO")
+                {
+                    return Conflict("El torneo ya existe.");
+                }
+                else
+                {
+                    return BadRequest(ex.Message);
+                }
             }
         }
-       
+
+        /// <summary>
+        /// Permite la creación de un torneo para el rol ORGANIZADOR
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint pide un valor int para recibir una propiedad de torneoId 
+        /// y devuelve un BoolModel { Bandera = bool } que contiene el un valor booleano usado como bandera para indicar
+        /// si el torneo se ha suspendido por el usuario organizador.
+        /// </remarks>
+        /// <response code="200">OK.El torneo se ha suspendido</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(BoolModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpGet("Suspender/{id}")]
         public async Task<IActionResult> GetSuspender(int torneoId)
         {
             try
             {
-                if (torneoId <1) BadRequest("No existe el torneo a suspender");
+                if (torneoId < 1) BadRequest("No existe el torneo a suspender");
 
-                bool suspendido =  await _torneoService.SuspenderTorneo(torneoId);
-
+                BoolModel suspendido = new(await _torneoService.SuspenderTorneo(torneoId));
                 return Ok(suspendido);
             }
             catch (Exception ex)
@@ -71,6 +106,20 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Permite la eliminación de un torneo para el rol ORGANIZADOR
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint pide un valor int para recibir una propiedad de torneoId 
+        /// y devuelve un BoolModel { Bandera = bool } que contiene el un valor booleano usado como bandera para indicar
+        /// si el torneo se ha eliminado por el usuario organizador. Solo puede ser eliminado si no hay equipos inscriptos
+        /// </remarks>
+        /// <response code="200">OK.El torneo se ha eliminado</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(BoolModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpDelete("Eliminar/{id}")]
         public async Task<IActionResult> EliminarTorneo(int torneoId)
         {
@@ -78,7 +127,7 @@ namespace WebApiTorneus.Controllers
             {
                 if (torneoId < 1) BadRequest("No existe el torneo a suspender");
 
-                bool suspendido = await _torneoService.EliminarTorneo(torneoId);
+                BoolModel suspendido = new( await _torneoService.EliminarTorneo(torneoId));
 
                 return Ok(suspendido);
             }
@@ -88,6 +137,20 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Permite la modificación de algunos datos de un torneo para el rol ORGANIZADOR
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint recibe un objeto con las propiedades a modificar del torneo
+        /// y devuelve un BoolModel { Bandera = bool } que contiene el un valor booleano usado como bandera para indicar
+        /// si el torneo se ha modificado por el usuario organizador.
+        /// </remarks>
+        /// <response code="200">OK.El torneo se ha modificado</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(BoolModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpPost("Modificar")]
         public async Task<IActionResult> ModificarTorneo([FromBody] TorneoActualizacionDTO torneoActualizacionDTO)
         {
@@ -97,8 +160,8 @@ namespace WebApiTorneus.Controllers
 
                 Torneo torneo = _mapper.Map<TorneoActualizacionDTO, Torneo>(torneoActualizacionDTO);
 
-                string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
-                bool torneoModificado = await _torneoService.ModificarTorneo(torneo);
+                //string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
+                BoolModel torneoModificado = new( await _torneoService.ModificarTorneo(torneo) );
 
                 return Ok(torneoModificado);
             }
@@ -108,6 +171,19 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Devuelve un listado de todos los torneos que creó el usuario ORGANIZADOR
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint recibe un ID de usuario y devuelve un listado de torneos que han sido creados por el usuario
+        /// con rol Organizador.
+        /// </remarks>
+        /// <response code="200">OK. Se devuelve la lista de torneos</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(List<Torneo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpGet("MisTorneos/{usuarioId}")]
         public async Task<IActionResult> GetMisTorneosOrganizador(int usuarioId)
         {
@@ -123,8 +199,21 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Devuelve un listado de todos los torneos vigentes para inscribirse o están siendo jugados
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve un listado de torneos vigentes a la fecha de hoy. 
+        /// Pueden solicitarlos todos los usuarios
+        /// </remarks>
+        /// <response code="200">OK. Se devuelve la lista de torneos</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(List<Torneo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
         [HttpGet("TorneosVigentes")]
-        public async Task<IActionResult> GetTorneos(int usuarioId)
+        public async Task<IActionResult> GetTorneos()
         {
             try
             {

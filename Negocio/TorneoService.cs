@@ -31,6 +31,14 @@ namespace Negocio
                 if (torneo == null)  throw new Exception("El torneo no tiene datos para salvar"); 
                 string mensajeError = "";
 
+                ValidarTorneoDuplicado validacionDuplicado = new(_db);
+                ValidationResult resultDuplicado = validacionDuplicado.Validate(torneo);
+                if (!resultDuplicado.IsValid)
+                {
+                    resultDuplicado.Errors.ForEach(f => mensajeError += f.ErrorMessage);
+                    throw new Exception(mensajeError);
+                }
+
                 ValidadorTorneo validacion = new(_db);
                 ValidationResult result = validacion.Validate(torneo);
                 if (!result.IsValid)

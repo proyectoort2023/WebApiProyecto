@@ -19,7 +19,6 @@ namespace Negocio.Validaciones
             RuleFor(t => t.Usuario).NotNull().NotEmpty().WithMessage("El usuario no se puede encontrar");
             RuleFor(t => t.Usuario.Id).NotEmpty();
             RuleFor(t => t.Nombre).MinimumLength(3).MaximumLength(40).WithMessage("El nombre debe tener entre 3 y 40 caracteres. ");
-            RuleFor(t => t.Nombre).NotEmpty().Must(TorneoNoExiste).WithMessage("El nombre de torneo que quiere registrar ya existe. ");
             RuleFor(t => t.Fecha).NotEmpty().NotNull().Must(ValidarFechaTorneo).WithMessage("La fecha del torneo debe ser al dia de hoy. ");
             RuleFor(t => t.NombreContacto).MinimumLength(3).MaximumLength(30).WithMessage("El nombre de contacto debe tener entre 3 y 30 caracteres. ");
             RuleFor(t => t.TelContacto).NotNull().NotEmpty().WithMessage("El telefono de contacto no puede estar vacio. ");
@@ -36,11 +35,7 @@ namespace Negocio.Validaciones
             RuleFor(t => t.CantidadCanchas).GreaterThan(0).WithMessage("cantidad de canchas deben ser de una en adelante. ");
 
         }
-
-        private bool TorneoNoExiste(string nombre)
-        {
-            return !_db.Torneos.Any(c => c.Nombre.ToUpper() == nombre.ToUpper().Trim());
-        }
+       
         private bool ValidarFechaTorneo(DateTime date)
         {
             return date > DateTime.Now;
