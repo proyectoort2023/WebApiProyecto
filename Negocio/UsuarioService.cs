@@ -38,7 +38,7 @@ namespace Negocio
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                    throw new Exception(ex.Message);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Negocio
             {
                 Usuario usuarioLogueado = new()
                 {
-                    Id = -1,
+                    Id = 0,
                     Mail = "",
                     Rol = "ESPECTADOR",
                     Token =""

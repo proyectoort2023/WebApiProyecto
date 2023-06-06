@@ -16,9 +16,9 @@ namespace WebApiTorneus.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier , usuarioLogueado.Id.ToString()),
-                new Claim(ClaimTypes.Email , usuarioLogueado.Mail),
-                new Claim(ClaimTypes.Role , usuarioLogueado.Rol),
+                new Claim("IdUsuario" , usuarioLogueado.Id.ToString()),
+                new Claim("Email" , usuarioLogueado.Mail),
+                new Claim("Rol", usuarioLogueado.Rol),
             };
 
             var token = new JwtSecurityToken(

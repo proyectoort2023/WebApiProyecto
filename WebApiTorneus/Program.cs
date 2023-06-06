@@ -63,7 +63,7 @@ string cadenaConexionAzureBD = "ProduccionConnection";
 
 builder.Services.AddDbContext<TorneoContext>(opciones =>
 {
-    opciones.UseSqlServer(builder.Configuration.GetConnectionString(cadenaConexionAzureBD));
+    opciones.UseSqlServer(builder.Configuration.GetConnectionString(cadenaConexionBDLocal));
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
