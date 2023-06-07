@@ -42,7 +42,7 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(IdModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        [Authorize]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpPost("Crear")]
         public async Task<IActionResult> PostCreacion([FromBody] TorneoCreacionDTO torneoDTO)
         {
