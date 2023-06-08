@@ -202,6 +202,22 @@ namespace Negocio
 
         }
 
+        public async Task<(bool, DateTime?)> AbrirInscripciones(int idTorneo)
+        {
+            var torneo = await _db.Torneos.FindAsync(idTorneo);
+
+            if (torneo == null) return (false,null);
+
+            torneo.HabilitacionInscripcion = true;
+
+            int cantidadRegistros = await _db.SaveChangesAsync();
+
+            bool resultado = cantidadRegistros > 1;
+
+            return (resultado, torneo.Fecha);
+
+        }
+
 
     }
 }

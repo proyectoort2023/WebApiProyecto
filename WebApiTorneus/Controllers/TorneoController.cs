@@ -8,6 +8,7 @@ using WebApiTorneus.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Authorization;
 using Negocio.Models;
+using WebApiTorneus.BackgroundServices;
 
 namespace WebApiTorneus.Controllers
 {
@@ -21,12 +22,14 @@ namespace WebApiTorneus.Controllers
         private readonly TorneoService _torneoService;
         private readonly IConfiguration _config;
         private const string claveRutaImagen = "Rutaimagen";
+        private readonly TareaSegundoPlanoTorneo _tareaSegundoPlano;
 
-        public TorneoController(IMapper mapper, TorneoService torneoService, IConfiguration config)
+        public TorneoController(IMapper mapper, TorneoService torneoService, IConfiguration config, TareaSegundoPlanoTorneo tareaSegundoPlano)
         {
             _mapper = mapper;
             _torneoService = torneoService;
             _config = config;
+            _tareaSegundoPlano = tareaSegundoPlano;
         }
 
 
@@ -226,6 +229,47 @@ namespace WebApiTorneus.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+        /// <summary>
+        /// Habilita la inscripción de los equipos
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint habilita por parte del organizador la inscripción de los equipos al torneo
+        /// </remarks>
+        /// <response code="200">OK. Inscripciones abiertas</response>
+        /// <response code="400">No se pudo habilitar</response>
+        [ProducesResponseType(typeof(List<Torneo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
+        [HttpPatch("HabilitarInscripcion/{idTorneo}")]
+        public async Task<IActionResult> GetHabilitarInscripcion(int idTorneo)
+        {
+            try
+            {
+                var (habilitarTorneo, fechaComienzo) = await _torneoService.AbrirInscripciones(idTorneo);
+
+                //Agrego a la lista de control para el cierre automático de inscripción
+                if (habilitarTorneo)
+                {
+                    var nuevaTareaControlCierreInscripcion = new TorneoInscripcionAbiertaDTO()
+                    {
+                        IdTorneo = idTorneo,
+                        FechaComienzo =  fechaComienzo.Value
+
+                    };
+                    _tareaSegundoPlano.AgregarTorneo(nuevaTareaControlCierreInscripcion);
+                }
+
+                return Ok(habilitarTorneo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
 
 
 
