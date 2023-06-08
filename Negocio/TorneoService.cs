@@ -2,6 +2,7 @@
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.VisualBasic;
 using Negocio.DTOs;
 using Negocio.Validaciones;
 using System;
@@ -165,11 +166,56 @@ namespace Negocio
 
             return listaTorneos;
         }
+
         public async Task<List<Torneo>> ObtenerTorneosVigentes()
         {
             var listaTorneos = await _db.Torneos.ToListAsync();
 
             return listaTorneos;
+        }
+
+
+        public async Task<List<TorneoInscripcionAbiertaDTO>> ListadoInscripcionesAbierta()
+        {
+            var listaTorneosHabilitaciones = await _db.Torneos.Where(t => t.Fecha > DateAndTime.Today && t.HabilitacionInscripcion == true)
+                                                .Select(s => new TorneoInscripcionAbiertaDTO()
+                                                {
+                                                     IdTorneo = s.Id,
+                                                     FechaComienzo = s.Fecha
+                                                }).ToListAsync();             
+
+            return listaTorneosHabilitaciones;
+        }
+
+
+        public async Task<bool> CerrarInscripciones(TorneoInscripcionAbiertaDTO torneoInscAb)
+        {
+          var torneo = await _db.Torneos.FindAsync(torneoInscAb.IdTorneo);
+
+            if (torneo == null) return false;
+
+            torneo.HabilitacionInscripcion = false;
+
+            int cantidadRegistros = await _db.SaveChangesAsync();
+
+            return cantidadRegistros > 1;
+
+        }
+
+        public async Task<(bool, DateTime?)> AbrirInscripciones(int idTorneo)
+        {
+            var torneo = await _db.Torneos.FindAsync(idTorneo);
+
+            if (torneo == null) return (false,null);
+
+            torneo.HabilitacionInscripcion = true;
+
+            int cantidadRegistros = await _db.SaveChangesAsync();
+
+            bool resultado = cantidadRegistros > 1;
+
+            return (resultado, torneo.Fecha);
+
         }
 
 

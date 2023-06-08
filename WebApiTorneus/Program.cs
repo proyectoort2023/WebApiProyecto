@@ -7,6 +7,7 @@ using Negocio;
 using System.Reflection;
 using System.Text;
 using WebApiTorneus.AMProfile;
+using WebApiTorneus.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,6 +68,7 @@ builder.Services.AddDbContext<TorneoContext>(opciones =>
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddHostedService<TareaSegundoPlanoTorneo>();
 
 //builder.Services.AddSignalR();
 //builder.Services.AddResponseCompression(opts =>
@@ -106,6 +108,7 @@ app.UseCors("cors");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
