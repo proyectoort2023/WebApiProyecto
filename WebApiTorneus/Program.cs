@@ -59,12 +59,17 @@ builder.Services.AddCors(opciones => {
     }
     );
 });
-string cadenaConexionBDLocal = "LocalConnection";
-string cadenaConexionAzureBD = "ProduccionConnection";
+
+string cadenaConexionBD;
+#if DEBUG
+cadenaConexionBD = "LocalConnection";
+#else
+cadenaConexionBD = "ProduccionConnection";
+#endif
 
 builder.Services.AddDbContext<TorneoContext>(opciones =>
 {
-    opciones.UseSqlServer(builder.Configuration.GetConnectionString(cadenaConexionBDLocal));
+    opciones.UseSqlServer(builder.Configuration.GetConnectionString(cadenaConexionBD));
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
