@@ -1,5 +1,6 @@
 using BDTorneus;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -8,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using WebApiTorneus.AMProfile;
 using WebApiTorneus.BackgroundServices;
+using WebApiTorneus.HubSignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,12 +77,12 @@ builder.Services.AddDbContext<TorneoContext>(opciones =>
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddHostedService<TareaSegundoPlanoTorneo>();
 
-//builder.Services.AddSignalR();
-//builder.Services.AddResponseCompression(opts =>
-//{
-//    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-//        new[] { "application/octet-stream" });
-//});
+builder.Services.AddSignalR();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 
 //Dependencias de Negocio
 builder.Services.AddScoped<UsuarioService>();
@@ -109,7 +111,7 @@ app.UseSwaggerUI();
 //}
 
 app.UseCors("cors");
-//app.UseResponseCompression();
+app.UseResponseCompression();
 
 app.UseHttpsRedirection();
 
@@ -118,6 +120,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-//app.MapHub<PartidoHub>("/partidohubs");
+app.MapHub<TorneusHub>("/torneushubs");
 
 app.Run();
