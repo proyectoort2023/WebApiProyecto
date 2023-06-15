@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Negocio", "Negocio\Negocio.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilidades", "Utilidades\Utilidades.csproj", "{DE99B9D3-BD83-49EC-B39E-5DD9A66A4D45}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingTorneus", "TestingTorneus\TestingTorneus.csproj", "{CD4515E4-0D76-4F30-828E-79B3F2000010}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingTorneus", "TestingTorneus\TestingTorneus.csproj", "{CD4515E4-0D76-4F30-828E-79B3F2000010}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOs Compartidos", "DTOs Compartidos\DTOs Compartidos.csproj", "{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{CD4515E4-0D76-4F30-828E-79B3F2000010}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD4515E4-0D76-4F30-828E-79B3F2000010}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD4515E4-0D76-4F30-828E-79B3F2000010}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

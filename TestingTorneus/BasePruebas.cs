@@ -48,7 +48,7 @@ namespace TestingTorneus
            .AddInMemoryCollection(new[]
            {
                 new KeyValuePair<string, string>("Jwt:SecretKey", "TuSecretKey"),
-               // Agrega más configuraciones necesarias para tus pruebas
+              
            })
            .Build();
 
