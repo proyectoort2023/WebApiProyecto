@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilidades", "Utilidades\Ut
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingTorneus", "TestingTorneus\TestingTorneus.csproj", "{CD4515E4-0D76-4F30-828E-79B3F2000010}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOs Compartidos", "DTOs Compartidos\DTOs Compartidos.csproj", "{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs Compartidos", "DTOs Compartidos\DTOs Compartidos.csproj", "{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TorneusClientWeb", "..\TorneusClientWeb\TorneusClientWeb.csproj", "{B6C48008-C066-47AE-AD77-CE8C36ED1217}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TorneusClienteWeb", "TorneusClienteWeb\TorneusClienteWeb.csproj", "{3671F80D-F609-4BCF-A6DD-18B5F23E5414}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,10 +47,10 @@ Global
 		{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6C48008-C066-47AE-AD77-CE8C36ED1217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6C48008-C066-47AE-AD77-CE8C36ED1217}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6C48008-C066-47AE-AD77-CE8C36ED1217}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6C48008-C066-47AE-AD77-CE8C36ED1217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3671F80D-F609-4BCF-A6DD-18B5F23E5414}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3671F80D-F609-4BCF-A6DD-18B5F23E5414}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3671F80D-F609-4BCF-A6DD-18B5F23E5414}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3671F80D-F609-4BCF-A6DD-18B5F23E5414}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
