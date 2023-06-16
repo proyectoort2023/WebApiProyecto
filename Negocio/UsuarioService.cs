@@ -91,10 +91,11 @@ namespace Negocio
                 Usuario usuarioLogueado = new()
                 {
                     Id = 0,
-                    Mail = "",
+                    Mail = Guid.NewGuid().ToString(),
                     Rol = "ESPECTADOR",
                     Token =""
                 };
+
 
                 return usuarioLogueado;
             }

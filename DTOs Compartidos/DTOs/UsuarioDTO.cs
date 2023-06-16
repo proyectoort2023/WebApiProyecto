@@ -1,5 +1,4 @@
-﻿using BDTorneus;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +16,7 @@ namespace Negocio.DTOs
         public string Tel { get; set; }
         public string Token { get; set; }
 
-        public List<Equipo> Equipos { get; set; } = new List<Equipo>();
-        public List<Torneo> Torneos { get; set; } = new List<Torneo>();
+        public List<EquipoDTO> Equipos { get; set; } = new List<EquipoDTO>();
+        public List<TorneoDTO> Torneos { get; set; } = new List<TorneoDTO>();
     }
 }
