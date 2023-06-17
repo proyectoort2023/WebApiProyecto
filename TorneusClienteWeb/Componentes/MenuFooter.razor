@@ -1,0 +1,25 @@
+﻿@inject ServicioMenu _servicioMenu
+@inject NavigationManager _nav
+
+<div class="bottom-menu">
+
+@foreach (var item in _servicioMenu.ObtenerItemsMenu())
+    {
+        <div class="menu-item">
+            <button class="menu-button" @onclick="(() => IrUrl(item.UrlLink))">
+                <i class="@item.Icono"></i>
+                <span>@item.Titulo</span>
+            </button>
+        </div>
+
+    }
+
+</div>
+
+@code {
+
+    private void IrUrl(string url)
+    {
+        _nav.NavigateTo(url);
+    }
+}

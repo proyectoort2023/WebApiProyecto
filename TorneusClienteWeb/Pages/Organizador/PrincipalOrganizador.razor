@@ -1,0 +1,20 @@
+﻿@page "/Organizador/Principal"
+@inject ServicioMenu _servicioMenu
+
+<h1>Organizador principal</h1>
+
+@code {
+
+    List<MenuItem> menusItems = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        menusItems = new List<MenuItem>()
+        {
+            new MenuItem ("Mensajes","fa fa-envelope","/counter"),
+            new MenuItem ("Mis torneos","fa fa-trophy","/fetchdata"),
+            new MenuItem ("Deudores","fa fa-money-bill","/login")
+        };
+        _servicioMenu.ActualizarItems(menusItems);
+    }
+}

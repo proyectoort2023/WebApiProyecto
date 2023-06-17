@@ -1,0 +1,27 @@
+﻿.background-image {
+    position: fixed;
+    z-index:-1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/img/backgroundSesion.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: ghostwhite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+.tituloSesion {
+    position:fixed;
+    top:20%;
+    text-align: center;
+    font-size: 40px;
+    color: ghostwhite;
+    width:100%;
+}

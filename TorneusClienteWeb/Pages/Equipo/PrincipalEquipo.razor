@@ -1,0 +1,20 @@
+﻿@page "/Equipo/Principal"
+@inject ServicioMenu _servicioMenu
+
+<h3>Principal Equipo</h3>
+
+@code {
+    List<MenuItem> menusItems = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        menusItems = new List<MenuItem>()
+        {
+            new MenuItem ("Mensajes","fa fa-envelope","/counter"),
+            new MenuItem ("Torneos","fa fa-trophy","/fetchdata"),
+            new MenuItem ("Mis suscripciones","fas fa-file-invoice","/login")
+        };
+        _servicioMenu.ActualizarItems(menusItems);
+    }
+
+}

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingTorneus", "TestingTo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs Compartidos", "DTOs Compartidos\DTOs Compartidos.csproj", "{F641F5BA-5CE1-4A55-B81C-6D3D912BA94C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TorneusClienteWeb", "TorneusClienteWeb\TorneusClienteWeb.csproj", "{3671F80D-F609-4BCF-A6DD-18B5F23E5414}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorneusClienteWeb", "TorneusClienteWeb\TorneusClienteWeb.csproj", "{3671F80D-F609-4BCF-A6DD-18B5F23E5414}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,9 +1,31 @@
 ﻿@page "/"
+@inject ServicioMenu _servicioMenu
+@layout LayoutVacio
+@inject NavigationManager _nav
 
-<PageTitle>Index</PageTitle>
+<h1 class="tituloSesion">Torneus 1.0</h1>
 
-<h1>Hello, world!</h1>
+<div class="background-image">
 
-Welcome to your new app.
+    <Boton BackGroungColor="#e0e0e0" ButtonText="Voy a iniciar con Google" ImageUrl="/img/google.png" />
+    <input type="text" placeholder="Ingrese usuario"/>
+    <input type="password" placeholder="Ingrese contraseña" />
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+      
+</div>
+
+
+
+@code{
+
+    protected async override Task OnInitializedAsync()
+    {
+      
+    }
+
+    private void Navegar()
+    {
+        _nav.NavigateTo("/Organizador/Principal");
+    }
+}
+
