@@ -19,15 +19,16 @@
 
 
 .card-login {
-    position:relative;
-    height: 70%;
-    width: 90%;
+    position: relative;
+    height: 65%;
+    width: 80%;
     margin: 0;
     padding: 10%;
     box-shadow: 3px 3px 20px -3px rgba(0,0,0,0.75);
     border-radius: 7%;
     z-index: 10;
     background-color: white;
+    background-color: rgba(255, 255, 255, 0.9);
 }
 
 
@@ -37,13 +38,14 @@
     justify-content:center;
 }
 
-.logo-container-login {
+.center-container-login {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.margen-container-login {
     margin: 3% 0 20% 0;
 }
-
 
 .link-login {
     position: absolute;
@@ -74,7 +76,7 @@
     .logo-login {
         width: 40%;
     }
-    .logo-container-login {
+    .margen-container-login {
         margin: 3% 0 10% 0;
     }
 }
