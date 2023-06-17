@@ -1,15 +1,15 @@
 ﻿.background-image {
     position: fixed;
-    z-index:-1;
+    z-index:100;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url("/img/backgroundSesion.png");
+    width: 100vw;
+    height: 100vh;
+    background-image: url("/imagenes/backgroundSesion.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    color: ghostwhite;
+    color: black;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,11 +17,64 @@
 }
 
 
-.tituloSesion {
-    position:fixed;
-    top:20%;
-    text-align: center;
-    font-size: 40px;
-    color: ghostwhite;
-    width:100%;
+
+.card-login {
+    position:relative;
+    height: 70%;
+    width: 90%;
+    margin: 0;
+    padding: 10%;
+    box-shadow: 3px 3px 20px -3px rgba(0,0,0,0.75);
+    border-radius: 7%;
+    z-index: 10;
+    background-color: white;
+}
+
+
+.logo-login{
+    width:70%;
+    height:auto;
+    justify-content:center;
+}
+
+.logo-container-login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 3% 0 20% 0;
+}
+
+
+.link-login {
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    margin-bottom: 20px;
+}
+
+
+.logo-login {
+    width: 70%;
+    height: auto;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 768px) {
+    .logo-login {
+        width: 70%;
+        height: auto;
+        justify-content: center;
+    }
+
+
+}
+
+
+@media (min-width: 600  px) {
+    .logo-login {
+        width: 40%;
+    }
+    .logo-container-login {
+        margin: 3% 0 10% 0;
+    }
 }

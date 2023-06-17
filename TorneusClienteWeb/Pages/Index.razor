@@ -3,24 +3,71 @@
 @layout LayoutVacio
 @inject NavigationManager _nav
 
-<h1 class="tituloSesion">Torneus 1.0</h1>
+
 
 <div class="background-image">
 
-    <Boton BackGroungColor="#e0e0e0" ButtonText="Voy a iniciar con Google" ImageUrl="/img/google.png" />
-    <input type="text" placeholder="Ingrese usuario"/>
-    <input type="password" placeholder="Ingrese contraseña" />
+    <div class="card-login">
+        <div class="logo-container-login">
+            <img src="/imagenes/logo.png" alt="" class="logo-login" />
+        </div>
+       
+        
+        <Boton BackGroungColor="#e0e0e0" ButtonText="Voy a iniciar con Google" ImageUrl="/imagenes/google.png" />
 
+        <MudTextField @bind-Value="usuarioTexto"
+                      Label="Usuario"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense" />
+
+
+        <MudTextField @bind-Value="passTexto"
+                      Label="Contraseña"
+                      Variant="Variant.Outlined"
+                      InputType="@PasswordInput"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@PasswordInputIcon"
+                      OnAdornmentClick="ButtonTestclick"
+                      AdornmentAriaLabel="Ver contraseña"
+                      Margin="Margin.Dense" />
+
+         @* <a href="" style="padding:30px">Registrate aqui!!</a>*@
+        <MudLink Href="#">Registrate aqui!!</MudLink>
       
+            <a href="" class="link-login">Me olvidé de mi contraseña!!</a>
+       
+    </div>
+
 </div>
 
 
 
-@code{
+   
 
-    protected async override Task OnInitializedAsync()
+
+
+@code{
+    public string usuarioTexto { get; set; }
+    public string passTexto { get; set; }
+    bool isShow;
+    InputType PasswordInput = InputType.Password;
+
+    string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    void ButtonTestclick()
     {
-      
+        @if (isShow)
+        {
+            isShow = false;
+            PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+            PasswordInput = InputType.Password;
+        }
+        else
+        {
+            isShow = true;
+            PasswordInputIcon = Icons.Material.Filled.Visibility;
+            PasswordInput = InputType.Text;
+        }
     }
 
     private void Navegar()
