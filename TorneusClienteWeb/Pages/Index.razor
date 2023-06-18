@@ -2,6 +2,11 @@
 @inject ServicioMenu _servicioMenu
 @layout LayoutVacio
 @inject NavigationManager _nav
+@inject ILocalStorageService _localStorage
+@inject UsuarioServicio _usuarioServicio
+@using System.IdentityModel.Tokens.Jwt
+@using System.Text
+
 
 
 
@@ -9,7 +14,7 @@
 
     <div class="card-login">
         <div class="margen-container-login center-container-login">
-            <img src="/imagenes/logo.png" alt="" class="logo-login" />
+            <img src="/imagenes/logoTorneus.png" alt="" class="logo-login" />
         </div>
        
         
@@ -57,6 +62,17 @@
 
     string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
 
+    protected async override Task OnInitializedAsync()
+    {
+      string token = await _localStorage.GetItemAsync<string>(Util.TOKEN_LOCAL);
+      if (!string.IsNullOrEmpty(token))
+        {
+            UsuarioLogueado usuario = DecodificarUsuarioJWT(token);
+            _usuarioServicio.ActualizarUsuarioLogueado(usuario);
+            Navegar(usuario.Rol);
+        }
+    }
+
     void ButtonTestclick()
     {
         @if (isShow)
@@ -73,9 +89,41 @@
         }
     }
 
-    private void Navegar()
+    private void Navegar(string rol)
     {
-        _nav.NavigateTo("/Organizador/Principal");
+        _nav.NavigateTo($"/{rol}/Principal");
     }
+
+    private UsuarioLogueado DecodificarUsuarioJWT(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var tokenString = token.Replace("Bearer ", ""); // Si el token incluye el prefijo "Bearer", puedes removerlo aquí
+
+        if (handler.CanReadToken(tokenString))
+        {
+            var jwtToken = handler.ReadJwtToken(tokenString);
+            var claims = jwtToken.Claims;
+
+            // Acceder a los claims del token
+            var id = claims.FirstOrDefault(c => c.Type == "IdUsuario")?.Value;
+            int idUsuario = Int32.Parse(id);
+            var email = claims.FirstOrDefault(c => c.Type == "Email")?.Value;
+            var rol = claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
+
+            UsuarioLogueado usuario = new()
+            {
+                Id = idUsuario,
+                Mail = email,
+                Rol = rol,
+                Token = token
+            };
+            return usuario;
+        }
+        else
+        {
+            return null;
+        }
+        }
+       
 }
 

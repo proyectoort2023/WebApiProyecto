@@ -1,4 +1,4 @@
-﻿@page "/ORGANIZADOR/Principal"
+﻿@page "/ESPECTADOR/Principal"
 @inject ServicioMenu _servicioMenu
 
 <h1>Organizador principal</h1>
@@ -13,7 +13,7 @@
         {
             new MenuItem ("Mensajes","fa fa-envelope","/counter"),
             new MenuItem ("Mis torneos","fa fa-trophy","/fetchdata"),
-            new MenuItem ("Deudores","fa fa-money-bill","/login")
+            new MenuItem ("Otros","fa fa-money-bill","/login")
         };
         _servicioMenu.ActualizarItems(menusItems);
     }
