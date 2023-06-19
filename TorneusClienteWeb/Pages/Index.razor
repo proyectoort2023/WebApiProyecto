@@ -36,7 +36,7 @@
                       AdornmentAriaLabel="Ver contraseña"
                       Margin="Margin.Dense" />
         <div class="center-container-login">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary">Loguearme</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Loguearme">Loguearme</MudButton>
         </div>
 
          @* <a href="" style="padding:30px">Registrate aqui!!</a>*@
@@ -64,13 +64,36 @@
 
     protected async override Task OnInitializedAsync()
     {
-      string token = await _localStorage.GetItemAsync<string>(Util.TOKEN_LOCAL);
-      if (!string.IsNullOrEmpty(token))
+        UsuarioLogueado usuario = await _localStorage.GetItemAsync<UsuarioLogueado>(Util.TOKEN_LOCAL);
+        if (usuario != null)
         {
-            UsuarioLogueado usuario = DecodificarUsuarioJWT(token);
             _usuarioServicio.ActualizarUsuarioLogueado(usuario);
             Navegar(usuario.Rol);
         }
+    }
+    public async void Loguearme()
+    {
+        try
+        {
+            LoginDTO login = new()
+                {
+                    Mail = usuarioTexto,
+                    Pass = passTexto
+                };
+
+            bool respuesta = await _usuarioServicio.Loguearme(login);
+            var usuario = _usuarioServicio.ObtenerUsuarioLogueado();
+            await _localStorage.SetItemAsync(Utilidades.Util.TOKEN_LOCAL, usuario);
+            Navegar(usuario.Rol);
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+        
+
+
     }
 
     void ButtonTestclick()
@@ -94,36 +117,7 @@
         _nav.NavigateTo($"/{rol}/Principal");
     }
 
-    private UsuarioLogueado DecodificarUsuarioJWT(string token)
-    {
-        var handler = new JwtSecurityTokenHandler();
-        var tokenString = token.Replace("Bearer ", ""); // Si el token incluye el prefijo "Bearer", puedes removerlo aquí
-
-        if (handler.CanReadToken(tokenString))
-        {
-            var jwtToken = handler.ReadJwtToken(tokenString);
-            var claims = jwtToken.Claims;
-
-            // Acceder a los claims del token
-            var id = claims.FirstOrDefault(c => c.Type == "IdUsuario")?.Value;
-            int idUsuario = Int32.Parse(id);
-            var email = claims.FirstOrDefault(c => c.Type == "Email")?.Value;
-            var rol = claims.FirstOrDefault(c => c.Type == "Rol")?.Value;
-
-            UsuarioLogueado usuario = new()
-            {
-                Id = idUsuario,
-                Mail = email,
-                Rol = rol,
-                Token = token
-            };
-            return usuario;
-        }
-        else
-        {
-            return null;
-        }
-        }
+   
        
 }
 
