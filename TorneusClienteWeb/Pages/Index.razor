@@ -2,6 +2,12 @@
 @inject ServicioMenu _servicioMenu
 @layout LayoutVacio
 @inject NavigationManager _nav
+@inject ILocalStorageService _localStorage
+@inject UsuarioServicio _usuarioServicio
+@using System.IdentityModel.Tokens.Jwt
+@using System.Text
+@inject ISnackbar _snackbar
+
 
 
 
@@ -9,7 +15,7 @@
 
     <div class="card-login">
         <div class="margen-container-login center-container-login">
-            <img src="/imagenes/logo.png" alt="" class="logo-login" />
+            <img src="/imagenes/logoTorneus.png" alt="" class="logo-login" />
         </div>
        
         
@@ -31,21 +37,16 @@
                       AdornmentAriaLabel="Ver contraseña"
                       Margin="Margin.Dense" />
         <div class="center-container-login">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary">Loguearme</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Loguearme">Loguearme</MudButton>
         </div>
 
-         @* <a href="" style="padding:30px">Registrate aqui!!</a>*@
-        <MudLink Href="#" Style="display:block">Registrate aqui!!</MudLink>
+        <a href="" @onclick="Registrar" @onclick:preventDefault>Registrate aqui!! </a>
       
         <a href="" class="link-login">Me olvidé de mi contraseña!!</a>
        
     </div>
 
 </div>
-
-
-
-   
 
 
 
@@ -56,6 +57,40 @@
     InputType PasswordInput = InputType.Password;
 
     string PasswordInputIcon = Icons.Material.Filled.VisibilityOff;
+
+    protected async override Task OnInitializedAsync()
+    {
+        UsuarioLogueado usuario = await _localStorage.GetItemAsync<UsuarioLogueado>(Util.TOKEN_LOCAL);
+        if (usuario != null)
+        {
+            _usuarioServicio.ActualizarUsuarioLogueado(usuario);
+            Navegar(usuario.Rol);
+        }
+    }
+    public async void Loguearme()
+    {
+        try
+        {
+            LoginDTO login = new()
+                {
+                    Mail = usuarioTexto,
+                    Pass = passTexto
+                };
+
+            bool respuesta = await _usuarioServicio.Loguearme(login);
+            var usuario = _usuarioServicio.ObtenerUsuarioLogueado();
+            await _localStorage.SetItemAsync(Utilidades.Util.TOKEN_LOCAL, usuario);
+            _snackbar.Add("Sesión iniciada", Severity.Success);
+            Navegar(usuario.Rol);
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+        
+
+
+    }
 
     void ButtonTestclick()
     {
@@ -73,9 +108,16 @@
         }
     }
 
-    private void Navegar()
+    private void Navegar(string rol)
     {
-        _nav.NavigateTo("/Organizador/Principal");
+        _nav.NavigateTo($"/{rol}/Principal");
     }
+
+    private void Registrar()
+    {
+        _nav.NavigateTo("/Registro");
+    }
+
+       
 }
 
