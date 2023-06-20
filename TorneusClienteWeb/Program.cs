@@ -3,6 +3,7 @@ using BlazorTorneusClient.Servicios;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using MudBlazor;
 using MudBlazor.Services;
 using TorneusClienteWeb;
 using TorneusClienteWeb.Servicios;
@@ -22,8 +23,20 @@ cadenaConexionWebApi = "ProduccionWebApi";
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration[cadenaConexionWebApi]) });
 
 
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+
+    config.SnackbarConfiguration.PreventDuplicates = false;
+    config.SnackbarConfiguration.NewestOnTop = false;
+    config.SnackbarConfiguration.ShowCloseIcon = false;
+    config.SnackbarConfiguration.VisibleStateDuration = 2500;
+    config.SnackbarConfiguration.HideTransitionDuration = 200;
+    config.SnackbarConfiguration.ShowTransitionDuration = 200;
+    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+});
 builder.Services.AddBlazoredLocalStorage();
+
 
 builder.Services.AddScoped<ServicioMenu>();
 builder.Services.AddScoped<UsuarioServicio>();

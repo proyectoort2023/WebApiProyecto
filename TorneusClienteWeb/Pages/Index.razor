@@ -6,6 +6,7 @@
 @inject UsuarioServicio _usuarioServicio
 @using System.IdentityModel.Tokens.Jwt
 @using System.Text
+@inject ISnackbar _snackbar
 
 
 
@@ -39,18 +40,13 @@
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Loguearme">Loguearme</MudButton>
         </div>
 
-         @* <a href="" style="padding:30px">Registrate aqui!!</a>*@
-        <MudLink Href="#" Style="display:block">Registrate aqui!!</MudLink>
+        <a href="" @onclick="Registrar" @onclick:preventDefault>Registrate aqui!! </a>
       
         <a href="" class="link-login">Me olvidé de mi contraseña!!</a>
        
     </div>
 
 </div>
-
-
-
-   
 
 
 
@@ -84,12 +80,12 @@
             bool respuesta = await _usuarioServicio.Loguearme(login);
             var usuario = _usuarioServicio.ObtenerUsuarioLogueado();
             await _localStorage.SetItemAsync(Utilidades.Util.TOKEN_LOCAL, usuario);
+            _snackbar.Add("Sesión iniciada", Severity.Success);
             Navegar(usuario.Rol);
         }
         catch (Exception ex)
         {
-            
-            throw;
+            _snackbar.Add(ex.Message, Severity.Warning);
         }
         
 
@@ -117,7 +113,11 @@
         _nav.NavigateTo($"/{rol}/Principal");
     }
 
-   
+    private void Registrar()
+    {
+        _nav.NavigateTo("/Registro");
+    }
+
        
 }
 

@@ -39,10 +39,29 @@ namespace TorneusClienteWeb.Servicios
             }
             catch (Exception ex)
             {
-
-                throw;
+                throw new Exception(ex.Message);
             }
         }
+
+        public async Task<bool> Registrarme(RegistroDTO registroDTO)
+        {
+            try
+            {
+                if (registroDTO == null) throw new Exception("No hay datos para registrar");
+
+                string tokenRecibido = await _usuarioServicioDatos.RegistroUsuario(registroDTO);
+                if (string.IsNullOrEmpty(tokenRecibido)) return false;
+
+                UsuarioLogueado usuario = await DecodificarUsuarioJWT(tokenRecibido);
+                _usuarioLogueado = usuario;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
 
 
@@ -78,7 +97,7 @@ namespace TorneusClienteWeb.Servicios
         }
 
 
-
+      
 
 
 
