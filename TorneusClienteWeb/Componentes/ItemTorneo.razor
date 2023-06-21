@@ -1,0 +1,35 @@
+﻿
+
+<main class="card-centrada">
+    <div class="card-torneo">
+       @* <img src="@Bannertorneo" alt="Banner Torneo" class="img-banner">*@
+        <img src="/imagenes/default/BannerDefault.png" alt="Banner Torneo" class="img-banner">
+        <section class="info-torneo">
+
+            <div class="logo-container">
+             @*   <img src="@LogoTorneo" alt="Logo Torneo" class="img-logo">*@
+                <img src="/imagenes/Default/Pelota_default.png" alt="Logo Torneo" class="img-logo">
+            </div>
+
+            <div class="titulo-container">
+                <p>@NombreTorneo</p>
+                <p>Inscripciones hasta: @VtoInscripcion</p>
+            </div>
+
+            <div class="flecha-container">
+                <img src="/imagenes/flecha.png" alt="">
+            </div>
+
+        </section>
+    </div>
+</main>
+
+
+
+@code {
+    [Parameter] public int TorneoId { get; set; }
+    [Parameter] public string LogoTorneo { get; set; } 
+    [Parameter] public string Bannertorneo { get; set; } 
+    [Parameter] public string NombreTorneo { get; set; }
+    [Parameter] public string VtoInscripcion { get; set; }
+}

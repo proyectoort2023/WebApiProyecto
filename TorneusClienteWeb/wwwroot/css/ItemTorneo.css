@@ -1,0 +1,68 @@
+﻿
+.card-centrada {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.card-torneo {
+    color: red;
+    height: 28vh;
+    width: 95%;
+    box-shadow: 1px 1px 5px -2px rgba(0,0,0,1);
+    border-radius: 30px;
+}
+
+.img-banner {
+    width: 100%;
+    height: 17vh;
+    border-radius: 30px 30px 0 0;
+    object-fit: cover;
+}
+
+.info-torneo {
+    display: flex;
+    flex-direction: row;
+    height: 11vh;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-logo {
+    width: 12vw;
+    height: auto;
+    margin: 15px;
+}
+
+.logo-container {
+    width: 20%;
+}
+
+.titulo-container {
+    width: 68%;
+    margin-left: 10px;
+}
+
+    .titulo-container p {
+        margin: 3px;
+    }
+
+.flecha-container {
+    width: 12%;
+}
+
+    .flecha-container img {
+        width: 60%;
+        height: auto;
+    }
+
+.titulo-container p:first-child {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: blue;
+}
+
+.titulo-container p:last-child {
+    font-size: 0.9rem;
+    color: orangered;
+}
