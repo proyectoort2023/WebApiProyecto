@@ -22,14 +22,12 @@ namespace WebApiTorneus.Controllers
         private readonly TorneoService _torneoService;
         private readonly IConfiguration _config;
         private const string claveRutaImagen = "Rutaimagen";
-        private readonly TareaSegundoPlanoTorneo _tareaSegundoPlano;
 
-        public TorneoController(IMapper mapper, TorneoService torneoService, IConfiguration config, TareaSegundoPlanoTorneo tareaSegundoPlano)
+        public TorneoController(IMapper mapper, TorneoService torneoService, IConfiguration config)
         {
             _mapper = mapper;
             _torneoService = torneoService;
             _config = config;
-            _tareaSegundoPlano = tareaSegundoPlano;
         }
 
 
@@ -248,18 +246,6 @@ namespace WebApiTorneus.Controllers
             try
             {
                 var (habilitarTorneo, fechaComienzo) = await _torneoService.AbrirInscripciones(idTorneo);
-
-                //Agrego a la lista de control para el cierre automático de inscripción
-                if (habilitarTorneo)
-                {
-                    var nuevaTareaControlCierreInscripcion = new TorneoInscripcionAbiertaDTO()
-                    {
-                        IdTorneo = idTorneo,
-                        FechaComienzo =  fechaComienzo.Value
-
-                    };
-                    _tareaSegundoPlano.AgregarTorneo(nuevaTareaControlCierreInscripcion);
-                }
 
                 return Ok(habilitarTorneo);
             }

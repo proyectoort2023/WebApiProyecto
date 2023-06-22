@@ -1,11 +1,36 @@
 ﻿@page "/ORGANIZADOR/Principal"
 @inject ServicioMenu _servicioMenu
+@inject TorneoServicio _torneoServicio
+@inject UsuarioServicio _usuarioServicio
+@inject NavigationManager _nav
 
-<h1>Organizador principal</h1>
+<EspacioVertical Altura="10vh" />
+
+@if (Torneos != null && Torneos.Count > 0)
+{
+    @foreach (var torneo in Torneos)
+    {
+        <ItemTorneo Bannertorneo = "@torneo.Banner"
+                    LogoTorneo = "@torneo.Logo"
+                    NombreTorneo="@torneo.Nombre"
+                    TorneoId="@torneo.Id"
+                    VtoInscripcion="@torneo.Fecha.ToString("dd/MM/yyyy")" />
+    }
+}
+else
+{
+    <h2>Todavia no tiene torneos creados</h2>
+}
+
+
+
+
+<EspacioVertical Altura="10vh" />
 
 @code {
 
     List<MenuItem> menusItems = new();
+    List<TorneoDTO> Torneos = new();
 
     protected async override Task OnInitializedAsync()
     {
@@ -16,5 +41,22 @@
             new MenuItem ("Deudores","fa fa-money-bill","/login")
         };
         _servicioMenu.ActualizarItems(menusItems);
+        _servicioMenu.ActualizarTitulo("Mis torneos");
+        ActualizarTorneos();
+    }
+
+    private async void ActualizarTorneos()
+    {
+        try
+        {
+            int idOrganizador = _usuarioServicio.ObtenerUsuarioLogueado().Id;
+            Torneos = await _torneoServicio.ObtenerTorneosOrganizador(idOrganizador);
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            _nav.NavigateTo("/", true);
+        }
+       
     }
 }
