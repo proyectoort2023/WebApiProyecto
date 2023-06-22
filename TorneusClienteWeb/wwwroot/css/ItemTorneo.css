@@ -2,13 +2,13 @@
 .card-centrada {
     display: flex;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .card-torneo {
     color: red;
     height: 28vh;
-    width: 95%;
+    width: 99%;
     box-shadow: 1px 1px 5px -2px rgba(0,0,0,1);
     border-radius: 30px;
 }

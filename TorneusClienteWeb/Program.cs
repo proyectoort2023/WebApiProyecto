@@ -42,6 +42,8 @@ builder.Services.AddScoped<ServicioMenu>();
 builder.Services.AddScoped<UsuarioServicio>();
 builder.Services.AddScoped<UsuarioServicioDatos>();
 
+builder.Services.AddScoped<TorneoServicio>();
+builder.Services.AddScoped<TorneoServicioDatos>();
 
 
 

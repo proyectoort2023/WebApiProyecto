@@ -18,10 +18,7 @@ namespace WebApiTorneus.BackgroundServices
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-           var tareaInicializacion = Task.Run(() => InicializarListado());
-           tareaInicializacion.Wait();
-
-          _timer = new Timer(VerificarFechaTorneo,null,TimeSpan.Zero,TimeSpan.FromMinutes(30));
+          _timer = new Timer(VerificarFechaTorneo,null,TimeSpan.Zero,TimeSpan.FromHours(1));
 
            return Task.CompletedTask;
         }
@@ -35,6 +32,8 @@ namespace WebApiTorneus.BackgroundServices
 
         private async void VerificarFechaTorneo(object state)
         {
+            await ActualizarListadoInscripcionesAbiertas();
+
             if (torneos.Count > 0)
             {
                 using (var scope = scopeFactory.CreateScope())
@@ -47,7 +46,6 @@ namespace WebApiTorneus.BackgroundServices
                     {
                         if (torneo.FechaComienzo.Date.AddDays(-1) == fechaHoy.Date && fechaHoy.TimeOfDay > horaLimite)
                         {
-
                             var torneoService = scope.ServiceProvider.GetRequiredService<TorneoService>();
                             bool resultado = await torneoService.CerrarInscripciones(torneo);
                             if (resultado) torneos.Remove(torneo);
@@ -57,22 +55,12 @@ namespace WebApiTorneus.BackgroundServices
             }
         }
 
-
-        public void AgregarTorneo(TorneoInscripcionAbiertaDTO torneo)
-        {
-            torneos.Add(torneo);
-        }
-
-        public async Task InicializarListado()
+        public async Task ActualizarListadoInscripcionesAbiertas()
         {
             using (var scope = scopeFactory.CreateScope())
             {
-                if (torneos.Count == 0)
-                {
                     var torneoService = scope.ServiceProvider.GetRequiredService<TorneoService>();
                     torneos = await torneoService.ListadoInscripcionesAbierta();
-                }
-               
             }
         }
 

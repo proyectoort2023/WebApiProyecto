@@ -3,7 +3,7 @@
 
 <div class="bottom-menu">
 
-@foreach (var item in _servicioMenu.ObtenerItemsMenu())
+@foreach (var item in Menu)
     {
         <div class="menu-item">
             <button class="menu-button" @onclick="(() => IrUrl(item.UrlLink))">
@@ -17,9 +17,25 @@
 </div>
 
 @code {
+    List<MenuItem> Menu = new();
 
     private void IrUrl(string url)
     {
         _nav.NavigateTo(url);
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        _servicioMenu.OnActualizarMenu += ActualizarItemsMenu;
+    }
+    protected async override Task OnParametersSetAsync()
+    {
+        ActualizarItemsMenu();
+    }
+
+    private void ActualizarItemsMenu()
+    {
+        Menu = _servicioMenu.ObtenerItemsMenu();
+        StateHasChanged();
     }
 }

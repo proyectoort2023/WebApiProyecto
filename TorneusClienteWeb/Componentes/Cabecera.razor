@@ -1,14 +1,33 @@
-﻿<div class="myHead">
+﻿@inject ServicioMenu _servicioMenu
+
+
+<div class="myHead">
     <button class="menu-button">
         <i class="fas fa-arrow-left size-icon"></i>
     </button>
     <div class="menu-title">
-        <span>Título</span>
+        <span>@Titulo</span>
     </div>
     <button class="menu-button">
         <i class="fas fa-bell size-icon"></i>
     </button>
 </div>
 @code {
+    private string Titulo = "";
 
+    protected async override Task OnInitializedAsync()
+    {
+        _servicioMenu.OnActualizarTitulo += ActualizarTitulo;
+    }
+    protected async override Task OnParametersSetAsync()
+    {
+        ActualizarTitulo();
+    }
+
+
+    private void ActualizarTitulo()
+    {
+        Titulo = _servicioMenu.ObtenerTitulo();
+        StateHasChanged();
+    }
 }
