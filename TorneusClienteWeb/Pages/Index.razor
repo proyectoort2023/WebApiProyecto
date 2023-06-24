@@ -21,24 +21,32 @@
         
         <Boton BackGroungColor="#e0e0e0" ButtonText="Voy a iniciar con Google" ImageUrl="/imagenes/google.png" />
 
-        <MudTextField @bind-Value="usuarioTexto"
-                      Label="Usuario"
-                      Variant="Variant.Outlined"
-                      Margin="Margin.Dense" />
+        <EditForm Model="@UsuarioLogin" OnValidSubmit="Loguearme">
+                    <DataAnnotationsValidator/>
+
+            <MudTextField @bind-Value="UsuarioLogin.Mail"
+                              Label="Usuario"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                          For="@(() => UsuarioLogin.Mail)" />
 
 
-        <MudTextField @bind-Value="passTexto"
-                      Label="Contraseña"
-                      Variant="Variant.Outlined"
-                      InputType="@PasswordInput"
-                      Adornment="Adornment.End"
-                      AdornmentIcon="@PasswordInputIcon"
-                      OnAdornmentClick="ButtonTestclick"
-                      AdornmentAriaLabel="Ver contraseña"
-                      Margin="Margin.Dense" />
-        <div class="center-container-login">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Loguearme">Loguearme</MudButton>
-        </div>
+            <MudTextField @bind-Value="UsuarioLogin.Pass"
+                              Label="Contraseña"
+                              Variant="Variant.Outlined"
+                              InputType="@PasswordInput"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@PasswordInputIcon"
+                              OnAdornmentClick="ButtonTestclick"
+                              AdornmentAriaLabel="Ver contraseña"
+                              Margin="Margin.Dense"
+                          For="@(() => UsuarioLogin.Pass)" />
+
+
+                    <div class="center-container-login">
+                          <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Loguearme</MudButton>
+                    </div>
+        </EditForm>
 
         <a href="" @onclick="Registrar" @onclick:preventDefault>Registrate aqui!! </a>
       
@@ -51,8 +59,9 @@
 
 
 @code{
-    public string usuarioTexto { get; set; }
-    public string passTexto { get; set; }
+    public LoginDTO UsuarioLogin { get; set; } = new();
+
+
     bool isShow;
     InputType PasswordInput = InputType.Password;
 
@@ -70,14 +79,9 @@
     public async void Loguearme()
     {
         try
-        {
-            LoginDTO login = new()
-                {
-                    Mail = usuarioTexto,
-                    Pass = passTexto
-                };
 
-            bool respuesta = await _usuarioServicio.Loguearme(login);
+        {
+            bool respuesta = await _usuarioServicio.Loguearme(UsuarioLogin);
             var usuario = _usuarioServicio.ObtenerUsuarioLogueado();
             await _localStorage.SetItemAsync(Utilidades.Util.TOKEN_LOCAL, usuario);
             _snackbar.Add("Sesión iniciada", Severity.Success);
@@ -117,6 +121,7 @@
     {
         _nav.NavigateTo("/Registro");
     }
+
 
        
 }

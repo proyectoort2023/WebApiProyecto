@@ -43,7 +43,7 @@
     align-items: center;
 }
 .margen-container-login {
-    margin: 3% 0 20% 0;
+    margin: 3% 0 30px 0;
 }
 
 .link-login {
@@ -64,26 +64,6 @@
     background-color: rgba(255, 255, 255, 0.8) !important;
 }
 
-    @media only screen and (max-width: 768px) {
-        .logo-login {
-            width: 70%;
-            height: auto;
-            justify-content: center;
-        }
-    }
-
-
-    @media (min-width: 600 px) {
-        .logo-login {
-            width: 40%;
-        }
-
-        .margen-container-login {
-            margin: 3% 0 10% 0;
-        }
-    }
-
-
 
 .card-registro {
     position: relative;
@@ -96,3 +76,31 @@
     z-index: 10;
     background-color: rgba(255, 255, 255, 0.9);
 }
+
+
+
+@media (max-width: 500px) {
+    .logo-login {
+        width: 90%;
+        height: auto;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 800px) {
+    .logo-login {
+        width: 70%;
+        height: auto;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 801px) {
+    .logo-login {
+        width: 50%;
+        height: auto;
+        justify-content: center;
+    }
+}
+
+
