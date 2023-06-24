@@ -162,14 +162,17 @@ namespace Negocio
 
         public async Task<List<Torneo>> MisTorneosOrganizador(int idOrganizador)
         {
-            var listaTorneos = await _db.Torneos.Where(w => w.Usuario.Id == idOrganizador).ToListAsync();
+            var listaTorneos = await _db.Torneos.Where(w => w.Usuario.Id == idOrganizador)
+                                            .OrderByDescending(o => o.Fecha)
+                                            .ToListAsync();
 
             return listaTorneos;
         }
 
         public async Task<List<Torneo>> ObtenerTorneosVigentes()
         {
-            var listaTorneos = await _db.Torneos.ToListAsync();
+            var listaTorneos = await _db.Torneos.OrderByDescending(o => o.Fecha)
+                                                .ToListAsync();
 
             return listaTorneos;
         }
@@ -182,7 +185,8 @@ namespace Negocio
                                                 {
                                                      IdTorneo = s.Id,
                                                      FechaComienzo = s.Fecha
-                                                }).ToListAsync();             
+                                                })
+                                                .ToListAsync();             
 
             return listaTorneosHabilitaciones;
         }

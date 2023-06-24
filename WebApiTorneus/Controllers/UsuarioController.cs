@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BDTorneus;
+using DTOs_Compartidos.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Win32;
@@ -31,8 +32,7 @@ namespace WebApiTorneus.Controllers
         /// </summary>
         /// <returns> Devuelve un string que conetiene un token JWT</returns>
         /// <remarks>
-        /// Este endpoint devuelve un string que conetiene un token JWT de tipo
-        /// { Id = int, Mail = string, Rol = "ESPECTADOR" o "EQUIPO" o "ESPECTADOR" o "PLANILLERO", Token = string }
+        /// Este endpoint devuelve un string que contiene un token JWT
         /// </remarks>
         /// <response code="200">OK. El usuario se encontró correctamente. Se devuelve un token JWT</response>
         /// <response code="400">No encontrado</response>
@@ -62,6 +62,43 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Permite a un usuario loguearse en la app con Google Sign In
+        /// </summary>
+        /// <returns> Devuelve un string que conetiene un token JWT</returns>
+        /// <remarks>
+        /// Este endpoint devuelve un string que contiene un token JWT
+        /// </remarks>
+        /// <response code="200">OK. El usuario se encontró correctamente. Se devuelve un token JWT</response>
+        /// <response code="400">No encontrado</response>
+        [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("LoginGoogle")]
+        public async Task<IActionResult> PostLoginGoogleSingIn([FromBody] LoginGoogleDTO loginGoogleDTO)
+        {
+            try
+            {
+                loginGoogleDTO.Mail.ToLower().Trim();
+                var claveSecreta = _config["ClaveSecretaGoogle"];
+
+                Usuario login = await _usuarioService.LoginGoogleUsuario(loginGoogleDTO, claveSecreta);
+                var usuarioLogueado = _mapper.Map<UsuarioLogueado>(login);
+
+                var secretkey = _config["Jwt:SecretKey"];
+
+                var token = new TokenModel()
+                {
+                    Token = GeneradorToken.CrearToken(usuarioLogueado, _config)
+                };
+
+                return Ok(token);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         /// <summary>
         /// Permite el registro de un usuario para rol ORGANIZADOR o EQUIPO

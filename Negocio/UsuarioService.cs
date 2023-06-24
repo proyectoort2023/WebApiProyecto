@@ -1,4 +1,5 @@
 ﻿using BDTorneus;
+using DTOs_Compartidos.DTOs;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilidades;
 
 namespace Negocio
 {
@@ -39,6 +41,29 @@ namespace Negocio
             catch (Exception ex)
             {
                     throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<Usuario> LoginGoogleUsuario(LoginGoogleDTO loginGogole,string claveSecretaValidar)
+        {
+            try
+            {
+                if (loginGogole == null || string.IsNullOrEmpty(loginGogole.Mail) || string.IsNullOrEmpty(loginGogole.ClaveSecreta))
+                {
+                    throw new Exception("Hay campos sin completar");
+                }
+
+                if (claveSecretaValidar != loginGogole.ClaveSecreta) throw new Exception("No se ha podido validar tu cuenta Google");
+
+                var usuarioBuscado = await _db.Usuarios.SingleOrDefaultAsync(us => us.Mail == loginGogole.Mail);
+
+                if (usuarioBuscado == null) throw new Exception(Util.REGISTRARSE_GOOGLE);
+
+                return usuarioBuscado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
             }
         }
 

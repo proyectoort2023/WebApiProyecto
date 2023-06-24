@@ -14,7 +14,7 @@
                     LogoTorneo = "@torneo.Logo"
                     NombreTorneo="@torneo.Nombre"
                     TorneoId="@torneo.Id"
-                    VtoInscripcion="@torneo.Fecha.ToString("dd/MM/yyyy")" />
+                    VtoInscripcion="@torneo.Fecha.AddDays(-1).ToString("dd/MM/yyyy")" />
     }
 }
 else

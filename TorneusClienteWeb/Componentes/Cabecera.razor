@@ -1,13 +1,22 @@
 ﻿@inject ServicioMenu _servicioMenu
+@inject UsuarioServicio _usuarioServicio
 
 
 <div class="myHead">
     <button class="menu-button">
         <i class="fas fa-arrow-left size-icon"></i>
     </button>
-    <div class="menu-title">
-        <span>@Titulo</span>
-    </div>
+
+    <section class="panel-central">
+        <div class="menu-title">
+            <span>Hola @_usuarioServicio.ObtenerUsuarioLogueado().Mail</span>
+        </div>
+
+        <div class="menu-title">
+            <span>@Titulo</span>
+        </div>
+    </section>
+  
     <button class="menu-button">
         <i class="fas fa-bell size-icon"></i>
     </button>

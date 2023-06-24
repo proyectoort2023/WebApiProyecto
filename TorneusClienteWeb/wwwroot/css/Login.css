@@ -51,6 +51,7 @@
     bottom: 0;
     left: 20%;
     margin-bottom: 20px;
+    color: darkslateblue;
 }
 
 
@@ -59,6 +60,16 @@
     height: auto;
     justify-content: center;
 }
+
+.link-derecha {
+    margin-top:12px;
+    display: flex;
+    justify-content:end;
+
+}
+    .link-derecha a {
+        color: darkslateblue;
+    }
 
 .mud-input-label-outlined {
     background-color: rgba(255, 255, 255, 0.8) !important;

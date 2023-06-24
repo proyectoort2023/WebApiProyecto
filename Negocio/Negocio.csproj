@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BDTorneus\BDTorneus.csproj" />
     <ProjectReference Include="..\DTOs Compartidos\DTOs Compartidos.csproj" />
+    <ProjectReference Include="..\Utilidades\Utilidades.csproj" />
   </ItemGroup>
 
 </Project>

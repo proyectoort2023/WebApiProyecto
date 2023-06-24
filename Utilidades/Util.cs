@@ -5,6 +5,7 @@
 
         public static string TOKEN_LOCAL = "LoginTorneoStorageToken102023";
         public static string URL_BASE_IMAGENES = "https://imagenescontenedor.blob.core.windows.net/torneusimagenes";
+        public static string REGISTRARSE_GOOGLE = "REGISTRARSE_GOOGLE";
 
         public enum  Roles
         {

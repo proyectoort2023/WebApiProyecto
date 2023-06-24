@@ -30,6 +30,7 @@
                               Margin="Margin.Dense"
                           For="@(() => UsuarioLogin.Mail)" />
 
+            <EspacioVertical Altura="7px" />
 
             <MudTextField @bind-Value="UsuarioLogin.Pass"
                               Label="Contraseña"
@@ -42,15 +43,20 @@
                               Margin="Margin.Dense"
                           For="@(() => UsuarioLogin.Pass)" />
 
-
+                          <EspacioVertical Altura="12px" />
                     <div class="center-container-login">
                           <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Loguearme</MudButton>
                     </div>
         </EditForm>
 
-        <a href="" @onclick="Registrar" @onclick:preventDefault>Registrate aqui!! </a>
-      
-        <a href="" class="link-login">Me olvidé de mi contraseña!!</a>
+        <div class="link-derecha">
+            <a href="" @onclick="Registrar" @onclick:preventDefault>Registrate aqui!! </a>
+        </div>
+
+        <div class="link-medio">
+            <a href="" class="link-login">Me olvidé de mi contraseña!!</a>
+        </div>
+        
        
     </div>
 

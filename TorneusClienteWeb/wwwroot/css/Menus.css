@@ -18,6 +18,7 @@
 .myHead {
     top: 0;
     border-radius: 0 0 20px 20px;
+    color: beige;
 }
 
 .menu-item {
@@ -29,7 +30,7 @@
 .menu-button {
     background: none;
     border: none;
-    color: white;
+    color: beige;
     font-size: 14px;
     display: flex;
     flex-direction: column;
@@ -47,4 +48,11 @@
 
 .size-icon {
     font-size: 22px;
+}
+
+.panel-central{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    align-content:space-between;
 }

@@ -29,6 +29,7 @@ namespace Negocio.DTOs
         public string Rol { get; set; }
 
         [Required(ErrorMessage = "Obligatorio")]
+        [RegularExpression(@"^\d{9}$", ErrorMessage = "El n° de celular no es correcto")]
         public string Tel { get; set; }
     }
 }
