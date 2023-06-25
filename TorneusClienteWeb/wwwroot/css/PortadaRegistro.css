@@ -5,12 +5,16 @@
     width: 100%;
 }
 
-    .banner-registro div:first-child {
-        position:relative;
-        height: 50px;
-        width: 50px;
-        border-radius: 50%;
-    }
+banner-upload{
+    position:relative
+}
+
+.banner-registro div:first-child {
+    position: relative;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
 
     .banner-registro div {
         box-shadow: 1px 1px 15px 2px blueviolet;
@@ -23,7 +27,7 @@
             top: 25px;
             height: 80%;
             width: 100%;
-            z-index: -50;
+            z-index: -9;
         }
 
     .banner-registro p {

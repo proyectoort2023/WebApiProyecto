@@ -15,6 +15,12 @@
                 ESPECTADOR
         }
 
+        public static Dictionary<string, string> TipoPrecioDiccionario = new Dictionary<string, string>()
+        {
+            {"Precio por equipo","EQUIPO" },
+            {"Precio por jugador","JUGADOR" },
+        };
+
         public static Dictionary<string, string> RolesDiccionario = new Dictionary<string, string>()
         {
             {"EQUIPO","/Equipo/Principal" },
@@ -28,6 +34,18 @@
             BANNER,
             LOGO
         }
+
+        public static Dictionary<string, string> ConfigEquiposDiccionario = new Dictionary<string, string>()
+        {
+            {"HOMBRES","Equipo sólo de hombres" },
+            {"MIXTO_5_1","Equipos mixtos mínimo 1 mujer" },
+            {"MIXTO_5_2","Equipos mixtos mínimo 2 mujeres" },
+            {"MUJERES","Equipo solo de mujeres" },
+        };
+
+
+
+
 
     }
 }

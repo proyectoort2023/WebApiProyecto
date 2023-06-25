@@ -8,15 +8,15 @@
     </div>
 
     <div style="background-image: url('@UrlImagenBanner');">
-
+        
     </div>
-
-   
-
 </section>
 
-<label for="file-upload-banner" class="custom-file-upload-banner"></label>
-<InputFile OnChange="@SubirImagenBanner" accept="image/*" id="file-upload-banner" />
+<div class="banner-upload">
+    <label for="file-upload-banner" class="custom-file-upload-banner"></label>
+    <InputFile OnChange="@SubirImagenBanner" accept="image/*" id="file-upload-banner" />
+</div>
+
 
 @code {
     [Parameter] public string UrlImagenBanner { get; set; }

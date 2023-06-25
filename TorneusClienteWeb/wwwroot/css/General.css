@@ -6,6 +6,11 @@
 
 input[type="file"] {
     display: none;
+    z-index:100;
+}
+
+.custom-file-upload-banner label {
+    z-index: 100;
 }
 
 .custom-file-upload-banner, .custom-file-upload-logo {
@@ -18,13 +23,14 @@ input[type="file"] {
     background-size: contain;
     background-repeat: no-repeat;
     opacity: 0.9;
-    width:30px;
-    height:30px;
+    width: 30px;
+    height: 30px;
+    z-index: 100 !important;
 }
 
 .custom-file-upload-banner {
-    left: 85%;
-    bottom: 10%;
+    left: 80%;
+    top:160px;
 }
 
 .custom-file-upload-banner:hover, .custom-file-upload-logo:hover {
@@ -35,6 +41,10 @@ input[type="file"] {
     position:absolute;
     left: 33px;
     top: -5px;
-    z-index:20;
+}
+
+.dosEnLinea{
+    display:flex;
+    justify-content:space-between !important;
 }
 

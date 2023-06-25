@@ -1,0 +1,19 @@
+﻿<label>Elija los sets por partido</label>
+<MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+    <MudButton OnClick="() => Actualizar(1)">1</MudButton>
+    <MudButton OnClick="() => Actualizar(2)">2</MudButton>
+    <MudButton OnClick="() => Actualizar(3)">3</MudButton>
+    <MudButton OnClick="() => Actualizar(4)">4</MudButton>
+    <MudButton OnClick="() => Actualizar(5)">5</MudButton>
+</MudButtonGroup>
+
+@code {
+    [Parameter] public EventCallback<int> ActualizarSetsMax { get; set; }
+
+    private async Task Actualizar(int numeroSets)
+    {
+        await ActualizarSetsMax.InvokeAsync(numeroSets);
+    }
+
+
+}

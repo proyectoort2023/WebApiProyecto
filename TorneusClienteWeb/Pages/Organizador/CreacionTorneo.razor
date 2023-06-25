@@ -2,20 +2,165 @@
 @inject ServicioMenu _servicioMenu
 @inject NavigationManager _nav
 
+
 <PortadaRegistro UrlImagenBanner="@TorneoParaCreacionDTO.Banner" 
                  UrlImagenLogo="@TorneoParaCreacionDTO.Logo" 
                  SubirImagen="SubirImagen" />
 
+ <EspacioVertical Altura="15px" />
+<div>
+
+    <EditForm Model="@TorneoParaCreacionDTO" OnValidSubmit="Registrar">
+        <DataAnnotationsValidator />
+
+            <MudDatePicker Label="Fecha de torneo" TitleDateFormat="dd/MM/yyyy" @bind-Date="fechaTorneo" For="(()=> fechaTorneo)" Validation="ValidarFecha" />
+                  <EspacioVertical Altura="7px" />  
+            <MudTimePicker Label="Hora de inicio" @bind-Time="horaComienzo" />
+        <EspacioVertical Altura="@espaciado" />
+
+        <MudTextField @bind-Value="TorneoParaCreacionDTO.Nombre"
+                      Label="Nombre del torneo"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      For="@(() => TorneoParaCreacionDTO.Nombre)" />
+        <EspacioVertical Altura="@espaciado" />
+
+        <MudTextField @bind-Value="TorneoParaCreacionDTO.Lugar"
+                      Label="Lugar de encuentro y dirección"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      For="@(() => TorneoParaCreacionDTO.Lugar)" />
+        <EspacioVertical Altura="@espaciado" />
+    
+        <div class="dosEnLinea">
+            <MudTextField @bind-Value="TorneoParaCreacionDTO.NombreContacto"
+                      Label="Nombre de contacto"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Style="width:95%"
+                      For="@(() => TorneoParaCreacionDTO.NombreContacto)" />
+            <EspacioVertical Altura="@espaciado" />
+
+        <MudTextField @bind-Value="TorneoParaCreacionDTO.TelContacto"
+                        Label="Celular"
+                        Variant="Variant.Outlined"
+                        Margin="Margin.Dense"
+                        For="@(() => TorneoParaCreacionDTO.TelContacto)" />
+
+     </div>
+        <EspacioVertical Altura="@espaciado" />
+        <div class="dosEnLinea">
+            <MudNumericField @bind-Value="TorneoParaCreacionDTO.Precio" 
+                                Label="Precio" 
+                                Variant="Variant.Outlined" 
+                                For="(() => TorneoParaCreacionDTO.Precio)"
+                                Style="width:95%" />
+            <EspacioVertical Altura="@espaciado" />
+            <MudSelect @bind-Value="@TorneoParaCreacionDTO.TipoPrecio"
+                       Label="Elegir tipo de precio"
+                       Variant="Variant.Outlined"
+                       For="@(() => TorneoParaCreacionDTO.TipoPrecio)">
+                @foreach (var tipoPrecio in Util.TipoPrecioDiccionario)
+                {
+                    <MudSelectItem Value="tipoPrecio.Value"> @tipoPrecio.Key </MudSelectItem>
+                }
+            </MudSelect>
+        </div>
+        <EspacioVertical Altura="@espaciado" />
+        <MudSelect @bind-Value="@TorneoParaCreacionDTO.ConfiguracionEquipos"
+                   Label="Elegir configuración de equipos"
+                   Variant="Variant.Outlined"
+                   For="@(() => TorneoParaCreacionDTO.ConfiguracionEquipos)">
+            @foreach (var configEquipo in Util.ConfigEquiposDiccionario)
+            {
+                <MudSelectItem Value="configEquipo.Key"> @configEquipo.Value </MudSelectItem>
+            }
+        </MudSelect>
+        <EspacioVertical Altura="@espaciado" />
+        <GrupoBotones ActualizarSetsMax="ActualizarSetsMax" />
+
+        <EspacioVertical Altura="@espaciado" />
+        <div class="dosEnLinea">
+            <MudNumericField @bind-Value="TorneoParaCreacionDTO.PuntajeMax" 
+                                Label="Puntaje máximo" 
+                                Variant="Variant.Outlined"
+                             For="(() => TorneoParaCreacionDTO.PuntajeMax)"
+                                Style="width:95%" />
+            <EspacioVertical Altura="@espaciado" />
+            <MudNumericField @bind-Value="TorneoParaCreacionDTO.PuntajeMaxUltimoSet"
+                             Label="Puntaje máximo último set"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoParaCreacionDTO.PuntajeMaxUltimoSet)" />
+        </div>
+        <EspacioVertical Altura="@espaciado" />
+        <div class="dosEnLinea">
+            <MudNumericField @bind-Value="TorneoParaCreacionDTO.MaxEquiposInscriptos"
+                             Label="Limite equipos inscriptos"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoParaCreacionDTO.MaxEquiposInscriptos)"
+                             Style="width:95%" />
+            <EspacioVertical Altura="@espaciado" />
+            <MudNumericField @bind-Value="TorneoParaCreacionDTO.MaxJugadoresPorEquipo"
+                             Label="Jugadores máx por equipo"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoParaCreacionDTO.MaxJugadoresPorEquipo)" />
+        </div>
+        <EspacioVertical Altura="@espaciado" />
+        <div class="dosEnLinea">
+            <MudNumericField @bind-Value="TorneoParaCreacionDTO.CantidadCanchas"
+                             Label="Cantidad de canchas"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoParaCreacionDTO.CantidadCanchas)"
+                             Style="width:95%" />
+            <EspacioVertical Altura="@espaciado" />
+            <MudSwitch  @bind-Checked="@TorneoParaCreacionDTO.Indoor"
+                       ThumbIcon="@(TorneoParaCreacionDTO.Indoor==true ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                       ThumbIconColor="@(TorneoParaCreacionDTO.Indoor==true ? Color.Success : Color.Error)"
+                       Color="Color.Primary" 
+                       UnCheckedColor="Color.Primary"
+                       Size="Size.Large">
+             Local techado
+               
+             </MudSwitch>
+
+        </div>
+
+     
+        <EspacioVertical Altura="20px" />
+        <div class="center-container-login">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Crear torneo</MudButton>
+        </div>
+
+        </EditForm>
+    </div>
+
+    <EspacioVertical Altura="100px" />
 
 
 @code {
 
     public TorneoCreacionDTO TorneoParaCreacionDTO = new TorneoCreacionDTO();
+    TimeSpan? horaComienzo = new TimeSpan(10, 00, 00);
+    DateTime? fechaTorneo = DateTime.Today.Date;
+
+    private string espaciado = "10px";
+
 
     protected async override Task OnInitializedAsync()
     {
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
         _servicioMenu.ActualizarTitulo("Crear Torneo");
+    }
+
+    private string ValidarFecha(DateTime? fecha)
+    {
+        if (fecha == null) return "La fecha es requerida.";
+
+        if (fecha < DateTime.Today) return "La fecha debe ser mayor a hoy.";
+
+        // Realizar validaciones adicionales si es necesario
+
+        return string.Empty; // La fecha es válida
     }
 
     private async Task SubirImagen(Util.TipoImagen tipoImagen)
@@ -25,7 +170,19 @@
 
     private async Task CambioImagenFile()
     {
-        
+
     }
+
+
+    private async Task Registrar()
+    {
+
+    }
+
+    private async Task ActualizarSetsMax(int numeroSets)
+    {
+        TorneoParaCreacionDTO.SetsMax = numeroSets;
+    }
+
 
 }
