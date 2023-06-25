@@ -2,17 +2,30 @@
 @inject ServicioMenu _servicioMenu
 @inject NavigationManager _nav
 
-<PortadaRegistro />
+<PortadaRegistro UrlImagenBanner="@TorneoParaCreacionDTO.Banner" 
+                 UrlImagenLogo="@TorneoParaCreacionDTO.Logo" 
+                 SubirImagen="SubirImagen" />
 
 
 
 @code {
 
+    public TorneoCreacionDTO TorneoParaCreacionDTO = new TorneoCreacionDTO();
 
     protected async override Task OnInitializedAsync()
     {
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
         _servicioMenu.ActualizarTitulo("Crear Torneo");
+    }
+
+    private async Task SubirImagen(Util.TipoImagen tipoImagen)
+    {
+        //hay que subir la imagen segun el tipo y actualizar las propiedades correspondientes
+    }
+
+    private async Task CambioImagenFile()
+    {
+        
     }
 
 }

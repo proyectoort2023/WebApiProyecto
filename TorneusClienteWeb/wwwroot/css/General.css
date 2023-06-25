@@ -4,4 +4,37 @@
     width: 80%
 }
 
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload-banner, .custom-file-upload-logo {
+    position: absolute;
+    border: none;
+    display: inline-block;
+    padding: 1.2vw;
+    cursor: pointer;
+    background-image: url("/imagenes/upload.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.9;
+    width:30px;
+    height:30px;
+}
+
+.custom-file-upload-banner {
+    left: 85%;
+    bottom: 10%;
+}
+
+.custom-file-upload-banner:hover, .custom-file-upload-logo:hover {
+    opacity: 0.7;
+}
+
+.custom-file-upload-logo {
+    position:absolute;
+    left: 33px;
+    top: -5px;
+    z-index:20;
+}
 

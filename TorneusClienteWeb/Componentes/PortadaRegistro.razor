@@ -2,17 +2,36 @@
 
 <section class="banner-registro">
 
-    <div style="background-image: url('pelota voley.png')">
+    <div style="background-image: url('@UrlImagenLogo')">
+        <label for="file-upload-logo" class="custom-file-upload-logo"></label>
+        <InputFile OnChange="@SubirImagenLogo" accept="image/*" id="file-upload-logo" />
     </div>
 
-    <div style="background-image: url('banner.png');">
-
-        <p>presione en el circulo para elegir el logo</p>
-        <p>presione aqui para elegir el banner</p>
+    <div style="background-image: url('@UrlImagenBanner');">
 
     </div>
+
+   
+
 </section>
 
+<label for="file-upload-banner" class="custom-file-upload-banner"></label>
+<InputFile OnChange="@SubirImagenBanner" accept="image/*" id="file-upload-banner" />
+
 @code {
+    [Parameter] public string UrlImagenBanner { get; set; }
+    [Parameter] public string UrlImagenLogo { get; set; }
+    [Parameter] public EventCallback<Util.TipoImagen> SubirImagen { get; set; }
+
+    private async void SubirImagenBanner()
+    {
+        await SubirImagen.InvokeAsync(Util.TipoImagen.BANNER);
+    }
+
+    private async void SubirImagenLogo()
+    {
+        await SubirImagen.InvokeAsync(Util.TipoImagen.LOGO);
+    }
+
 
 }

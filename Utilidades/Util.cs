@@ -23,5 +23,11 @@
             {"ESPECTADOR","/Espectador/Principal" },
         };
 
+        public enum TipoImagen
+        {
+            BANNER,
+            LOGO
+        }
+
     }
 }

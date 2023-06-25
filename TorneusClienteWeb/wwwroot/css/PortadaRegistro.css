@@ -6,6 +6,7 @@
 }
 
     .banner-registro div:first-child {
+        position:relative;
         height: 50px;
         width: 50px;
         border-radius: 50%;
