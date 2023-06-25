@@ -1,23 +1,24 @@
 ﻿
 using BlazorTorneusClient.Modelos;
+using TorneusClienteWeb.Modelos;
 
 namespace BlazorTorneusClient.Servicios
 {
     public class ServicioMenu
     {
         private List<MenuItem> items = new List<MenuItem>();
-        private string Titulo = "";
+        public string Titulo = "";
+        public NavegacionPOP navegacionPop = new();
 
         public event Action OnActualizarMenu;
-        public event Action OnActualizarTitulo;
 
         public void ActualizarItems(List<MenuItem> nuevoMenuItems)
         {
             items = nuevoMenuItems;
-            ActualizarListado();
+            ActualizarMenu();
         }
 
-        private void ActualizarListado()
+        private void ActualizarMenu()
         {
             OnActualizarMenu?.Invoke();
         }
@@ -30,12 +31,19 @@ namespace BlazorTorneusClient.Servicios
         public void ActualizarTitulo(string titulo)
         {
            Titulo = titulo;
-           OnActualizarTitulo?.Invoke();
+           ActualizarMenu();
         }
 
-        public string ObtenerTitulo()
+        public string ClassFabColor()
         {
-            return Titulo;
+            return "background-color:#6A1B9A;color:white;position:fixed;bottom:90px;right:20px;";
+        }
+        public void ActualizarNavegacionPOP(bool habilitadoBotonAtras, bool esPaginaPrincipal, string url)
+        {
+            navegacionPop.BotonAtrasHabilitado = habilitadoBotonAtras;
+            navegacionPop.EsPaginaPrincipal = esPaginaPrincipal;
+            navegacionPop.AccionIrAtrasUrl = url;
+            ActualizarMenu();
         }
     }
 }
