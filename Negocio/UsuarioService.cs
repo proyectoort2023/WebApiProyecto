@@ -55,7 +55,7 @@ namespace Negocio
 
                 if (claveSecretaValidar != loginGogole.ClaveSecreta) throw new Exception("No se ha podido validar tu cuenta Google");
 
-                var usuarioBuscado = await _db.Usuarios.SingleOrDefaultAsync(us => us.Mail == loginGogole.Mail);
+                var usuarioBuscado = await _db.Usuarios.SingleOrDefaultAsync(us => us.Mail == loginGogole.Mail && us.Token == loginGogole.IdUsuarioGoogle);
 
                 if (usuarioBuscado == null) throw new Exception(Util.REGISTRARSE_GOOGLE);
 

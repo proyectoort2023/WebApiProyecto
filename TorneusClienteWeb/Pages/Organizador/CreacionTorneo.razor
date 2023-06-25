@@ -1,0 +1,18 @@
+﻿@page "/ORGANIZADOR/CreacionTorneo"
+@inject ServicioMenu _servicioMenu
+@inject NavigationManager _nav
+
+<PortadaRegistro />
+
+
+
+@code {
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
+        _servicioMenu.ActualizarTitulo("Crear Torneo");
+    }
+
+}

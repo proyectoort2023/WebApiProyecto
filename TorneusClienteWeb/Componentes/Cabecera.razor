@@ -1,11 +1,23 @@
 ﻿@inject ServicioMenu _servicioMenu
 @inject UsuarioServicio _usuarioServicio
+@inject NavigationManager _nav
+@inject ILocalStorageService _localStorage
+
 
 
 <div class="myHead">
-    <button class="menu-button">
-        <i class="fas fa-arrow-left size-icon"></i>
-    </button>
+    @if (_servicioMenu.navegacionPop.BotonAtrasHabilitado)
+    {
+        <button class="menu-button" @onclick="IrAtras">
+            <i class="fas fa-arrow-left size-icon"></i>
+        </button>
+    }
+    else
+    {
+        <button class="menu-button" @onclick="IrAtras">
+            <i class=""></i>
+        </button>
+    }
 
     <section class="panel-central">
         <div class="menu-title">
@@ -13,7 +25,7 @@
         </div>
 
         <div class="menu-title">
-            <span>@Titulo</span>
+            <span>@_servicioMenu.Titulo</span>
         </div>
     </section>
   
@@ -26,17 +38,25 @@
 
     protected async override Task OnInitializedAsync()
     {
-        _servicioMenu.OnActualizarTitulo += ActualizarTitulo;
-    }
-    protected async override Task OnParametersSetAsync()
-    {
-        ActualizarTitulo();
+        _servicioMenu.OnActualizarMenu += Actualizar;
     }
 
-
-    private void ActualizarTitulo()
+    private async void IrAtras()
     {
-        Titulo = _servicioMenu.ObtenerTitulo();
+        if (_servicioMenu.navegacionPop.EsPaginaPrincipal)
+        {
+            await _localStorage.RemoveItemAsync(Util.TOKEN_LOCAL);
+            _nav.NavigateTo(_servicioMenu.navegacionPop.AccionIrAtrasUrl, true);
+        }
+        else
+        {
+            _nav.NavigateTo(_servicioMenu.navegacionPop.AccionIrAtrasUrl);
+        }
+
+    }
+
+    private void Actualizar()
+    {
         StateHasChanged();
     }
 }

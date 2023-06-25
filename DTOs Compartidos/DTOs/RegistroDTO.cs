@@ -31,5 +31,7 @@ namespace Negocio.DTOs
         [Required(ErrorMessage = "Obligatorio")]
         [RegularExpression(@"^\d{9}$", ErrorMessage = "El n° de celular no es correcto")]
         public string Tel { get; set; }
+
+        public string IdUsuarioGoogle { get; set; }
     }
 }

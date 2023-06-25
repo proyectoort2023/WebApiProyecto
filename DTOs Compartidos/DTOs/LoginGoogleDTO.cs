@@ -10,5 +10,6 @@ namespace DTOs_Compartidos.DTOs
     {
         public string Mail { get; set; }
         public string ClaveSecreta { get; set; }
+        public string IdUsuarioGoogle { get; set; }
     }
 }

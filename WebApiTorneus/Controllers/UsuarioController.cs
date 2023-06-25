@@ -120,6 +120,8 @@ namespace WebApiTorneus.Controllers
             {
                 var usuario = _mapper.Map<RegistroDTO, Usuario>(registroDTO);
                 usuario.Mail.ToLower().Trim();
+                usuario.Token = registroDTO.IdUsuarioGoogle;
+
                 Usuario registro = await _usuarioService.RegistroUsuario(usuario);
                 var registradoRealizado = _mapper.Map<UsuarioLogueado>(registro);
 
