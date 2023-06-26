@@ -3,9 +3,10 @@
 @inject NavigationManager _nav
 
 
-<PortadaRegistro UrlImagenBanner="@TorneoParaCreacionDTO.Banner" 
-                 UrlImagenLogo="@TorneoParaCreacionDTO.Logo" 
-                 SubirImagen="SubirImagen" />
+
+<PortadaRegistro NombreImagenBanner="@TorneoParaCreacionDTO.Banner" 
+                 NombreImagenLogo="@TorneoParaCreacionDTO.Logo" 
+                 SubirImagen="ActualizarImagen" />
 
  <EspacioVertical Altura="15px" />
 <div>
@@ -116,12 +117,10 @@
             <MudSwitch  @bind-Checked="@TorneoParaCreacionDTO.Indoor"
                        ThumbIcon="@(TorneoParaCreacionDTO.Indoor==true ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
                        ThumbIconColor="@(TorneoParaCreacionDTO.Indoor==true ? Color.Success : Color.Error)"
+                       Label="@(TorneoParaCreacionDTO.Indoor==true ? "En local techado" : "Al aire libre")"
                        Color="Color.Primary" 
                        UnCheckedColor="Color.Primary"
-                       Size="Size.Large">
-             Local techado
-               
-             </MudSwitch>
+                       Size="Size.Large" />
 
         </div>
 
@@ -163,9 +162,17 @@
         return string.Empty; // La fecha es válida
     }
 
-    private async Task SubirImagen(Util.TipoImagen tipoImagen)
+    private async Task ActualizarImagen(ImagenDTO tipoImagenUrl)
     {
-        //hay que subir la imagen segun el tipo y actualizar las propiedades correspondientes
+        if (tipoImagenUrl.TipoImagenSubida == Util.TipoImagen.BANNER.ToString())
+        {
+            TorneoParaCreacionDTO.Banner = tipoImagenUrl.UrlImagen;
+        }
+        if (tipoImagenUrl.TipoImagenSubida == Util.TipoImagen.LOGO.ToString())
+        {
+            TorneoParaCreacionDTO.Logo = tipoImagenUrl.UrlImagen;
+        }
+        //StateHasChanged();
     }
 
     private async Task CambioImagenFile()

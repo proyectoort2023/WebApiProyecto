@@ -24,3 +24,9 @@
     font-size: 12px;
     flex-grow: 1;
 }
+
+.enfasisBoton {
+    border: 2px solid #6606A8 !important;
+    background-color: #CE87FF !important;
+    color:beige !important;
+}

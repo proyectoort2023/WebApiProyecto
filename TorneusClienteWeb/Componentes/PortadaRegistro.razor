@@ -1,37 +1,87 @@
 ﻿
+@inject ImagenServicio _imagenServicio
+@inject IConfiguration _config
 
 <section class="banner-registro">
 
-    <div style="background-image: url('@UrlImagenLogo')">
+    <div style="background-image: url('@UrlImagenLogo()')">
         <label for="file-upload-logo" class="custom-file-upload-logo"></label>
-        <InputFile OnChange="@SubirImagenLogo" accept="image/*" id="file-upload-logo" />
+        <InputFile OnChange="@SubirArchivoLogo" accept="image/*" id="file-upload-logo" />
     </div>
 
-    <div style="background-image: url('@UrlImagenBanner');">
+    <div style="background-image: url('@UrlImagenBanner()');">
         
     </div>
 </section>
 
 <div class="banner-upload">
     <label for="file-upload-banner" class="custom-file-upload-banner"></label>
-    <InputFile OnChange="@SubirImagenBanner" accept="image/*" id="file-upload-banner" />
+    <InputFile OnChange="@SubirArchivoBanner" accept="image/*" id="file-upload-banner" />
 </div>
 
 
 @code {
-    [Parameter] public string UrlImagenBanner { get; set; }
-    [Parameter] public string UrlImagenLogo { get; set; }
-    [Parameter] public EventCallback<Util.TipoImagen> SubirImagen { get; set; }
+    [Parameter] public string NombreImagenBanner { get; set; }
+    [Parameter] public string NombreImagenLogo { get; set; }
+    [Parameter] public EventCallback<ImagenDTO> SubirImagen { get; set; }
 
-    private async void SubirImagenBanner()
+    private ImagenDTO imagenUrl = new();
+    private string baseUrlImagen;
+
+    protected async override Task OnInitializedAsync()
     {
-        await SubirImagen.InvokeAsync(Util.TipoImagen.BANNER);
+        baseUrlImagen = _config["UrlBaseParaImagenes"];
+    }
+    private async Task GuardarImagenCallBack()
+    {
+        await SubirImagen.InvokeAsync(imagenUrl);
     }
 
-    private async void SubirImagenLogo()
+    private string UrlImagenLogo() =>   $"{baseUrlImagen}{NombreImagenLogo}";
+    private string UrlImagenBanner() => $"{baseUrlImagen}{NombreImagenBanner}";
+
+    private async Task SubirArchivoBanner(InputFileChangeEventArgs e)
     {
-        await SubirImagen.InvokeAsync(Util.TipoImagen.LOGO);
+        try
+        {
+            if (!string.IsNullOrEmpty(NombreImagenBanner))
+            {
+                imagenUrl.UrlImagen = await _imagenServicio.ActualizarImagenFile(e, NombreImagenBanner);
+            }
+            else
+            {
+                imagenUrl.UrlImagen = await _imagenServicio.SubirImagenFile(e);
+            }
+            imagenUrl.TipoImagenSubida = Util.TipoImagen.BANNER.ToString();
+            await GuardarImagenCallBack();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
+
+    private async Task SubirArchivoLogo(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(NombreImagenLogo))
+            {
+                imagenUrl.UrlImagen = await _imagenServicio.ActualizarImagenFile(e, NombreImagenLogo);
+            }
+            else
+            {
+                imagenUrl.UrlImagen = await _imagenServicio.SubirImagenFile(e);
+            }
+            imagenUrl.TipoImagenSubida = Util.TipoImagen.LOGO.ToString();
+            await GuardarImagenCallBack();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
 
 
 }

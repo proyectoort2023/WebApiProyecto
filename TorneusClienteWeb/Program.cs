@@ -45,6 +45,9 @@ builder.Services.AddScoped<UsuarioServicioDatos>();
 builder.Services.AddScoped<TorneoServicio>();
 builder.Services.AddScoped<TorneoServicioDatos>();
 
+builder.Services.AddScoped<ImagenServicio>();
+builder.Services.AddScoped<ImagenServicioDatos>();
+
 
 
 await builder.Build().RunAsync();
