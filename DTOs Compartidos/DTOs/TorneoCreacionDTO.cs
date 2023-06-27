@@ -58,6 +58,7 @@ namespace Negocio.DTOs
         [Required(ErrorMessage = "Obligatorio")]
         [Range(1, double.MaxValue, ErrorMessage = "El número debe ser mayor a 0")]
         public int CantidadCanchas { get; set; }
+        [StringLength(300, ErrorMessage = "Debe tener hasta 300 caracteres")]
         public string Otros { get; set; }
         public bool Suspendido { get; set; }
         public int UsuarioId { get; set; }

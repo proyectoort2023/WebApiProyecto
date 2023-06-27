@@ -34,7 +34,7 @@ namespace Negocio.Validaciones
             RuleFor(t => t.MaxEquiposInscriptos).InclusiveBetween(4, 9999).WithMessage("Cantidad de inscriptos deben ser entre 4 y 1000. ");
             RuleFor(t => t.MaxJugadoresPorEquipo).InclusiveBetween(6, 12).WithMessage("La cantidad de jugadores por equipo deben ser entre 6 y 12. ");
             RuleFor(t => t.CantidadCanchas).GreaterThan(0).WithMessage("cantidad de canchas deben ser de uno en adelante. ");
-
+            RuleFor(t => t.Otros).MaximumLength(300).WithMessage("otros comentarios debe tenermáximo 300 caracteres. ");
         }
        
         private bool ValidarFechaTorneo(DateTime date)
