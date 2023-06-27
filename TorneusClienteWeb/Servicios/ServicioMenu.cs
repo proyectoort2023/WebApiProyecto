@@ -1,9 +1,12 @@
 ﻿
 using BlazorTorneusClient.Modelos;
+using Microsoft.AspNetCore.Components;
 using TorneusClienteWeb.Modelos;
+using TorneusClienteWeb.Servicios;
 
 namespace BlazorTorneusClient.Servicios
 {
+
     public class ServicioMenu
     {
         private List<MenuItem> items = new List<MenuItem>();

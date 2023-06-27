@@ -14,7 +14,8 @@ namespace Negocio.DTOs
         public string Nombre { get; set; }
 
         [Required(ErrorMessage = "Obligatorio")]
-        [RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", ErrorMessage = "El correo no es válido.")]
+        //[RegularExpression(@"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$", ErrorMessage = "El correo no es válido.")]
+        [EmailAddress(ErrorMessage = "El correo no es válido")]
         public string Mail { get; set; }
 
         [Required(ErrorMessage = "Obligatorio")]

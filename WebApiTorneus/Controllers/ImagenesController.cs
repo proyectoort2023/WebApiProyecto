@@ -8,7 +8,7 @@ using static Utilidades.Util;
 
 namespace WebApiTorneus.Controllers
 {
-    [Authorize(Roles = "ORGANIZADOR,EQUIPO")]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ImagenesController : ControllerBase
@@ -38,16 +38,21 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("SubirImagen")]
-        public async Task<IActionResult> SubirImagen([FromForm] ImagenModel imagenModel)
+        public async Task<IActionResult> SubirImagen([FromForm] IFormFile imagenModel)
         {
-            if (imagenModel.Archivo == null) return BadRequest("No ha seleccionado una imagen");
+            try
+            {
+                string nombreArchivo = await _imagenService.SubirImagen(_conexionStorage, _storageNameAzure, imagenModel);
+                StringModel archivo = new(nombreArchivo);
+                if (nombreArchivo == null) return NoContent();
 
-
-            string nombreArchivo = await _imagenService.SubirImagen(_conexionStorage, _storageNameAzure, imagenModel.Archivo);
-            StringModel archivo = new(nombreArchivo);
-            if (nombreArchivo == null) return NoContent();
-
-            return Ok(archivo); 
+                return Ok(archivo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
 
@@ -62,14 +67,21 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("ActualizarImagen")]
-        public async Task<IActionResult> ActualizarImagen([FromForm] ImagenModel imagenModel)
+        public async Task<IActionResult> ActualizarImagen([FromForm] IFormFile imagenModel)
         {
-            if (imagenModel.Archivo == null) return BadRequest("No ha seleccionado una imagen");
+            try
+            {
+                string nombreArchivo = await _imagenService.ActualizarImagen(_conexionStorage, _storageNameAzure, imagenModel, imagenModel.FileName);
+                
+                if (nombreArchivo == null) return NoContent();
 
-            string nombreArchivo = await _imagenService.ActualizarImagen(_conexionStorage, _storageNameAzure, imagenModel.Archivo, imagenModel.NombreArchivoAnterior);
-            if (nombreArchivo == null) return NoContent();
-
-            return Ok(nombreArchivo);
+                StringModel nombrearchivoNuevo = new(nombreArchivo);
+                return Ok(nombrearchivoNuevo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 

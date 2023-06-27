@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BDTorneus
 {
+    [DataContract(IsReference = true)]
     public class Torneo
     {
         public int Id { get; set; }
@@ -33,9 +36,10 @@ namespace BDTorneus
         public bool Suspendido { get; set; }
 
         public int UsuarioId { get; set; }
+        [JsonIgnore]
         public Usuario Usuario { get; set; }
-        public List<Inscripcion> Inscripciones { get; set; } = new List<Inscripcion>();
-        public List<Partido> Fixture { get; set; }
+        public virtual List<Inscripcion> Inscripciones { get; set; } = new List<Inscripcion>();
+        public virtual List<Partido> Fixture { get; set; }
 
     }
 }

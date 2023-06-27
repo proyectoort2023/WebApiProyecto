@@ -14,7 +14,7 @@ namespace TorneusClienteWeb.Servicios
             _torneoServicioDatos = torneoServicioDatos;
         }
 
-        private async Task ObtenerTorneosOrganizadorData(int idUsuario)
+        public async Task ListadoTorneosOrganizadorData(int idUsuario)
         {
             try
             {
@@ -25,7 +25,7 @@ namespace TorneusClienteWeb.Servicios
             {
                 throw new Exception(ex.Message);
             }
-          
+
         }
 
         public async Task<List<TorneoDTO>> ObtenerTorneosOrganizador(int idUsuario)
@@ -34,9 +34,21 @@ namespace TorneusClienteWeb.Servicios
             {
                 if (Torneos.Count < 1)
                 {
-                    await ObtenerTorneosOrganizadorData(idUsuario);
+                    await ListadoTorneosOrganizadorData(idUsuario);
                 }
                 return Torneos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<TorneoDTO> CrearTorneoOrganizador(TorneoCreacionDTO torneoDTO)
+        {
+            try
+            {
+                return await _torneoServicioDatos.CrearTorneoOrganizador(torneoDTO);
             }
             catch (Exception ex)
             {
