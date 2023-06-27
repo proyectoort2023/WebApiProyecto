@@ -11,10 +11,14 @@ namespace TorneusClienteWeb.Servicios
         private string _format = "image/png";
         private readonly ImagenServicioDatos _imagenServicioDatos;
 
+        int ancho, alto;
+
         public ImagenServicio(HttpClient _httpClient, ImagenServicioDatos imagenServicioDatos)
         {
             this._httpClient = _httpClient;
             _imagenServicioDatos = imagenServicioDatos;
+            ancho = 600;
+            alto = 600;
         }
 
 
@@ -26,7 +30,7 @@ namespace TorneusClienteWeb.Servicios
 
                 foreach (var image in e.GetMultipleFiles(1))
                 {
-                    var imagenRedimensionado = await image.RequestImageFileAsync(_format, 200, 200);
+                    var imagenRedimensionado = await image.RequestImageFileAsync(_format, ancho, alto);
 
                     var memoryStream = new MemoryStream();
                     await imagenRedimensionado.OpenReadStream(maxSizeFile).CopyToAsync(memoryStream);
@@ -45,7 +49,7 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task<string> ActualizarImagenFile(InputFileChangeEventArgs e, string nombreArchivoActual)
+        public async Task<string> ActualizarImagenFile(InputFileChangeEventArgs e, string nombreArchivoActual, int altoImagen, int anchoImagen)
         {
             try
             {
@@ -53,7 +57,7 @@ namespace TorneusClienteWeb.Servicios
 
                 foreach (var image in e.GetMultipleFiles(1))
                 {
-                    var imagenRedimensionado = await image.RequestImageFileAsync(_format, 200, 200);
+                    var imagenRedimensionado = await image.RequestImageFileAsync(_format, ancho, alto);
 
                     var memoryStream = new MemoryStream();
                     await imagenRedimensionado.OpenReadStream(maxSizeFile).CopyToAsync(memoryStream);
