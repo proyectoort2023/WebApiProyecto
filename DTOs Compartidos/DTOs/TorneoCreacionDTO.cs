@@ -27,9 +27,7 @@ namespace Negocio.DTOs
         [Required(ErrorMessage = "Obligatorio")]
         [RegularExpression(@"^\d{9}$", ErrorMessage = "El n° de celular no es correcto")]
         public string TelContacto { get; set; }
-        [Required(ErrorMessage = "Obligatorio")]
         public string Logo { get; set; }
-        [Required(ErrorMessage = "Obligatorio")]
         public string Banner { get; set; }
         [Required(ErrorMessage = "Obligatorio")]
         [Range(1, double.MaxValue, ErrorMessage = "El número debe ser mayor a 0")]
