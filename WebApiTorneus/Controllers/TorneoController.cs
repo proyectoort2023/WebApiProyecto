@@ -35,7 +35,7 @@ namespace WebApiTorneus.Controllers
         /// Permite la creación de un torneo para el rol ORGANIZADOR
         /// </summary>
         /// <remarks>
-        /// Este endpoint devuelve un idModel { Id = int } que contiene el Id del torneo creado
+        /// Este endpoint devuelve un TorneoDTO que contiene todas las propiedades del torneo creado
         /// </remarks>
         /// <response code="200">OK.El torneo se ha creado</response>
         /// <response code="400">Validaciones varias no conformadas</response>
@@ -58,7 +58,6 @@ namespace WebApiTorneus.Controllers
                 {
                     Id = torneoDTO.UsuarioId
                 };
-                //string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
                 TorneoDTO torneoNuevoDTO = _mapper.Map<TorneoDTO>(await _torneoService.CrearTorneo(torneo));
 
                 return Ok(torneoNuevoDTO);
