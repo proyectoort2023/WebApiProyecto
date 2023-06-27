@@ -25,7 +25,7 @@ namespace Negocio
         }
 
 
-        public async Task<int> CrearTorneo(Torneo torneo)
+        public async Task<Torneo> CrearTorneo(Torneo torneo)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace Negocio
                 var torneoNuevo = await _db.Torneos.AddAsync(torneo);
                 await _db.SaveChangesAsync();
 
-                return torneoNuevo.Entity.Id;
+                return torneoNuevo.Entity;
             }
             catch (Exception ex)
             {

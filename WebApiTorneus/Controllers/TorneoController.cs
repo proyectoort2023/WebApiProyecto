@@ -59,11 +59,9 @@ namespace WebApiTorneus.Controllers
                     Id = torneoDTO.UsuarioId
                 };
                 //string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
-                int idTorneo = await _torneoService.CrearTorneo(torneo);
+                TorneoDTO torneoNuevoDTO = _mapper.Map<TorneoDTO>(await _torneoService.CrearTorneo(torneo));
 
-                IdModel idModel = new(idTorneo);
-
-                return Ok(idModel);
+                return Ok(torneoNuevoDTO);
             }
             catch (Exception ex)
             {

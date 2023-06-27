@@ -1,7 +1,7 @@
 ﻿@page "/ORGANIZADOR/Principal"
 @inject ServicioMenu _servicioMenu
-@inject TorneoServicio _torneoServicio
-@inject UsuarioServicio _usuarioServicio
+@inject TorneoServicio _servicio_Torneo
+@inject UsuarioServicio _servicioUsuario
 @inject NavigationManager _nav
 
 
@@ -59,8 +59,8 @@ else
     {
         try
         {
-            int idOrganizador = _usuarioServicio.ObtenerUsuarioLogueado().Id;
-            Torneos = await _torneoServicio.ObtenerTorneosOrganizador(idOrganizador);
+            int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            Torneos = await _servicio_Torneo.ObtenerTorneosOrganizador(idOrganizador);
             StateHasChanged();
         }
         catch (Exception)

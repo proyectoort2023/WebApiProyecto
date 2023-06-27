@@ -1,6 +1,9 @@
 ﻿@page "/ORGANIZADOR/CreacionTorneo"
 @inject ServicioMenu _servicioMenu
+@inject UsuarioServicio _servicioUsuario
+@inject TorneoServicio _servicioTorneo
 @inject NavigationManager _nav
+@inject ISnackbar _snackbar
 
 
 
@@ -175,15 +178,24 @@
         //StateHasChanged();
     }
 
-    private async Task CambioImagenFile()
-    {
-
-    }
-
 
     private async Task Registrar()
     {
-
+        try
+        {
+            TorneoParaCreacionDTO.UsuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            TorneoParaCreacionDTO.Fecha = fechaTorneo.Value.Date;
+            TorneoParaCreacionDTO.HoraComienzo = fechaTorneo.Value.Date.Add(horaComienzo.Value);
+            var torneoNuevo = await _servicioTorneo.CrearTorneoOrganizador(TorneoParaCreacionDTO);
+            int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            await _servicioTorneo.ListadoTorneosOrganizadorData(idOrganizador);
+            _nav.NavigateTo("/ORGANIZADOR/Principal");
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+       
     }
 
     private async Task ActualizarSetsMax(int numeroSets)

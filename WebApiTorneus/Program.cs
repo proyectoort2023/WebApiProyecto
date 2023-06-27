@@ -7,15 +7,18 @@ using Microsoft.OpenApi.Models;
 using Negocio;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 using WebApiTorneus.AMProfile;
 using WebApiTorneus.BackgroundServices;
 using WebApiTorneus.HubSignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddControllersWithViews().AddNewtonsoftJson();
-
 builder.Services.AddControllers();
+
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
