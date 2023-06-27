@@ -49,7 +49,7 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task<string> ActualizarImagenFile(InputFileChangeEventArgs e, string nombreArchivoActual, int altoImagen, int anchoImagen)
+        public async Task<string> ActualizarImagenFile(InputFileChangeEventArgs e, string nombreArchivoActual)
         {
             try
             {
