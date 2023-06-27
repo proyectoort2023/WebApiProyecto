@@ -39,8 +39,8 @@
 
 .center-container-login {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
+    
 }
 .margen-container-login {
     margin: 3% 0 30px 0;

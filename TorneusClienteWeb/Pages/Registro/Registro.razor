@@ -72,6 +72,7 @@
 
          <EspacioVertical Altura="20px" />
         <div class="center-container-login">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Atras">Volver</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Registrarme</MudButton>
         </div>
         
@@ -139,6 +140,11 @@
     private void Navegar(string rol)
     {
         _nav.NavigateTo($"/{rol}/Principal");
+    }
+
+    private void Atras()
+    {
+        _nav.NavigateTo($"/");
     }
 
 
