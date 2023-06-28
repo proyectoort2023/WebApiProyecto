@@ -11,6 +11,7 @@ namespace Negocio.DTOs
 {
     public class TorneoCreacionDTO
     {
+        public int Id { get; set; }
         [Required(ErrorMessage = "Obligatorio")]
         [StringLength(50, MinimumLength =3,ErrorMessage = "Debe tener entre 3 y 50 caracteres")]
         public string Nombre { get; set; }

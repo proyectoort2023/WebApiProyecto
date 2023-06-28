@@ -147,7 +147,7 @@ namespace Negocio
                 torneoBuscado.CantidadCanchas = torneo.CantidadCanchas;
 
 
-                
+
                 var torneoNuevo = _db.Update(torneoBuscado);
                 var registrosActualizados = await _db.SaveChangesAsync();
 

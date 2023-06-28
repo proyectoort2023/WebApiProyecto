@@ -14,7 +14,8 @@
                     LogoTorneo = "@torneo.Logo"
                     NombreTorneo="@torneo.Nombre"
                     TorneoId="@torneo.Id"
-                    VtoInscripcion="@torneo.Fecha.AddDays(-1).ToString("dd/MM/yyyy")" />
+                    VtoInscripcion="@torneo.Fecha.AddDays(-1).ToString("dd/MM/yyyy")"
+                    VisualizarDatosTorneo="VisualizarDatosTorneo" />
     }
 }
 else
@@ -46,9 +47,9 @@ else
     {
         menusItems = new List<MenuItem>()
         {
-            new MenuItem ("Mensajes","fa fa-envelope","/counter"),
-            new MenuItem ("Mis torneos","fa fa-trophy","/fetchdata"),
-            new MenuItem ("Deudores","fa fa-money-bill","/login")
+            new MenuItem ("Mensajes","fa fa-envelope","/"),
+            new MenuItem ("Mis torneos","fa fa-trophy","/ORGANIZADOR/Principal"),
+            new MenuItem ("Deudores","fa fa-money-bill","/")
         };
         _servicioMenu.ActualizarItems(menusItems);
         _servicioMenu.ActualizarTitulo("Mis torneos");
@@ -73,6 +74,12 @@ else
     private void NuevoTorneo()
     {
         _nav.NavigateTo("/ORGANIZADOR/CreacionTorneo");
+    }
+
+    private async Task VisualizarDatosTorneo(int torneoId)
+    {
+        await _servicio_Torneo.SeleccionTorneo(torneoId);
+        _nav.NavigateTo("/VisualizadorTorneo");
     }
 
 

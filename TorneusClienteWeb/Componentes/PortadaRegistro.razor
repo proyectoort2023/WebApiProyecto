@@ -5,8 +5,12 @@
 <section class="banner-registro">
 
     <div style="background-image: url('@UrlImagenLogo()')">
-        <label for="file-upload-logo" class="custom-file-upload-logo"></label>
-        <InputFile OnChange="@SubirArchivoLogo" accept="image/*" id="file-upload-logo" />
+        @if (ModoEdicion)
+        {
+            <label for="file-upload-logo" class="custom-file-upload-logo"></label>
+            <InputFile OnChange="@SubirArchivoLogo" accept="image/*" id="file-upload-logo" />
+        }
+       
     </div>
 
     <div style="background-image: url('@UrlImagenBanner()');">
@@ -15,8 +19,12 @@
 </section>
 
 <div class="banner-upload">
-    <label for="file-upload-banner" class="custom-file-upload-banner"></label>
-    <InputFile OnChange="@SubirArchivoBanner" accept="image/*" id="file-upload-banner" />
+    @if (ModoEdicion)
+    {
+        <label for="file-upload-banner" class="custom-file-upload-banner"></label>
+        <InputFile OnChange="@SubirArchivoBanner" accept="image/*" id="file-upload-banner" />
+    }
+
 </div>
 
 
@@ -24,6 +32,8 @@
     [Parameter] public string NombreImagenBanner { get; set; }
     [Parameter] public string NombreImagenLogo { get; set; }
     [Parameter] public EventCallback<ImagenDTO> SubirImagen { get; set; }
+
+    [Parameter] public bool ModoEdicion { get; set; }
 
     private ImagenDTO imagenUrl = new();
     private string baseUrlImagen;

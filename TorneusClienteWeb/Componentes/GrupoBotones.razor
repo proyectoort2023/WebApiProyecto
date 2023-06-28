@@ -1,4 +1,6 @@
-﻿<label>Elija los sets por partido</label>
+﻿
+
+<label>Elija los sets por partido</label>
 <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
     <MudButton OnClick="() => Actualizar(1)" Class="@EnfasisBotonesActivos[0]">1</MudButton>
     <MudButton OnClick="() => Actualizar(2)" Class="@EnfasisBotonesActivos[1]">2</MudButton>
@@ -9,20 +11,23 @@
 
 @code {
     [Parameter] public EventCallback<int> ActualizarSetsMax { get; set; }
+    [Parameter] public int SetsMaxActual { get; set; }
 
     public List<string> EnfasisBotonesActivos = new()
+        {
+            "","","","",""
+        };
+
+
+    protected async override Task OnParametersSetAsync()
     {
-        "","","","",""
-    };
+        EnfasisBotonesActivos[SetsMaxActual - 1] = "enfasisBoton";
+    }
 
     private async Task Actualizar(int numeroSets)
     {
         ReiniciarEnfasisBotones();
-        EnfasisBotonesActivos[numeroSets-1] = "enfasisBoton";
-        StateHasChanged();
-
         await ActualizarSetsMax.InvokeAsync(numeroSets);
-
     }
 
     private void ReiniciarEnfasisBotones()
