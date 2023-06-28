@@ -9,7 +9,8 @@
 
 <PortadaRegistro NombreImagenBanner="@TorneoParaCreacionDTO.Banner" 
                  NombreImagenLogo="@TorneoParaCreacionDTO.Logo" 
-                 SubirImagen="ActualizarImagen" />
+                 SubirImagen="ActualizarImagen"
+                 ModoEdicion="true"/>
 
  <EspacioVertical Altura="15px" />
 <div>
@@ -81,7 +82,8 @@
             }
         </MudSelect>
         <EspacioVertical Altura="@espaciado" />
-        <GrupoBotones ActualizarSetsMax="ActualizarSetsMax" />
+
+        <GrupoBotones ActualizarSetsMax="ActualizarSetsMax"  SetsMaxActual="@TorneoParaCreacionDTO.SetsMax"/>
 
         <EspacioVertical Altura="@espaciado" />
         <div class="dosEnLinea">
@@ -126,7 +128,7 @@
                        Size="Size.Large" />
         </div>
 
-        <MudTextField T="string" Label="Otras observaciones" Variant="Variant.Text" Text="@TorneoParaCreacionDTO.Otros" Lines="5" MaxLength="299"/>
+        <MudTextField T="string" Label="Otras observaciones" Variant="Variant.Outlined" Text="@TorneoParaCreacionDTO.Otros" Lines="5" MaxLength="299"/>
      
         <EspacioVertical Altura="20px" />
         <div class="center-container-login">
@@ -152,8 +154,14 @@
     {
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
         _servicioMenu.ActualizarTitulo("Crear Torneo");
+        ValoresPorDefectoTorneo();
     }
 
+    private void ValoresPorDefectoTorneo()
+    {
+        TorneoParaCreacionDTO.Indoor = true;
+        TorneoParaCreacionDTO.SetsMax = 1;
+    }
     private string ValidarFecha(DateTime? fecha)
     {
         if (fecha == null) return "La fecha es requerida.";

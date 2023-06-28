@@ -150,13 +150,13 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "ORGANIZADOR")]
         [HttpPost("Modificar")]
-        public async Task<IActionResult> ModificarTorneo([FromBody] TorneoActualizacionDTO torneoActualizacionDTO)
+        public async Task<IActionResult> ModificarTorneo([FromBody] TorneoCreacionDTO torneoActualizacionDTO)
         {
             try
             {
                 if (torneoActualizacionDTO == null) BadRequest("No existe el torneo para editarlo");
 
-                Torneo torneo = _mapper.Map<TorneoActualizacionDTO, Torneo>(torneoActualizacionDTO);
+                Torneo torneo = _mapper.Map<TorneoCreacionDTO, Torneo>(torneoActualizacionDTO);
 
                 //string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
                 BoolModel torneoModificado = new( await _torneoService.ModificarTorneo(torneo) );
