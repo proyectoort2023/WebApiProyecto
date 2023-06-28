@@ -5,9 +5,23 @@
 
 @if (TorneoSeleccionadoDTO != null)
 {
+
+
     <PortadaVistaTorneo NombreImagenBanner="@TorneoSeleccionadoDTO.Banner"
                         NombreImagenLogo="@TorneoSeleccionadoDTO.Logo"
                         NombreTorneo="@TorneoSeleccionadoDTO.Nombre" />
+
+
+    <div class="card-iconos-padding">
+        <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning"/>
+        <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error"  />
+      </div>
+
+
+    <section class="card-general color-lila">
+        <span>Fixture</span>
+        <img src="/imagenes/flecha.png" alt="" class="flecha-small">
+    </section>
 
     <section class="card-general">
         <div class="dosEnLinea">
@@ -41,13 +55,9 @@
         <p><Vinieta />Lìmite de inscriptos: @TorneoSeleccionadoDTO.MaxEquiposInscriptos</p>
         <p><Vinieta />Limite jugadores por equipo: @TorneoSeleccionadoDTO.MaxJugadoresPorEquipo</p>
         <p><Vinieta />Canchas: @TorneoSeleccionadoDTO.CantidadCanchas</p>
-        
+        <p><Vinieta />Otros detalles: @TorneoSeleccionadoDTO.Otros</p>
     </section>
 
-    <section class="card-general" style="background-color:darkviolet;color:beige">
-        <p>Seguir los partidos</p>
-
-    </section>
 
 
 

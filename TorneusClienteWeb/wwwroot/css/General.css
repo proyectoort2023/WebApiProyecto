@@ -69,3 +69,31 @@ input[type="file"] {
     color: orangered;
     font-weight: bold;
 }
+
+.card-iconos-padding{
+    display:flex;
+    justify-content:space-between;
+    padding:7px;
+}
+
+.card-general-between{
+    float:right;
+}
+.color-lila {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background-color: darkviolet;
+    color: beige;
+}
+
+.flecha-small{
+    height:30px;
+    width:30px;
+}
+
+.color-lila span {
+    text-align: center;
+    width: 100%;
+    font-size: 1.5rem;
+}
