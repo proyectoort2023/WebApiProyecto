@@ -1,0 +1,34 @@
+﻿@inject IConfiguration _config
+
+<main class="banner-vista">
+
+    <div style="background-image: url('@UrlImagenLogo()')">
+    </div>
+
+    <section class="centrar-vista">
+        <article>@NombreTorneo</article>
+    </section>
+
+
+    <div style="background-image: url('@UrlImagenBanner()');">
+    </div>
+</main>
+
+
+@code {
+    [Parameter] public string NombreImagenBanner { get; set; }
+    [Parameter] public string NombreImagenLogo { get; set; }
+    [Parameter] public string NombreTorneo { get; set; }
+
+    private string baseUrlImagen;
+
+    protected async override Task OnInitializedAsync()
+    {
+        baseUrlImagen = _config["UrlBaseParaImagenes"];
+    }
+
+    private string UrlImagenLogo() =>   $"{baseUrlImagen}{NombreImagenLogo}";
+    private string UrlImagenBanner() => $"{baseUrlImagen}{NombreImagenBanner}";
+
+
+}

@@ -1,6 +1,6 @@
 ﻿
 
-<main class="card-centrada">
+<main class="card-centrada" @onclick="SeleccionDatosTorneo">
     <div class="card-torneo">
        <img src="@UrlBanner()" alt="Banner Torneo" class="img-banner">
         <section class="info-torneo">
@@ -15,7 +15,7 @@
             </div>
 
             <div class="flecha-container">
-                <img src="/imagenes/flecha.png" alt="">
+                <img src="/imagenes/flecha.png" alt="" >
             </div>
 
         </section>
@@ -30,10 +30,17 @@
     [Parameter] public string Bannertorneo { get; set; } 
     [Parameter] public string NombreTorneo { get; set; }
     [Parameter] public string VtoInscripcion { get; set; }
+    [Parameter] public EventCallback<int> VisualizarDatosTorneo { get; set; }
+
 
     private string UrlBanner() => string.IsNullOrEmpty(Bannertorneo) ? "/imagenes/default/BannerDefault.png" : $"{Util.URL_BASE_IMAGENES}/{Bannertorneo}";
 
     private string UrlLogo() => string.IsNullOrEmpty(LogoTorneo) ? "/imagenes/default/Pelota_default.png" : $"{Util.URL_BASE_IMAGENES}/{LogoTorneo}";
+
+    private async Task SeleccionDatosTorneo()
+    {
+        await VisualizarDatosTorneo.InvokeAsync(TorneoId);
+    }
 
 
 }

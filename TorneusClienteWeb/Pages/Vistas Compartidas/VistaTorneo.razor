@@ -1,5 +1,22 @@
-﻿<h3>VistaTorneo</h3>
+﻿@page "/VisualizadorTorneo"
+@inject UsuarioServicio _servicioUsuario
+@inject TorneoServicio _servicioTorneo
+@inject ServicioMenu _servicioMenu
+
+
+@if (TorneoVistaDTO.Id > 0)
+{
+<DatosTorneoGeneral TorneoSeleccionadoDTO="@TorneoVistaDTO" />
+}
 
 @code {
+    public TorneoDTO TorneoVistaDTO = new();
 
+    protected async override Task OnInitializedAsync()
+    {
+        _servicioMenu.ActualizarTitulo("Torneo");
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
+        TorneoVistaDTO = _servicioTorneo.ObtenerTorneoActual();
+    }
+  
 }

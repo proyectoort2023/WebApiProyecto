@@ -28,6 +28,11 @@ namespace TorneusClienteWeb.Servicios
 
         }
 
+        public TorneoDTO ObtenerTorneoActual()
+        {
+            return TorneoSeleccionado;
+        }
+
         public async Task<List<TorneoDTO>> ObtenerTorneosOrganizador(int idUsuario)
         {
             try
@@ -55,6 +60,20 @@ namespace TorneusClienteWeb.Servicios
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task SeleccionTorneo(int torneoId)
+        {
+            TorneoSeleccionado = Torneos.SingleOrDefault(to => to.Id == torneoId);
+        }
+
+
+
+
+
+
+
+
+
 
     }
 }

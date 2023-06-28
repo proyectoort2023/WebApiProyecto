@@ -1,0 +1,55 @@
+﻿
+
+.banner-vista {
+    position: relative;
+    height: 23vh;
+    width: 100%;
+    margin:0 !important;
+    padding:0 !important;
+}
+
+    .banner-vista div:first-child {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+    }
+
+    .banner-vista div {
+        box-shadow: 1px 1px 15px 2px blueviolet;
+        box-sizing: border-box;
+        background-size: cover;
+    }
+
+    .banner-vista div:last-child {
+        position: absolute;
+        top: 25px;
+        height: 80%;
+        width: 100%;
+        z-index: -50;
+        border-radius:15px 15px 15px 50%;
+    }
+
+    .banner-vista p {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .banner-vista article {
+        position: absolute;
+        top: 0;
+        width: 80%;
+        text-align: center;
+        font-size: 1.2rem;
+        color: beige;
+        padding: 15px 0;
+        border: 1px solid purple;
+        background: linear-gradient(90deg, rgba(22,0,36,0.9276960784313726) 0%, rgba(97,9,121,0.8968837535014006) 35%, rgba(245,83,220,0.9080882352941176) 100%);
+        border-radius: 15px 0 0 15px;
+        box-shadow: 0px 2px 7px 0px rgba(0,0,0,0.75);
+    }
+
+.centrar-vista {
+    display: flex;
+    justify-content: end;
+    width: 100%;
+}

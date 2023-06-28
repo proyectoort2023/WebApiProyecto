@@ -1,20 +1,65 @@
 ﻿@inject UsuarioServicio _servicioUsuario
 @inject TorneoServicio _servicioTorneo
+@inject ServicioMenu _servicioMenu
+
+
+@if (TorneoSeleccionadoDTO != null)
+{
+    <PortadaVistaTorneo NombreImagenBanner="@TorneoSeleccionadoDTO.Banner"
+                        NombreImagenLogo="@TorneoSeleccionadoDTO.Logo"
+                        NombreTorneo="@TorneoSeleccionadoDTO.Nombre" />
+
+    <section class="card-general">
+        <div class="dosEnLinea">
+            <span><Vinieta />Fecha: @TorneoSeleccionadoDTO.Fecha.ToString("dd/MM/yyyy")</span>
+            <span><Vinieta />Hora comienzo: @TorneoSeleccionadoDTO.HoraComienzo.ToString("HH:mm")</span>
+        </div>
+    </section>
+
+    <section class="card-general">
+        <div class="dosEnLinea">
+            <span><Vinieta />Contacto: @TorneoSeleccionadoDTO.NombreContacto</span>
+            <span><Vinieta />Cel: @TorneoSeleccionadoDTO.TelContacto</span>
+        </div>
+
+            <p><Vinieta />Precio: @TorneoSeleccionadoDTO.Precio</p>
+            <p><Vinieta />Tipo de precio: @tipoPrecioBuscado()</p>
+
+    </section>
+
+    <section class="card-general">
+
+        <p><Vinieta /> Puntaje màximo por set: @TorneoSeleccionadoDTO.PuntajeMax</p>
+        <p><Vinieta />Puntaje màx en ùltimo set: @TorneoSeleccionadoDTO.PuntajeMaxUltimoSet</p>
+
+        <p><Vinieta />Puntaje màximo por set: @TorneoSeleccionadoDTO.PuntajeMax</p>
+        <p><Vinieta />Puntaje màx en ùltimo set: @TorneoSeleccionadoDTO.PuntajeMaxUltimoSet</p>
+
+        <p><Vinieta />Sets màximo: @TorneoSeleccionadoDTO.SetsMax</p>
+        <p><Vinieta />Configuraciòn de equipos: @Util.ConfigEquiposDiccionario[TorneoSeleccionadoDTO.ConfiguracionEquipos]</p>
+
+        <p><Vinieta />Lìmite de inscriptos: @TorneoSeleccionadoDTO.MaxEquiposInscriptos</p>
+        <p><Vinieta />Limite jugadores por equipo: @TorneoSeleccionadoDTO.MaxJugadoresPorEquipo</p>
+        <p><Vinieta />Canchas: @TorneoSeleccionadoDTO.CantidadCanchas</p>
+        
+    </section>
+
+    <section class="card-general" style="background-color:darkviolet;color:beige">
+        <p>Seguir los partidos</p>
+
+    </section>
 
 
 
-
-
-
-
-
-
-
-
-
-
+}
 
 
 @code {
-    
+    [Parameter] public TorneoDTO TorneoSeleccionadoDTO { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var aaaaaa = TorneoSeleccionadoDTO;
+    }
+    private string tipoPrecioBuscado() => TorneoSeleccionadoDTO.TipoPrecio == "EQUIPO" ? "Precio por equipo" : "Precio por jugador";
 }

@@ -51,7 +51,7 @@ namespace WebApiTorneus.Controllers
             {
                 if (torneoDTO == null) BadRequest("No hay datos de torneo para registrar");
 
-                torneoDTO.Nombre.ToUpper().Trim();
+                torneoDTO.Nombre = torneoDTO.Nombre.ToUpper().Trim();
                 
                 Torneo torneo = _mapper.Map<Torneo>(torneoDTO);
                 torneo.Usuario = new Usuario()
@@ -155,6 +155,7 @@ namespace WebApiTorneus.Controllers
             try
             {
                 if (torneoActualizacionDTO == null) BadRequest("No existe el torneo para editarlo");
+                torneoActualizacionDTO.Nombre = torneoActualizacionDTO.Nombre.ToUpper().Trim();
 
                 Torneo torneo = _mapper.Map<TorneoCreacionDTO, Torneo>(torneoActualizacionDTO);
 

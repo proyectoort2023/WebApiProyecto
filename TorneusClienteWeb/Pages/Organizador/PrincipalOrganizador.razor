@@ -14,7 +14,8 @@
                     LogoTorneo = "@torneo.Logo"
                     NombreTorneo="@torneo.Nombre"
                     TorneoId="@torneo.Id"
-                    VtoInscripcion="@torneo.Fecha.AddDays(-1).ToString("dd/MM/yyyy")" />
+                    VtoInscripcion="@torneo.Fecha.AddDays(-1).ToString("dd/MM/yyyy")"
+                    VisualizarDatosTorneo="VisualizarDatosTorneo" />
     }
 }
 else
@@ -73,6 +74,12 @@ else
     private void NuevoTorneo()
     {
         _nav.NavigateTo("/ORGANIZADOR/CreacionTorneo");
+    }
+
+    private async Task VisualizarDatosTorneo(int torneoId)
+    {
+        await _servicio_Torneo.SeleccionTorneo(torneoId);
+        _nav.NavigateTo("/VisualizadorTorneo");
     }
 
 
