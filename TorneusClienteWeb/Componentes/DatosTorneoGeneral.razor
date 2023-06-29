@@ -1,7 +1,9 @@
 ﻿@inject UsuarioServicio _servicioUsuario
 @inject TorneoServicio _servicioTorneo
 @inject ServicioMenu _servicioMenu
-
+@inject ISnackbar _snackbar
+@inject IDialogService _dialogService
+@inject HubConnection _hubConnection
 
 @if (TorneoSeleccionadoDTO != null)
 {
@@ -11,12 +13,13 @@
                         NombreImagenLogo="@TorneoSeleccionadoDTO.Logo"
                         NombreTorneo="@TorneoSeleccionadoDTO.Nombre" />
 
-
-    <div class="card-iconos-padding">
-        <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning"/>
-        <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error"  />
-      </div>
-
+    @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+    {
+        <div class="card-iconos-padding">
+            <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning" @onclick="SuspenderTorneo"/>
+            <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error" />
+        </div>
+    }
 
     <section class="card-general color-lila">
         <span>Fixture</span>
@@ -69,7 +72,50 @@
 
     protected async override Task OnInitializedAsync()
     {
-        var aaaaaa = TorneoSeleccionadoDTO;
+
     }
+
     private string tipoPrecioBuscado() => TorneoSeleccionadoDTO.TipoPrecio == "EQUIPO" ? "Precio por equipo" : "Precio por jugador";
+
+    private async Task SuspenderTorneo()
+    {
+        try
+        {
+            //    var parametros = new ModalParameters().Add(nameof(DialogComponent.Mensaje), "Desea suspender el torneo?");
+
+            //    var modal = Modal.Show<DialogComponent>("Suspender", parametros);
+            //    var resultado = modal.Result.Result;
+
+            //    if (resultado.Confirmed )
+            //    {
+            //        _snackbar.Add("se ha condifrmado la suspenciòn", Severity.Warning);
+            //    }
+
+            var parametros = new DialogParameters();
+            parametros.Add(nameof(DialogComponent.Mensaje),"Desea suspender el torneo?");
+
+            var result = await _dialogService.Show<DialogComponent>("Suspender", parametros).Result;
+
+            if (!result.Canceled)
+            {
+                bool suspendido = await _servicioTorneo.SuspenderTorneo(TorneoSeleccionadoDTO.Id);
+                if (suspendido) _snackbar.Add("Se ha suspendido el torneo", Severity.Success);
+
+               await  ejecutarSignalR();
+                await _hubConnection.SendAsync("EnviarNotificacionSuspensionTorneo", suspendido, TorneoSeleccionadoDTO.Id);
+            }
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
+
+        private async Task ejecutarSignalR()
+        {
+            await _hubConnection.StartAsync();
+        }
+    
+
+
 }

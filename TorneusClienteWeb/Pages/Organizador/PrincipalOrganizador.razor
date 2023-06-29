@@ -3,6 +3,7 @@
 @inject TorneoServicio _servicio_Torneo
 @inject UsuarioServicio _servicioUsuario
 @inject NavigationManager _nav
+@inject HubConnection _hubConnection
 
 
 
@@ -10,12 +11,7 @@
 {
     @foreach (var torneo in Torneos)
     {
-        <ItemTorneo Bannertorneo = "@torneo.Banner"
-                    LogoTorneo = "@torneo.Logo"
-                    NombreTorneo="@torneo.Nombre"
-                    TorneoId="@torneo.Id"
-                    VtoInscripcion="@torneo.Fecha.AddDays(-1).ToString("dd/MM/yyyy")"
-                    VisualizarDatosTorneo="VisualizarDatosTorneo" />
+        <ItemTorneo Torneo="torneo" VisualizarDatosTorneo="VisualizarDatosTorneo" />
     }
 }
 else
@@ -41,6 +37,23 @@ else
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         ActualizarMenu();
+    }
+
+    private async Task RecibidoresNotificacones()
+    {
+        _hubConnection.On<bool, int>("RecibidorNotficacionSuspension", async (suspendido, torneoId) =>
+        {
+            if (suspendido)
+            {
+                await _servicio_Torneo.SuspenderTorneoSignalR(torneoId);
+                StateHasChanged();
+            }
+
+        });
+
+
+        await _hubConnection.StartAsync();
+        await _hubConnection.SendAsync("AgregarAGrupo",_servicioUsuario.ObtenerUsuarioLogueado().Rol);
     }
 
     private void ActualizarMenu()

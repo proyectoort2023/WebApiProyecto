@@ -76,14 +76,11 @@ input[type="file"] {
     padding:7px;
 }
 
-.card-general-between{
-    float:right;
-}
 .color-lila {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    background-color: darkviolet;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: radial-gradient(circle, rgba(22,0,36,0.9276960784313726) 0%, rgba(97,9,121,0.8968837535014006) 62%, rgba(152,36,158,1) 81%, rgba(191,61,171,0.9080882352941176) 100%);
     color: beige;
 }
 
@@ -92,7 +89,7 @@ input[type="file"] {
     width:30px;
 }
 
-.color-lila span {
+.color-lila > span {
     text-align: center;
     width: 100%;
     font-size: 1.5rem;

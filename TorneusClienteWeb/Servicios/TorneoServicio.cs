@@ -66,6 +66,28 @@ namespace TorneusClienteWeb.Servicios
             TorneoSeleccionado = Torneos.SingleOrDefault(to => to.Id == torneoId);
         }
 
+        public async Task SuspenderTorneoSignalR(int torneoId)
+        {
+            var cambioSuspendido = Torneos.SingleOrDefault(w => w.Id == torneoId);
+            if (cambioSuspendido != null)
+            {
+                cambioSuspendido.Suspendido = true;
+            }
+        }
+
+        public async Task<bool> SuspenderTorneo(int torneoId)
+        {
+            try
+            {
+               bool suspendido = await _torneoServicioDatos.SuspenderTorneo(torneoId);
+                return suspendido;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+           
+        }
 
 
 

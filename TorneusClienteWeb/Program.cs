@@ -12,6 +12,9 @@ using TorneusClienteWeb.Servicios;
 using TorneusClienteWeb.Servicios_de_Datos;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
+using Tewr.Blazor.FileReader;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -50,7 +53,19 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.ShowTransitionDuration = 200;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
+
+builder.Services.AddSingleton<HubConnection>(sp =>
+{
+    var navigationManager = sp.GetRequiredService<NavigationManager>();
+    return new HubConnectionBuilder()
+      .WithUrl(navigationManager.ToAbsoluteUri($"{builder.Configuration[cadenaConexionWebApi]}/torneushubs"))
+      .WithAutomaticReconnect()
+      .Build();
+});
+
+
 builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
 
 
 builder.Services.AddScoped<ServicioMenu>();
