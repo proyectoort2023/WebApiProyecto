@@ -81,7 +81,8 @@ namespace Negocio
                 int updateRealizado = await _db.SaveChangesAsync();
 
                 // Hay que resolver el tema del reembolso de aquellos que pagaron por pasarela de pago online
-                return updateRealizado > 0;
+                bool resultado = updateRealizado > 0;
+                return resultado;
             }
             catch (Exception ex)
             {

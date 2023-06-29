@@ -4,6 +4,7 @@
 @inject ISnackbar _snackbar
 @inject IDialogService _dialogService
 @inject HubConnection _hubConnection
+@inject NavigationManager _nav
 
 @if (TorneoSeleccionadoDTO != null)
 {
@@ -75,22 +76,13 @@
 
     }
 
+
     private string tipoPrecioBuscado() => TorneoSeleccionadoDTO.TipoPrecio == "EQUIPO" ? "Precio por equipo" : "Precio por jugador";
 
     private async Task SuspenderTorneo()
     {
         try
         {
-            //    var parametros = new ModalParameters().Add(nameof(DialogComponent.Mensaje), "Desea suspender el torneo?");
-
-            //    var modal = Modal.Show<DialogComponent>("Suspender", parametros);
-            //    var resultado = modal.Result.Result;
-
-            //    if (resultado.Confirmed )
-            //    {
-            //        _snackbar.Add("se ha condifrmado la suspenciòn", Severity.Warning);
-            //    }
-
             var parametros = new DialogParameters();
             parametros.Add(nameof(DialogComponent.Mensaje),"Desea suspender el torneo?");
 
@@ -99,22 +91,25 @@
             if (!result.Canceled)
             {
                 bool suspendido = await _servicioTorneo.SuspenderTorneo(TorneoSeleccionadoDTO.Id);
-                if (suspendido) _snackbar.Add("Se ha suspendido el torneo", Severity.Success);
-
-               await  ejecutarSignalR();
+                if (suspendido){
+                    _snackbar.Add("Se ha suspendido el torneo", Severity.Success);
+                }
+                else
+                {
+                    _snackbar.Add("No se ha podido suspender el torneo", Severity.Warning);
+                }
                 await _hubConnection.SendAsync("EnviarNotificacionSuspensionTorneo", suspendido, TorneoSeleccionadoDTO.Id);
+                IrAtras();
             }
         }
         catch (Exception ex)
         {
             _snackbar.Add(ex.Message, Severity.Warning);
         }
+
+        void IrAtras() => _nav.NavigateTo("/ORGANIZADOR/Principal");
     }
 
-        private async Task ejecutarSignalR()
-        {
-            await _hubConnection.StartAsync();
-        }
     
 
 

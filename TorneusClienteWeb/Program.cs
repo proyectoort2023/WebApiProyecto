@@ -58,7 +58,7 @@ builder.Services.AddSingleton<HubConnection>(sp =>
 {
     var navigationManager = sp.GetRequiredService<NavigationManager>();
     return new HubConnectionBuilder()
-      .WithUrl(navigationManager.ToAbsoluteUri($"{builder.Configuration[cadenaConexionWebApi]}/torneushubs"))
+      .WithUrl(navigationManager.ToAbsoluteUri($"{builder.Configuration[cadenaConexionWebApi]}torneushubs"))
       .WithAutomaticReconnect()
       .Build();
 });

@@ -33,6 +33,7 @@ else
     {
         ActualizarMenu();
         ActualizarTorneos();
+        await RecibidoresNotificacones();
     }
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
@@ -51,8 +52,10 @@ else
 
         });
 
-
+        if (_hubConnection.State == HubConnectionState.Disconnected)
+        {
         await _hubConnection.StartAsync();
+        }
         await _hubConnection.SendAsync("AgregarAGrupo",_servicioUsuario.ObtenerUsuarioLogueado().Rol);
     }
 
