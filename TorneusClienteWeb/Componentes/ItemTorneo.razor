@@ -13,6 +13,11 @@
                 <p>@Torneo.Nombre</p>
                 <p>Inscripciones hasta: @Torneo.Fecha.AddDays(-1).ToString("dd/MM/yyyy")</p>
             </div>
+
+            <div class="flecha-container">
+                <img src="/imagenes/flecha.png" alt="">
+            </div>
+
             @if (Torneo.Suspendido)
             {
                 <img src="/imagenes/cartelSuspendido.png" alt="" class="suspendido-imagen">

@@ -39,7 +39,7 @@ namespace BlazorTorneusClient.Servicios
 
         public string ClassFabColor()
         {
-            return "background-color:#6A1B9A;color:white;position:fixed;bottom:90px;right:20px;";
+            return "background-color:#6A1B9A;color:white;position:fixed;bottom:90px;right:20px;z-index:160;";
         }
         public void ActualizarNavegacionPOP(bool habilitadoBotonAtras, bool esPaginaPrincipal, string url)
         {

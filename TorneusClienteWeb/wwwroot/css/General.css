@@ -94,3 +94,19 @@ input[type="file"] {
     width: 100%;
     font-size: 1.5rem;
 }
+
+.animated-gradient {
+    animation: animateBg 3s linear infinite;
+    background-image: linear-gradient(90deg,#4e1a5f,#bc46ae,#685c93,#4e1a5f,#bc46ae);
+    background-size: 400% 100%;
+}
+
+@keyframes animateBg {
+    0% {
+        background-position: 100% 0%;
+    }
+
+    100% {
+        background-position: 0% 0%;
+    }
+}

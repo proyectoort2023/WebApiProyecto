@@ -40,9 +40,12 @@
 .center-container-login {
     display: flex;
     justify-content: space-between;
-    
+    margin: 3% 0 30px 0;
 }
-.margen-container-login {
+
+.center-container-logo {
+    display: flex;
+    justify-content: center;
     margin: 3% 0 30px 0;
 }
 
