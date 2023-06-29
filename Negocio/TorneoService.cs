@@ -72,14 +72,17 @@ namespace Negocio
                 Torneo torneo = await _db.Torneos.FindAsync(torneoId);
 
                 if (torneo == null) throw new Exception("El torneo no tiene datos para salvar");
-               
+
+                if (torneo.Fecha.Date.AddDays(-1) < DateTime.Today.Date) throw new Exception("El torneo no se puede suspender porque el excede el dia permitido");
+
                 torneo.HabilitacionInscripcion = false;
                 torneo.Suspendido = true;
 
                 int updateRealizado = await _db.SaveChangesAsync();
 
                 // Hay que resolver el tema del reembolso de aquellos que pagaron por pasarela de pago online
-                return updateRealizado > 0;
+                bool resultado = updateRealizado > 0;
+                return resultado;
             }
             catch (Exception ex)
             {

@@ -1,13 +1,31 @@
 ﻿@inject UsuarioServicio _servicioUsuario
 @inject TorneoServicio _servicioTorneo
 @inject ServicioMenu _servicioMenu
-
+@inject ISnackbar _snackbar
+@inject IDialogService _dialogService
+@inject HubConnection _hubConnection
+@inject NavigationManager _nav
 
 @if (TorneoSeleccionadoDTO != null)
 {
+
+
     <PortadaVistaTorneo NombreImagenBanner="@TorneoSeleccionadoDTO.Banner"
                         NombreImagenLogo="@TorneoSeleccionadoDTO.Logo"
                         NombreTorneo="@TorneoSeleccionadoDTO.Nombre" />
+
+    @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+    {
+        <div class="card-iconos-padding">
+            <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning" @onclick="SuspenderTorneo"/>
+            <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error" />
+        </div>
+    }
+
+    <section class="card-general color-lila">
+        <span>Fixture</span>
+        <img src="/imagenes/flecha.png" alt="" class="flecha-small">
+    </section>
 
     <section class="card-general">
         <div class="dosEnLinea">
@@ -41,13 +59,9 @@
         <p><Vinieta />Lìmite de inscriptos: @TorneoSeleccionadoDTO.MaxEquiposInscriptos</p>
         <p><Vinieta />Limite jugadores por equipo: @TorneoSeleccionadoDTO.MaxJugadoresPorEquipo</p>
         <p><Vinieta />Canchas: @TorneoSeleccionadoDTO.CantidadCanchas</p>
-        
+        <p><Vinieta />Otros detalles: @TorneoSeleccionadoDTO.Otros</p>
     </section>
 
-    <section class="card-general" style="background-color:darkviolet;color:beige">
-        <p>Seguir los partidos</p>
-
-    </section>
 
 
 
@@ -59,7 +73,44 @@
 
     protected async override Task OnInitializedAsync()
     {
-        var aaaaaa = TorneoSeleccionadoDTO;
+
     }
+
+
     private string tipoPrecioBuscado() => TorneoSeleccionadoDTO.TipoPrecio == "EQUIPO" ? "Precio por equipo" : "Precio por jugador";
+
+    private async Task SuspenderTorneo()
+    {
+        try
+        {
+            var parametros = new DialogParameters();
+            parametros.Add(nameof(DialogComponent.Mensaje),"Desea suspender el torneo?");
+
+            var result = await _dialogService.Show<DialogComponent>("Suspender", parametros).Result;
+
+            if (!result.Canceled)
+            {
+                bool suspendido = await _servicioTorneo.SuspenderTorneo(TorneoSeleccionadoDTO.Id);
+                if (suspendido){
+                    _snackbar.Add("Se ha suspendido el torneo", Severity.Success);
+                }
+                else
+                {
+                    _snackbar.Add("No se ha podido suspender el torneo", Severity.Warning);
+                }
+                await _hubConnection.SendAsync("EnviarNotificacionSuspensionTorneo", suspendido, TorneoSeleccionadoDTO.Id);
+                IrAtras();
+            }
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+
+        void IrAtras() => _nav.NavigateTo("/ORGANIZADOR/Principal");
+    }
+
+    
+
+
 }

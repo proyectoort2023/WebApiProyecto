@@ -6,6 +6,7 @@
 }
 
 .card-torneo {
+    position:relative;
     color: red;
     height: 28vh;
     width: 99%;
@@ -66,3 +67,13 @@
     font-size: 0.9rem;
     color: orangered;
 }
+
+.suspendido-imagen {
+    position:absolute;
+    top:0;
+    height: 70%;
+    width:100%;
+    z-index: 150;
+}
+
+

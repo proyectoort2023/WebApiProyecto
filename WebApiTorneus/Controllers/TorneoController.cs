@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Authorization;
 using Negocio.Models;
 using WebApiTorneus.BackgroundServices;
+using Microsoft.AspNetCore.SignalR;
+using WebApiTorneus.HubSignalR;
 
 namespace WebApiTorneus.Controllers
 {
@@ -22,12 +24,14 @@ namespace WebApiTorneus.Controllers
         private readonly TorneoService _torneoService;
         private readonly IConfiguration _config;
         private const string claveRutaImagen = "Rutaimagen";
+        private readonly IHubContext<TorneusHub> _hubContext;
 
-        public TorneoController(IMapper mapper, TorneoService torneoService, IConfiguration config)
+        public TorneoController(IMapper mapper, TorneoService torneoService, IConfiguration config, IHubContext<TorneusHub> hubContext)
         {
             _mapper = mapper;
             _torneoService = torneoService;
             _config = config;
+            _hubContext = hubContext;
         }
 
 
@@ -88,14 +92,15 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(BoolModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "ORGANIZADOR")]
-        [HttpGet("Suspender/{id}")]
+        [HttpGet("Suspender/{torneoId}")]
         public async Task<IActionResult> GetSuspender(int torneoId)
         {
             try
             {
                 if (torneoId < 1) BadRequest("No existe el torneo a suspender");
 
-                BoolModel suspendido = new(await _torneoService.SuspenderTorneo(torneoId));
+                BoolModel suspendido = new BoolModel(await _torneoService.SuspenderTorneo(torneoId));
+
                 return Ok(suspendido);
             }
             catch (Exception ex)
