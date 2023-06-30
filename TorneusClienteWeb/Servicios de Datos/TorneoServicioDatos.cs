@@ -61,7 +61,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
          
                 try
                 {
-                    if (torneoId < 1) throw new Exception("No usuario no existe");
+                    if (torneoId < 1) throw new Exception("No torneo no existe");
 
                  string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -118,6 +118,40 @@ namespace TorneusClienteWeb.Servicios_de_Datos
             }
 
         }
+
+
+
+        public async Task<bool> EliminarTorneo(int torneoId)
+        {
+
+            try
+            {
+                if (torneoId < 1) throw new Exception("No torneo no existe");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.DeleteAsync($"api/Torneo/Eliminar/{torneoId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var resultado = JsonConvert.DeserializeObject<BoolModel>(content);
+                    return resultado.Bandera;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
 
 
 

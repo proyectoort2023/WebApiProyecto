@@ -18,7 +18,9 @@
     {
         <div class="card-iconos-padding">
             <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning" @onclick="SuspenderTorneo"/>
-            <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error" />
+            <MudIcon Icon=@Icons.Material.Filled.EditNote Title="Habilitar" Size="Size.Large" Color="Color.Dark" />
+            <InscripcionIconAction HabilitacionInscripcion="HabilitacionInscripcion" HabilitadoValue="TorneoSeleccionadoDTO.HabilitacionInscripcion" />
+            <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error" @onclick="EliminarTorneo" />
         </div>
     }
 
@@ -99,7 +101,7 @@
                     _snackbar.Add("No se ha podido suspender el torneo", Severity.Warning);
                 }
                 await _hubConnection.SendAsync("EnviarNotificacionSuspensionTorneo", suspendido, TorneoSeleccionadoDTO.Id);
-                IrAtras();
+
             }
         }
         catch (Exception ex)
@@ -107,10 +109,57 @@
             _snackbar.Add(ex.Message, Severity.Warning);
         }
 
-        void IrAtras() => _nav.NavigateTo("/ORGANIZADOR/Principal");
+
     }
 
-    
+    void IrAtras() => _nav.NavigateTo("/ORGANIZADOR/Principal");
+
+    private async Task HabilitacionInscripcion(bool hab)
+    {
+        try
+        {
+            if (!hab)
+            {
+                //aqui tengo que habilitar por medio del servicio
+            }
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
+
+    private async Task EliminarTorneo()
+    {
+        try
+        {
+            var parametros = new DialogParameters();
+            parametros.Add(nameof(DialogComponent.Mensaje),"Desea eliminar el torneo?");
+
+            var result = await _dialogService.Show<DialogComponent>("Eliminar", parametros).Result;
+
+            if (!result.Canceled)
+            {
+                bool resultado = await _servicioTorneo.EliminarTorneo(TorneoSeleccionadoDTO.Id);
+                if (resultado)
+                {
+                    await _hubConnection.SendAsync("EnviarNotificacionEliminacionTorneo", TorneoSeleccionadoDTO.Id);
+                    _snackbar.Add("Se ha eliminado el torneo", Severity.Success);
+                    IrAtras();
+                }
+                else
+                {
+                    _snackbar.Add("No se ha podido eliminar el torneo", Severity.Warning);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
+
+
 
 
 }

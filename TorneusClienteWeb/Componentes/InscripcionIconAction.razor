@@ -1,0 +1,20 @@
+﻿
+
+<MudIcon Icon="@ObtenerIcono()" Title="Hab/Des" Size="Size.Large" Color="@ObtenerColorIcono()" @onclick="HabilitarInscripcion" />
+
+
+@code {
+    [Parameter] public bool HabilitadoValue { get; set; }
+    [Parameter] public EventCallback<bool> HabilitacionInscripcion { get; set; }
+
+    Icons iconoCandado = new Icons();
+
+    private async Task HabilitarInscripcion()
+    {
+        await HabilitacionInscripcion.InvokeAsync(HabilitadoValue);
+    }
+
+    private string ObtenerIcono() => HabilitadoValue == true ? Icons.Material.Filled.LockOpen : Icons.Material.Filled.Lock;
+
+    private Color ObtenerColorIcono() => HabilitadoValue == true ? Color.Success : Color.Error;
+}

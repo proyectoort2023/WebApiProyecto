@@ -123,7 +123,7 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(BoolModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "ORGANIZADOR")]
-        [HttpDelete("Eliminar/{id}")]
+        [HttpDelete("Eliminar/{torneoId}")]
         public async Task<IActionResult> EliminarTorneo(int torneoId)
         {
             try

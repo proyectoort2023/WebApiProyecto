@@ -89,6 +89,25 @@ namespace TorneusClienteWeb.Servicios
            
         }
 
+        public async Task<bool> EliminarTorneo(int torneoId)
+        {
+            try
+            {
+                bool eliminado = await _torneoServicioDatos.EliminarTorneo(torneoId);
+                return eliminado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public async Task EliminarTorneoSignalR(int torneoId)
+        {
+            Torneos.RemoveAll(r => r.Id == torneoId);
+        }
+
 
 
 
