@@ -9,7 +9,6 @@
 @if (TorneoSeleccionadoDTO != null)
 {
 
-
     <PortadaVistaTorneo NombreImagenBanner="@TorneoSeleccionadoDTO.Banner"
                         NombreImagenLogo="@TorneoSeleccionadoDTO.Logo"
                         NombreTorneo="@TorneoSeleccionadoDTO.Nombre" />
@@ -18,7 +17,7 @@
     {
         <div class="card-iconos-padding">
             <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning" @onclick="SuspenderTorneo"/>
-            <MudIcon Icon=@Icons.Material.Filled.EditNote Title="Habilitar" Size="Size.Large" Color="Color.Dark" />
+            <MudIcon Icon=@Icons.Material.Filled.EditNote Title="Habilitar" Size="Size.Large" Color="Color.Dark" @onclick="EditarTorneo"/>
             <InscripcionIconAction HabilitacionInscripcion="HabilitacionInscripcion" HabilitadoValue="TorneoSeleccionadoDTO.HabilitacionInscripcion" />
             <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error" @onclick="EliminarTorneo" />
         </div>
@@ -160,6 +159,8 @@
     }
 
 
+
+    private void EditarTorneo() => _nav.NavigateTo("/ORGANIZADOR/EdicionTorneo");
 
 
 }
