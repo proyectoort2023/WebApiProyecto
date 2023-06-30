@@ -103,6 +103,7 @@ namespace Negocio
                 if (torneoAEliminar.Inscripciones.Count > 0) throw new Exception("No puede eliminar porque hay equipos inscriptos");
                 if (torneoAEliminar.HabilitacionInscripcion) throw new Exception("No puede eliminar si tiene inscripciones abiertas");
                 if (torneoAEliminar.Suspendido) throw new Exception("No puede eliminar el torneo porque está suspendido");
+                if (torneoAEliminar.Fecha <= DateTime.Today.Date) throw new Exception("No puede eliminar el torneo ya que está en progreso o finalizado");
 
                 _db.Torneos.Remove(torneoAEliminar);
                 int eliminacionRealizada = await _db.SaveChangesAsync();
