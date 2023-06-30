@@ -53,5 +53,10 @@ namespace WebApiTorneus.HubSignalR
             await Clients.All.SendAsync("RecibidorNotficacionSuspension", suspendido, torneoId);
         }
 
+        public async Task EnviarNotificacionEliminacionTorneo(int torneoId)
+        {
+            await Clients.All.SendAsync("RecibidorNotficacionEliminacion", torneoId);
+        }
+
     }
 }

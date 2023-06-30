@@ -52,6 +52,13 @@ else
 
         });
 
+        _hubConnection.On<int>("RecibidorNotficacionEliminacion", async (torneoId) =>
+        {
+            await _servicio_Torneo.EliminarTorneoSignalR(torneoId);
+                StateHasChanged();
+        });
+
+
         if (_hubConnection.State == HubConnectionState.Disconnected)
         {
         await _hubConnection.StartAsync();
