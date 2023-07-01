@@ -153,6 +153,36 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
+        public async Task<TorneoDTO> ModificarTorneoOrganizador(TorneoDTO torneoDTO)
+        {
+
+            try
+            {
+                if (torneoDTO == null) throw new Exception("No torneo no se ha podido crear");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.PostAsJsonAsync($"api/Torneo/Modificar", torneoDTO);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var torneo = JsonConvert.DeserializeObject<TorneoDTO>(content);
+                    return torneo;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
 
 
     }

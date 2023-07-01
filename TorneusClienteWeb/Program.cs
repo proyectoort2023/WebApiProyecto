@@ -78,6 +78,9 @@ builder.Services.AddScoped<TorneoServicioDatos>();
 builder.Services.AddScoped<ImagenServicio>();
 builder.Services.AddScoped<ImagenServicioDatos>();
 
+builder.Services.AddScoped<NotificacionesSignalRService>();
+
+
 
 
 await builder.Build().RunAsync();

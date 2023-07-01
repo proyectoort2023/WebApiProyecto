@@ -9,13 +9,13 @@
 
 <PortadaRegistro NombreImagenBanner="@TorneoEditDTO.Banner"
                  NombreImagenLogo="@TorneoEditDTO.Logo"
-                 SubirImagen="ActualizarImagen"
+                 SubirImagen="() => null"
                  ModoEdicion="false" />
 
 <EspacioVertical Altura="15px" />
 <div>
 
-    <EditForm Model="@TorneoEditDTO" OnValidSubmit="Registrar">
+    <EditForm Model="@TorneoEditDTO" OnValidSubmit="Actualizar">
         <DataAnnotationsValidator />
 
         <MudDatePicker Label="Fecha de torneo" TitleDateFormat="dd/MM/yyyy" @bind-Date="fechaTorneo" For="(()=> fechaTorneo)" Validation="ValidarFecha" />
@@ -27,7 +27,9 @@
                       Label="Nombre del torneo"
                       Variant="Variant.Outlined"
                       Margin="Margin.Dense"
-                      For="@(() => TorneoEditDTO.Nombre)" />
+                      For="@(() => TorneoEditDTO.Nombre)"
+                      Disabled="true" />
+
         <EspacioVertical Altura="@espaciado" />
 
         <MudTextField @bind-Value="TorneoEditDTO.Lugar"
@@ -136,7 +138,7 @@
 
         <EspacioVertical Altura="20px" />
         <div class="center-container-login">
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Crear torneo</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Guardar</MudButton>
         </div>
 
     </EditForm>
@@ -160,6 +162,8 @@
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/VisualizadorTorneo");
         _servicioMenu.ActualizarTitulo("Modificar datos");
         TorneoEditDTO = _servicioTorneo.ObtenerTorneoActual();
+        fechaTorneo = TorneoEditDTO.Fecha;
+        horaComienzo = TorneoEditDTO.HoraComienzo.TimeOfDay;
     }
 
 
@@ -174,31 +178,18 @@
         return string.Empty; // La fecha es válida
     }
 
-    private async Task ActualizarImagen(ImagenDTO tipoImagenUrl)
-    {
-        if (tipoImagenUrl.TipoImagenSubida == Util.TipoImagen.BANNER.ToString())
-        {
-            TorneoEditDTO.Banner = tipoImagenUrl.UrlImagen;
-        }
-        if (tipoImagenUrl.TipoImagenSubida == Util.TipoImagen.LOGO.ToString())
-        {
-            TorneoEditDTO.Logo = tipoImagenUrl.UrlImagen;
-        }
-        //StateHasChanged();
-    }
-
-
-    private async Task Registrar()
+    private async Task Actualizar()
     {
         try
         {
-            //TorneoEditDTO.UsuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
-            //TorneoEditDTO.Fecha = fechaTorneo.Value.Date;
-            //TorneoEditDTO.HoraComienzo = fechaTorneo.Value.Date.Add(horaComienzo.Value);
-            //var torneoNuevo = await _servicioTorneo.CrearTorneoOrganizador(TorneoEditDTO);
-            //int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
-            //await _servicioTorneo.ListadoTorneosOrganizadorData(idOrganizador);
-            //_nav.NavigateTo("/ORGANIZADOR/Principal");
+            TorneoEditDTO.UsuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            TorneoEditDTO.Fecha = fechaTorneo.Value.Date;
+            TorneoEditDTO.HoraComienzo = fechaTorneo.Value.Date.Add(horaComienzo.Value);
+
+            var torneoEditado = await _servicioTorneo.ModificarTorneoOrganizador(TorneoEditDTO);
+
+            _snackbar.Add($"Datos del torneo {TorneoEditDTO.Nombre} modificados", Severity.Success);
+            IrAtras();
         }
         catch (Exception ex)
         {
@@ -215,6 +206,11 @@
     private void CambioTextoAreaControl(string texto)
     {
         TorneoEditDTO.Otros = texto;
+    }
+
+    private void IrAtras()
+    {
+        _nav.NavigateTo("/VisualizadorTorneo");
     }
 
 

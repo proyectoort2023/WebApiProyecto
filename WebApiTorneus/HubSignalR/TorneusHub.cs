@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Negocio.DTOs;
 
 namespace WebApiTorneus.HubSignalR
 {
@@ -56,6 +57,11 @@ namespace WebApiTorneus.HubSignalR
         public async Task EnviarNotificacionEliminacionTorneo(int torneoId)
         {
             await Clients.All.SendAsync("RecibidorNotficacionEliminacion", torneoId);
+        }
+
+        public async Task EnviarNotificacionModificacionTorneo(TorneoDTO torneoDTO)
+        {
+            await Clients.All.SendAsync("RecibidorNotficacionModificacion", torneoDTO);
         }
 
     }

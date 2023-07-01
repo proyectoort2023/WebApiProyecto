@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilidades;
 
 namespace Negocio.Validaciones
 {
@@ -16,7 +17,7 @@ namespace Negocio.Validaciones
             _db = db;
 
             RuleFor(t => t.Nombre).MinimumLength(3).MaximumLength(40).WithMessage("El nombre debe tener entre 3 y 40 caracteres. ");
-            RuleFor(t => t.Nombre).NotEmpty().Must(TorneoNoExiste).WithMessage("El nombre de torneo que quiere registrar ya existe. ");
+            RuleFor(t => t).NotEmpty().Must(obj => TorneoNoExiste(obj.Nombre, obj.Id)).WithMessage("El nombre de torneo que quiere registrar ya existe. ");
             RuleFor(t => t.Fecha).NotEmpty().NotNull().Must(ValidarFechaTorneo).WithMessage("La fecha del torneo debe ser al dia de hoy. ");
             RuleFor(t => t.NombreContacto).MinimumLength(3).MaximumLength(30).WithMessage("El nombre de contacto debe tener entre 3 y 30 caracteres. ");
             RuleFor(t => t.TelContacto).NotNull().NotEmpty().WithMessage("El telefono de contacto no puede estar vacio. ");
@@ -34,9 +35,22 @@ namespace Negocio.Validaciones
 
         }
 
-        private bool TorneoNoExiste(string nombre)
+        private bool TorneoNoExiste(string nombre, int torneoId)
         {
-            return !_db.Torneos.Any(c => c.Nombre.ToUpper() == nombre.ToUpper().Trim());
+            bool existetorneoGeneral =  _db.Torneos.Any(c => c.Nombre.ToUpper() == nombre.ToUpper().Trim());
+            var torneoACtual = _db.Torneos.Find(torneoId);
+
+            if (torneoACtual.Nombre == nombre.ToUpper().Trim())
+            {
+                return true;
+            }
+
+            if (existetorneoGeneral)
+            {
+                return false;
+            }
+
+            return true;
         }
         private bool ValidarFechaTorneo(DateTime date)
         {
@@ -44,12 +58,13 @@ namespace Negocio.Validaciones
         }
         private bool ValidarTipoDePrecio(string tipoPrecio)
         {
-            return tipoPrecio == "JUGADOR" || tipoPrecio == "EQUIPO";
+            bool valorEcontrado = Util.TipoPrecioDiccionario.Any(value => value.Value == tipoPrecio);
+            return valorEcontrado;
         }
         private bool ValidarConfiguracionEquipo(string tipo)
         {
-            string[] modalidades = { "HOMBRES", "MIXTO 5+1", "MIXTO 5+2", "MUJERES" };
-            return modalidades.Contains(tipo);
+            bool valorEcontrado = Util.ConfigEquiposDiccionario.Any(value => value.Key == tipo);
+            return valorEcontrado;
         }
     }
 }

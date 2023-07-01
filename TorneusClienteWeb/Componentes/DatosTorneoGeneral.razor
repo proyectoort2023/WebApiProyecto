@@ -94,13 +94,12 @@
                 bool suspendido = await _servicioTorneo.SuspenderTorneo(TorneoSeleccionadoDTO.Id);
                 if (suspendido){
                     _snackbar.Add("Se ha suspendido el torneo", Severity.Success);
+                    IrAtras();
                 }
                 else
                 {
                     _snackbar.Add("No se ha podido suspender el torneo", Severity.Warning);
                 }
-                await _hubConnection.SendAsync("EnviarNotificacionSuspensionTorneo", suspendido, TorneoSeleccionadoDTO.Id);
-
             }
         }
         catch (Exception ex)
