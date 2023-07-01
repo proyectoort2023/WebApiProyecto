@@ -165,7 +165,7 @@ namespace WebApiTorneus.Controllers
                 Torneo torneo = _mapper.Map<TorneoDTO, Torneo>(torneoActualizacionDTO);
 
                 //string urlImagenBase = _config.GetValue<string>(claveRutaImagen);
-                BoolModel torneoModificado = new( await _torneoService.ModificarTorneo(torneo) );
+                TorneoDTO torneoModificado = _mapper.Map<Torneo, TorneoDTO>(await _torneoService.ModificarTorneo(torneo));
 
                 return Ok(torneoModificado);
             }

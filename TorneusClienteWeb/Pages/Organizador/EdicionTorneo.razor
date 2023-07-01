@@ -4,6 +4,7 @@
 @inject TorneoServicio _servicioTorneo
 @inject NavigationManager _nav
 @inject ISnackbar _snackbar
+@inject IMapper _autoMapper
 
 
 
@@ -149,7 +150,7 @@
 
 @code {
 
-    public TorneoDTO TorneoEditDTO = new TorneoDTO();
+    public TorneoActualizacionDTO TorneoEditDTO = new TorneoActualizacionDTO();
 
     TimeSpan? horaComienzo = new TimeSpan(10, 00, 00);
     DateTime? fechaTorneo = DateTime.Today.Date;
@@ -161,7 +162,7 @@
     {
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/VisualizadorTorneo");
         _servicioMenu.ActualizarTitulo("Modificar datos");
-        TorneoEditDTO = _servicioTorneo.ObtenerTorneoActual();
+        TorneoEditDTO = _autoMapper.Map<TorneoDTO, TorneoActualizacionDTO>(_servicioTorneo.ObtenerTorneoActual());
         fechaTorneo = TorneoEditDTO.Fecha;
         horaComienzo = TorneoEditDTO.HoraComienzo.TimeOfDay;
     }
@@ -182,11 +183,10 @@
     {
         try
         {
-            TorneoEditDTO.UsuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
             TorneoEditDTO.Fecha = fechaTorneo.Value.Date;
             TorneoEditDTO.HoraComienzo = fechaTorneo.Value.Date.Add(horaComienzo.Value);
 
-            var torneoEditado = await _servicioTorneo.ModificarTorneoOrganizador(TorneoEditDTO);
+            bool torneoEditado = await _servicioTorneo.ModificarTorneoOrganizador(_autoMapper.Map<TorneoActualizacionDTO, TorneoDTO>(TorneoEditDTO));
 
             _snackbar.Add($"Datos del torneo {TorneoEditDTO.Nombre} modificados", Severity.Success);
             IrAtras();

@@ -118,7 +118,7 @@ namespace Negocio
         }
 
 
-        public async Task<bool> ModificarTorneo(Torneo torneo)
+        public async Task<Torneo> ModificarTorneo(Torneo torneo)
         {
             try
             {
@@ -157,7 +157,9 @@ namespace Negocio
                 var torneoNuevo = _db.Update(torneoBuscado);
                 var registrosActualizados = await _db.SaveChangesAsync();
 
-                return registrosActualizados > 0;
+                if (registrosActualizados == 0) throw new Exception("No se ha podido actualizar . Revise");
+
+                return torneoNuevo.Entity;
             }
             catch (Exception ex)
             {

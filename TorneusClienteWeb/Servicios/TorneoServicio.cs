@@ -37,6 +37,7 @@ namespace TorneusClienteWeb.Servicios
         {
             return TorneoSeleccionado;
         }
+
         public List<TorneoDTO> ObtenerTorneos()
         {
             return Torneos;
@@ -107,13 +108,13 @@ namespace TorneusClienteWeb.Servicios
         }
 
 
-        public async Task<TorneoDTO> ModificarTorneoOrganizador(TorneoDTO torneoDTO)
+        public async Task<bool> ModificarTorneoOrganizador(TorneoDTO torneoDTO)
         {
             try
             {
                 var torneoModificado = await _torneoServicioDatos.ModificarTorneoOrganizador(torneoDTO);
-                await _hubConnection.SendAsync("EnviarNotificacionModificacionTorneo", torneoDTO);
-                return torneoModificado;
+                await _hubConnection.SendAsync("EnviarNotificacionModificacionTorneo", torneoModificado);
+                return true;
             }
             catch (Exception ex)
             {

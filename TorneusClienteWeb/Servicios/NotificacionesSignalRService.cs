@@ -25,27 +25,27 @@ namespace TorneusClienteWeb.Servicios
 
         public async Task EliminarTorneoSignalR(int torneoId)
         {
-            RemoverItmeTorneoLista(torneoId);
+            RemoverItemTorneoLista(torneoId);
         }
 
         public async Task ModificarTorneoSignalR(TorneoDTO torneoDTO)
         {
-            RemoverItmeTorneoLista(torneoDTO.Id);
-            AgregarItemTorneoLista(torneoDTO);
+            int idTorneo = torneoDTO.Id;
+            RemoverItemTorneoLista(idTorneo);
+            AgregarTorneoALista(torneoDTO);
+           await _torneoServicio.SeleccionTorneo(idTorneo);
            await _torneoServicio.OrdenarTorneoPorFecha();
         }
 
-        private void RemoverItmeTorneoLista(int torneoId)
+        private void RemoverItemTorneoLista(int torneoId)
         {
             _torneoServicio.ObtenerTorneos().RemoveAll(r => r.Id == torneoId);
         }
 
-        private void AgregarItemTorneoLista(TorneoDTO torneoDTO)
+        private void AgregarTorneoALista(TorneoDTO torneoDTO)
         {
             _torneoServicio.ObtenerTorneos().Add(torneoDTO);
         }
-
-
 
 
 

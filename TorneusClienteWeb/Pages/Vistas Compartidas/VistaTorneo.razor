@@ -2,6 +2,8 @@
 @inject UsuarioServicio _servicioUsuario
 @inject TorneoServicio _servicioTorneo
 @inject ServicioMenu _servicioMenu
+@inject NotificacionesSignalRService _servicioNotificacionesSignalR
+@inject HubConnection _hubConnection
 
 
 @if (TorneoVistaDTO.Id > 0)
@@ -17,6 +19,14 @@
         _servicioMenu.ActualizarTitulo("Torneo");
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
         TorneoVistaDTO = _servicioTorneo.ObtenerTorneoActual();
+
+        _hubConnection.On<TorneoDTO>("RecibidorNotficacionModificacion", async (torneoDTO) =>
+       {
+       await _servicioNotificacionesSignalR.ModificarTorneoSignalR(torneoDTO);
+       TorneoVistaDTO = _servicioTorneo.ObtenerTorneoActual();
+       StateHasChanged();
+       });
+
     }
   
 }
