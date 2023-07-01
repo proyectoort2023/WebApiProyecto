@@ -1,4 +1,7 @@
-﻿using Negocio.DTOs;
+﻿using BDTorneus;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
+using Negocio.DTOs;
 using TorneusClienteWeb.Servicios_de_Datos;
 
 namespace TorneusClienteWeb.Servicios
@@ -8,10 +11,12 @@ namespace TorneusClienteWeb.Servicios
         private readonly TorneoServicioDatos _torneoServicioDatos;
         private TorneoDTO TorneoSeleccionado = new();
         private List<TorneoDTO> Torneos = new();
+        [Inject] private HubConnection _hubConnection { get;set; }
 
-        public TorneoServicio(TorneoServicioDatos torneoServicioDatos)
+        public TorneoServicio(TorneoServicioDatos torneoServicioDatos, HubConnection hubConnection)
         {
             _torneoServicioDatos = torneoServicioDatos;
+            _hubConnection = hubConnection;
         }
 
         public async Task ListadoTorneosOrganizadorData(int idUsuario)
@@ -31,6 +36,11 @@ namespace TorneusClienteWeb.Servicios
         public TorneoDTO ObtenerTorneoActual()
         {
             return TorneoSeleccionado;
+        }
+
+        public List<TorneoDTO> ObtenerTorneos()
+        {
+            return Torneos;
         }
 
         public async Task<List<TorneoDTO>> ObtenerTorneosOrganizador(int idUsuario)
@@ -66,27 +76,21 @@ namespace TorneusClienteWeb.Servicios
             TorneoSeleccionado = Torneos.SingleOrDefault(to => to.Id == torneoId);
         }
 
-        public async Task SuspenderTorneoSignalR(int torneoId)
-        {
-            var cambioSuspendido = Torneos.SingleOrDefault(w => w.Id == torneoId);
-            if (cambioSuspendido != null)
-            {
-                cambioSuspendido.Suspendido = true;
-            }
-        }
+       
 
         public async Task<bool> SuspenderTorneo(int torneoId)
         {
             try
             {
-               bool suspendido = await _torneoServicioDatos.SuspenderTorneo(torneoId);
+                bool suspendido = await _torneoServicioDatos.SuspenderTorneo(torneoId);
+                await _hubConnection.SendAsync("EnviarNotificacionSuspensionTorneo", suspendido, torneoId);
                 return suspendido;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-           
+
         }
 
         public async Task<bool> EliminarTorneo(int torneoId)
@@ -103,17 +107,29 @@ namespace TorneusClienteWeb.Servicios
 
         }
 
-        public async Task EliminarTorneoSignalR(int torneoId)
+
+        public async Task<bool> ModificarTorneoOrganizador(TorneoDTO torneoDTO)
         {
-            Torneos.RemoveAll(r => r.Id == torneoId);
+            try
+            {
+                var torneoModificado = await _torneoServicioDatos.ModificarTorneoOrganizador(torneoDTO);
+                await _hubConnection.SendAsync("EnviarNotificacionModificacionTorneo", torneoModificado);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
 
-
-
-
-
-
+        public async Task OrdenarTorneoPorFecha()
+        {
+          if (Torneos.Count > 0)
+            {
+                Torneos = Torneos.OrderByDescending(o => o.Fecha).ToList();
+            }
+        }
 
 
     }

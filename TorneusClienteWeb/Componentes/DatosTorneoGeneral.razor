@@ -9,7 +9,6 @@
 @if (TorneoSeleccionadoDTO != null)
 {
 
-
     <PortadaVistaTorneo NombreImagenBanner="@TorneoSeleccionadoDTO.Banner"
                         NombreImagenLogo="@TorneoSeleccionadoDTO.Logo"
                         NombreTorneo="@TorneoSeleccionadoDTO.Nombre" />
@@ -18,7 +17,7 @@
     {
         <div class="card-iconos-padding">
             <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning" @onclick="SuspenderTorneo"/>
-            <MudIcon Icon=@Icons.Material.Filled.EditNote Title="Habilitar" Size="Size.Large" Color="Color.Dark" />
+            <MudIcon Icon=@Icons.Material.Filled.EditNote Title="Habilitar" Size="Size.Large" Color="Color.Dark" @onclick="EditarTorneo"/>
             <InscripcionIconAction HabilitacionInscripcion="HabilitacionInscripcion" HabilitadoValue="TorneoSeleccionadoDTO.HabilitacionInscripcion" />
             <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error" @onclick="EliminarTorneo" />
         </div>
@@ -29,43 +28,22 @@
         <img src="/imagenes/flecha.png" alt="" class="flecha-small">
     </section>
 
-    <section class="card-general">
-        <div class="dosEnLinea">
-            <span><Vinieta />Fecha: @TorneoSeleccionadoDTO.Fecha.ToString("dd/MM/yyyy")</span>
-            <span><Vinieta />Hora comienzo: @TorneoSeleccionadoDTO.HoraComienzo.ToString("HH:mm")</span>
-        </div>
-    </section>
+    <JornadaVista Fecha="@TorneoSeleccionadoDTO.Fecha" 
+                  HoraComienzo="@TorneoSeleccionadoDTO.HoraComienzo"
+                  NombreContacto="@TorneoSeleccionadoDTO.NombreContacto"
+                  TelContacto="@TorneoSeleccionadoDTO.TelContacto" />
+    
+    <PrecioVista Precio="@TorneoSeleccionadoDTO.Precio" TipoPrecio="@TorneoSeleccionadoDTO.TipoPrecio" />
 
-    <section class="card-general">
-        <div class="dosEnLinea">
-            <span><Vinieta />Contacto: @TorneoSeleccionadoDTO.NombreContacto</span>
-            <span><Vinieta />Cel: @TorneoSeleccionadoDTO.TelContacto</span>
-        </div>
+    <PuntajeVista ConfiguracionEquipos="@TorneoSeleccionadoDTO.ConfiguracionEquipos"
+                  PuntajeMax="@TorneoSeleccionadoDTO.PuntajeMax"
+                  PuntajeMaxUltimoSet="@TorneoSeleccionadoDTO.PuntajeMaxUltimoSet"
+                  SetsMax="@TorneoSeleccionadoDTO.SetsMax" />
 
-            <p><Vinieta />Precio: @TorneoSeleccionadoDTO.Precio</p>
-            <p><Vinieta />Tipo de precio: @tipoPrecioBuscado()</p>
-
-    </section>
-
-    <section class="card-general">
-
-        <p><Vinieta /> Puntaje màximo por set: @TorneoSeleccionadoDTO.PuntajeMax</p>
-        <p><Vinieta />Puntaje màx en ùltimo set: @TorneoSeleccionadoDTO.PuntajeMaxUltimoSet</p>
-
-        <p><Vinieta />Puntaje màximo por set: @TorneoSeleccionadoDTO.PuntajeMax</p>
-        <p><Vinieta />Puntaje màx en ùltimo set: @TorneoSeleccionadoDTO.PuntajeMaxUltimoSet</p>
-
-        <p><Vinieta />Sets màximo: @TorneoSeleccionadoDTO.SetsMax</p>
-        <p><Vinieta />Configuraciòn de equipos: @Util.ConfigEquiposDiccionario[TorneoSeleccionadoDTO.ConfiguracionEquipos]</p>
-
-        <p><Vinieta />Lìmite de inscriptos: @TorneoSeleccionadoDTO.MaxEquiposInscriptos</p>
-        <p><Vinieta />Limite jugadores por equipo: @TorneoSeleccionadoDTO.MaxJugadoresPorEquipo</p>
-        <p><Vinieta />Canchas: @TorneoSeleccionadoDTO.CantidadCanchas</p>
-        <p><Vinieta />Otros detalles: @TorneoSeleccionadoDTO.Otros</p>
-    </section>
-
-
-
+    <DetalleTorneoVista CantidadCanchas="@TorneoSeleccionadoDTO.CantidadCanchas"
+                        MaxEquiposInscriptos="@TorneoSeleccionadoDTO.MaxEquiposInscriptos"
+                        MaxJugadoresPorEquipo="@TorneoSeleccionadoDTO.MaxJugadoresPorEquipo"
+                        Otros="@TorneoSeleccionadoDTO.Otros" />
 
 }
 
@@ -77,9 +55,6 @@
     {
 
     }
-
-
-    private string tipoPrecioBuscado() => TorneoSeleccionadoDTO.TipoPrecio == "EQUIPO" ? "Precio por equipo" : "Precio por jugador";
 
     private async Task SuspenderTorneo()
     {
@@ -95,13 +70,12 @@
                 bool suspendido = await _servicioTorneo.SuspenderTorneo(TorneoSeleccionadoDTO.Id);
                 if (suspendido){
                     _snackbar.Add("Se ha suspendido el torneo", Severity.Success);
+                    IrAtras();
                 }
                 else
                 {
                     _snackbar.Add("No se ha podido suspender el torneo", Severity.Warning);
                 }
-                await _hubConnection.SendAsync("EnviarNotificacionSuspensionTorneo", suspendido, TorneoSeleccionadoDTO.Id);
-
             }
         }
         catch (Exception ex)
@@ -160,6 +134,8 @@
     }
 
 
+
+    private void EditarTorneo() => _nav.NavigateTo("/ORGANIZADOR/EdicionTorneo");
 
 
 }

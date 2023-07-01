@@ -2,6 +2,7 @@
 @inject ServicioMenu _servicioMenu
 @inject TorneoServicio _servicio_Torneo
 @inject UsuarioServicio _servicioUsuario
+@inject NotificacionesSignalRService _servicioNotificacionesSignalR
 @inject NavigationManager _nav
 @inject HubConnection _hubConnection
 
@@ -46,7 +47,7 @@ else
         {
             if (suspendido)
             {
-                await _servicio_Torneo.SuspenderTorneoSignalR(torneoId);
+                await _servicioNotificacionesSignalR.SuspenderTorneoSignalR(torneoId);
                 StateHasChanged();
             }
 
@@ -54,9 +55,11 @@ else
 
         _hubConnection.On<int>("RecibidorNotficacionEliminacion", async (torneoId) =>
         {
-            await _servicio_Torneo.EliminarTorneoSignalR(torneoId);
+            await _servicioNotificacionesSignalR.EliminarTorneoSignalR(torneoId);
                 StateHasChanged();
         });
+
+      
 
 
         if (_hubConnection.State == HubConnectionState.Disconnected)

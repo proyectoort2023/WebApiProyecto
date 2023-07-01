@@ -1,0 +1,217 @@
+﻿@page "/ORGANIZADOR/EdicionTorneo"
+@inject ServicioMenu _servicioMenu
+@inject UsuarioServicio _servicioUsuario
+@inject TorneoServicio _servicioTorneo
+@inject NavigationManager _nav
+@inject ISnackbar _snackbar
+@inject IMapper _autoMapper
+
+
+
+<PortadaRegistro NombreImagenBanner="@TorneoEditDTO.Banner"
+                 NombreImagenLogo="@TorneoEditDTO.Logo"
+                 SubirImagen="() => null"
+                 ModoEdicion="false" />
+
+<EspacioVertical Altura="15px" />
+<div>
+
+    <EditForm Model="@TorneoEditDTO" OnValidSubmit="Actualizar">
+        <DataAnnotationsValidator />
+
+        <MudDatePicker Label="Fecha de torneo" TitleDateFormat="dd/MM/yyyy" @bind-Date="fechaTorneo" For="(()=> fechaTorneo)" Validation="ValidarFecha" />
+        <EspacioVertical Altura="7px" />
+        <MudTimePicker Label="Hora de inicio" @bind-Time="horaComienzo" />
+        <EspacioVertical Altura="@espaciado" />
+
+        <MudTextField @bind-Value="TorneoEditDTO.Nombre"
+                      Label="Nombre del torneo"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      For="@(() => TorneoEditDTO.Nombre)"
+                      Disabled="true" />
+
+        <EspacioVertical Altura="@espaciado" />
+
+        <MudTextField @bind-Value="TorneoEditDTO.Lugar"
+                      Label="Lugar de encuentro y dirección"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      For="@(() => TorneoEditDTO.Lugar)" />
+        <EspacioVertical Altura="@espaciado" />
+
+        <div class="dosEnLinea">
+            <MudTextField @bind-Value="TorneoEditDTO.NombreContacto"
+                          Label="Nombre de contacto"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Style="width:95%"
+                          For="@(() => TorneoEditDTO.NombreContacto)" />
+            <EspacioVertical Altura="@espaciado" />
+
+            <MudTextField @bind-Value="TorneoEditDTO.TelContacto"
+                          Label="Celular"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          For="@(() => TorneoEditDTO.TelContacto)" />
+
+        </div>
+        <EspacioVertical Altura="@espaciado" />
+        <div class="dosEnLinea">
+            <MudNumericField @bind-Value="TorneoEditDTO.Precio"
+                             Label="Precio"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoEditDTO.Precio)"
+                             Style="width:95%" />
+            <EspacioVertical Altura="@espaciado" />
+            <MudSelect @bind-Value="@TorneoEditDTO.TipoPrecio"
+                       Label="Elegir tipo de precio"
+                       Variant="Variant.Outlined"
+                       For="@(() => TorneoEditDTO.TipoPrecio)">
+                @foreach (var tipoPrecio in Util.TipoPrecioDiccionario)
+                {
+                    <MudSelectItem Value="tipoPrecio.Value"> @tipoPrecio.Key </MudSelectItem>
+                }
+            </MudSelect>
+        </div>
+        <EspacioVertical Altura="@espaciado" />
+        <MudSelect @bind-Value="@TorneoEditDTO.ConfiguracionEquipos"
+                   Label="Elegir configuración de equipos"
+                   Variant="Variant.Outlined"
+                   For="@(() => TorneoEditDTO.ConfiguracionEquipos)">
+            @foreach (var configEquipo in Util.ConfigEquiposDiccionario)
+            {
+                <MudSelectItem Value="configEquipo.Key"> @configEquipo.Value </MudSelectItem>
+            }
+        </MudSelect>
+        <EspacioVertical Altura="@espaciado" />
+
+        <GrupoBotones ActualizarSetsMax="ActualizarSetsMax" SetsMaxActual="@TorneoEditDTO.SetsMax" />
+
+        <EspacioVertical Altura="@espaciado" />
+        <div class="dosEnLinea">
+            <MudNumericField @bind-Value="TorneoEditDTO.PuntajeMax"
+                             Label="Puntaje máximo"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoEditDTO.PuntajeMax)"
+                             Style="width:95%" />
+            <EspacioVertical Altura="@espaciado" />
+            <MudNumericField @bind-Value="TorneoEditDTO.PuntajeMaxUltimoSet"
+                             Label="Puntaje máximo último set"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoEditDTO.PuntajeMaxUltimoSet)" />
+        </div>
+        <EspacioVertical Altura="@espaciado" />
+        <div class="dosEnLinea">
+            <MudNumericField @bind-Value="TorneoEditDTO.MaxEquiposInscriptos"
+                             Label="Limite equipos inscriptos"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoEditDTO.MaxEquiposInscriptos)"
+                             Style="width:95%" />
+            <EspacioVertical Altura="@espaciado" />
+            <MudNumericField @bind-Value="TorneoEditDTO.MaxJugadoresPorEquipo"
+                             Label="Jugadores máx por equipo"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoEditDTO.MaxJugadoresPorEquipo)" />
+        </div>
+        <EspacioVertical Altura="@espaciado" />
+        <div class="dosEnLinea">
+            <MudNumericField @bind-Value="TorneoEditDTO.CantidadCanchas"
+                             Label="Cantidad de canchas"
+                             Variant="Variant.Outlined"
+                             For="(() => TorneoEditDTO.CantidadCanchas)"
+                             Style="width:95%" />
+            <EspacioVertical Altura="@espaciado" />
+            <MudSwitch @bind-Checked="@TorneoEditDTO.Indoor"
+                       ThumbIcon="@(TorneoEditDTO.Indoor==true ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+                       ThumbIconColor="@(TorneoEditDTO.Indoor==true ? Color.Success : Color.Error)"
+                       Label="@(TorneoEditDTO.Indoor==true ? "En local techado" : "Al aire libre")"
+                       Color="Color.Primary"
+                       UnCheckedColor="Color.Primary"
+                       Size="Size.Large" />
+        </div>
+
+        <MudTextField T="string" Label="Otras observaciones"
+                      Variant="Variant.Outlined"
+                      Text="@TorneoEditDTO.Otros"
+                      Lines="5" MaxLength="299"
+                      TextChanged="CambioTextoAreaControl" />
+
+        <EspacioVertical Altura="20px" />
+        <div class="center-container-login">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Guardar</MudButton>
+        </div>
+
+    </EditForm>
+</div>
+
+<EspacioVertical Altura="100px" />
+
+
+@code {
+
+    public TorneoActualizacionDTO TorneoEditDTO = new TorneoActualizacionDTO();
+
+    TimeSpan? horaComienzo = new TimeSpan(10, 00, 00);
+    DateTime? fechaTorneo = DateTime.Today.Date;
+
+    private string espaciado = "10px";
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/VisualizadorTorneo");
+        _servicioMenu.ActualizarTitulo("Modificar datos");
+        TorneoEditDTO = _autoMapper.Map<TorneoDTO, TorneoActualizacionDTO>(_servicioTorneo.ObtenerTorneoActual());
+        fechaTorneo = TorneoEditDTO.Fecha;
+        horaComienzo = TorneoEditDTO.HoraComienzo.TimeOfDay;
+    }
+
+
+    private string ValidarFecha(DateTime? fecha)
+    {
+        if (fecha == null) return "La fecha es requerida.";
+
+        if (fecha < DateTime.Today) return "La fecha debe ser mayor a hoy.";
+
+        // Realizar validaciones adicionales si es necesario
+
+        return string.Empty; // La fecha es válida
+    }
+
+    private async Task Actualizar()
+    {
+        try
+        {
+            TorneoEditDTO.Fecha = fechaTorneo.Value.Date;
+            TorneoEditDTO.HoraComienzo = fechaTorneo.Value.Date.Add(horaComienzo.Value);
+
+            bool torneoEditado = await _servicioTorneo.ModificarTorneoOrganizador(_autoMapper.Map<TorneoActualizacionDTO, TorneoDTO>(TorneoEditDTO));
+
+            _snackbar.Add($"Datos del torneo {TorneoEditDTO.Nombre} modificados", Severity.Success);
+            IrAtras();
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+
+    }
+
+    private async Task ActualizarSetsMax(int numeroSets)
+    {
+        TorneoEditDTO.SetsMax = numeroSets;
+    }
+
+    private void CambioTextoAreaControl(string texto)
+    {
+        TorneoEditDTO.Otros = texto;
+    }
+
+    private void IrAtras()
+    {
+        _nav.NavigateTo("/VisualizadorTorneo");
+    }
+
+
+}

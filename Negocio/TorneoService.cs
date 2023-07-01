@@ -118,7 +118,7 @@ namespace Negocio
         }
 
 
-        public async Task<bool> ModificarTorneo(Torneo torneo)
+        public async Task<Torneo> ModificarTorneo(Torneo torneo)
         {
             try
             {
@@ -135,14 +135,13 @@ namespace Negocio
                 Torneo torneoBuscado = await _db.Torneos.FindAsync(torneo.Id);
                 if (torneoBuscado == null) throw new Exception("El torneo no existe");
 
-                torneoBuscado.Nombre = torneo.Nombre;
+
                 torneoBuscado.Fecha = torneo.Fecha;
                 torneoBuscado.HoraComienzo = torneo.HoraComienzo;
                 torneoBuscado.NombreContacto = torneo.NombreContacto;
                 torneoBuscado.TelContacto = torneo.TelContacto;
-                torneoBuscado.Logo = torneo.Logo;
-                torneoBuscado.Banner = torneo.Banner;
                 torneoBuscado.Precio = torneo.Precio;
+                torneoBuscado.Lugar = torneo.Lugar;
                 torneoBuscado.TipoPrecio = torneo.TipoPrecio;
                 torneoBuscado.SetsMax = torneo.SetsMax;
                 torneoBuscado.PuntajeMax = torneo.PuntajeMax;
@@ -152,13 +151,15 @@ namespace Negocio
                 torneoBuscado.MaxEquiposInscriptos = torneo.MaxEquiposInscriptos;
                 torneoBuscado.MaxJugadoresPorEquipo = torneo.MaxJugadoresPorEquipo;
                 torneoBuscado.CantidadCanchas = torneo.CantidadCanchas;
-
+                torneoBuscado.Indoor = torneo.Indoor;
 
 
                 var torneoNuevo = _db.Update(torneoBuscado);
                 var registrosActualizados = await _db.SaveChangesAsync();
 
-                return registrosActualizados > 0;
+                if (registrosActualizados == 0) throw new Exception("No se ha podido actualizar . Revise");
+
+                return torneoNuevo.Entity;
             }
             catch (Exception ex)
             {

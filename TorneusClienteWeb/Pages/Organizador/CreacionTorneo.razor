@@ -128,7 +128,11 @@
                        Size="Size.Large" />
         </div>
 
-        <MudTextField T="string" Label="Otras observaciones" Variant="Variant.Outlined" Text="@TorneoParaCreacionDTO.Otros" Lines="5" MaxLength="299"/>
+        <MudTextField T="string" Label="Otras observaciones" 
+                                Variant="Variant.Outlined" 
+                                Text="@TorneoParaCreacionDTO.Otros" 
+                                Lines="5" MaxLength="299"
+                                TextChanged="CambioTextoAreaControl" />
      
         <EspacioVertical Altura="20px" />
         <div class="center-container-login">
@@ -203,12 +207,17 @@
         {
             _snackbar.Add(ex.Message, Severity.Warning);
         }
-       
+
     }
 
     private async Task ActualizarSetsMax(int numeroSets)
     {
         TorneoParaCreacionDTO.SetsMax = numeroSets;
+    }
+
+    private void CambioTextoAreaControl(string texto)
+    {
+        TorneoParaCreacionDTO.Otros = texto;
     }
 
 

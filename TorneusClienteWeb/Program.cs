@@ -63,7 +63,7 @@ builder.Services.AddSingleton<HubConnection>(sp =>
       .Build();
 });
 
-
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddFileReaderService(options => options.UseWasmSharedBuffer = true);
 
@@ -77,6 +77,9 @@ builder.Services.AddScoped<TorneoServicioDatos>();
 
 builder.Services.AddScoped<ImagenServicio>();
 builder.Services.AddScoped<ImagenServicioDatos>();
+
+builder.Services.AddScoped<NotificacionesSignalRService>();
+
 
 
 

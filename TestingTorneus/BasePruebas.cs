@@ -32,7 +32,6 @@ namespace TestingTorneus
                 opciones.CreateMap<Usuario, UsuarioDTO>().ReverseMap();
                 opciones.CreateMap<Torneo, TorneoDTO>().ReverseMap();
                 opciones.CreateMap<Torneo, TorneoCreacionDTO>().ReverseMap();
-                opciones.CreateMap<Torneo, TorneoActualizacionDTO>().ReverseMap();
                 opciones.CreateMap<Equipo, EquipoDTO>().ReverseMap();
                 opciones.CreateMap<Partido, PartidoDTO>().ReverseMap();
                 opciones.CreateMap<Inscripcion, InscripcionDTO>().ReverseMap();

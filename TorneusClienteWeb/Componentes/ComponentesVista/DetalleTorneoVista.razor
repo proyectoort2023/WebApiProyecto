@@ -1,0 +1,32 @@
+﻿
+
+<section class="card-general font-size-medio">
+
+
+
+    <p><Vinieta />Lìmite de inscriptos: <span class="font-size-grande color-redorange-vista">@MaxEquiposInscriptos</span></p>
+
+    <MudDivider DividerType="DividerType.Middle" Class="my-3" />
+
+    <p><Vinieta />Limite jugadores por equipo: <span class="font-size-grande color-redorange-vista"> @MaxJugadoresPorEquipo</span></p>
+
+    <MudDivider DividerType="DividerType.Middle" Class="my-3" />
+
+    <p><Vinieta />Canchas: <span class="font-size-grande color-redorange-vista">@CantidadCanchas</span></p>
+
+    <MudDivider DividerType="DividerType.Middle" Class="my-3" />
+
+    <p><Vinieta />Otros detalles: <span class="color-redorange-vista">@Otros</span></p>
+
+
+
+</section>
+
+@code {
+    [Parameter] public int MaxEquiposInscriptos { get; set; }
+    [Parameter] public int MaxJugadoresPorEquipo { get; set; }
+    [Parameter] public int CantidadCanchas { get; set; }
+    [Parameter] public string Otros { get; set; }
+
+
+}
