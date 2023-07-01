@@ -1,0 +1,58 @@
+﻿
+<section class="card-general">
+
+
+    <article class="d-flex justify-content-around align-items-center text-center">
+        <div>
+            <p class="font-size-small globo-propiedad">Fecha torneo: </p>
+            <img src="/imagenes/calendarioIcon.png" alt="" class="icono-small" />
+            <p class="font-size-medio">@Fecha.ToString("dd/MM/yyyy") </p>
+
+        </div>
+
+        <div>
+            <p class="font-size-small globo-propiedad">Hora de comienzo: </p>
+            <img src="/imagenes/tiempo.png" alt="" class="icono-small" />
+            <p class="font-size-medio"> @HoraComienzo.ToString("HH:mm") </p>
+        </div>
+    </article>
+
+    <MudDivider DividerType="DividerType.Middle" Class="my-3" />
+
+    <article class="d-flex justify-content-around align-items-center text-center">
+
+        <div>
+            <p class="font-size-small globo-propiedad">Contacto: </p>
+            <p class="font-size-medio">@NombreContacto</p>
+
+        </div>
+
+        <div>
+            <p class="font-size-small globo-propiedad">Cel: </p>
+            <p class="font-size-medio">@TelContacto</p>
+        </div>
+
+    </article>
+
+</section>"
+
+
+
+  
+
+
+
+    
+
+
+
+
+@code {
+    [Parameter] public DateTime Fecha { get; set; }
+    [Parameter] public DateTime HoraComienzo { get; set; }
+    [Parameter] public string NombreContacto { get; set; }
+    [Parameter] public string TelContacto { get; set; }
+
+
+
+}

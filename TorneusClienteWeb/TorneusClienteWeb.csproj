@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\imagenes\Default\" />
+    <Folder Include="wwwroot\imagenes\VistaConfiguracionEqupos\" />
   </ItemGroup>
 
 </Project>

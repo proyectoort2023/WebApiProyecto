@@ -1,0 +1,30 @@
+﻿
+
+<section class="card-general dosEnLinea d-flex justify-content-center align-items-center text-center">
+
+<div class ="row" >
+
+
+</div>
+    <div class="col-6">
+        <p class="globo-propiedad">Precio</p>
+        <p class="font-size-grande-extra">$@Precio</p>
+    </div>
+
+    <div class="col-6 ">
+        <img src="@tipoPrecioBuscadoIcono()" alt="" class="imagen-adaptada" />
+        <p class="font-size-small globo-propiedad">@tipoPrecioBuscado()</p>
+    </div>
+
+
+
+ </section>
+
+@code {
+    [Parameter] public string TipoPrecio { get; set; }
+    [Parameter] public double Precio { get; set; }
+
+    private string tipoPrecioBuscado() => TipoPrecio == "EQUIPO" ? "Precio por equipo" : "Precio por jugador";
+
+    private string tipoPrecioBuscadoIcono() => TipoPrecio == "EQUIPO" ? "/imagenes/equipoPrecio.png" : "/imagenes/individualPrecio.png";
+}

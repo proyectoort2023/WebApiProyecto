@@ -1,0 +1,43 @@
+﻿
+
+<section class="card-general">
+
+<table>
+    <tr>
+        <td style="width:33%">Puntaje por set</td>
+        <td style="width:34%">Sets</td>
+        <td style="width:33%">Puntaje ultimo set</td>
+      
+    </tr>
+
+    <tr>
+        <td class="font-size-grande-medio">@PuntajeMax</td>
+        <td class="font-size-grande-medio">@SetsMax</td>
+        <td class="font-size-grande-medio">@PuntajeMaxUltimoSet</td>
+    </tr>
+</table>
+
+    <MudDivider DividerType="DividerType.Middle" Class="my-3" />
+    <div class="d-flex justify-content-center">
+        <img src="/imagenes/VistaConfiguracionEqupos/@ConfiguracionEquiposImagen()" alt="" class="imagen-adaptada" />
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <p globo-propiedad>@Util.ConfigEquiposDiccionario[ConfiguracionEquipos]</p>
+    </div>
+  
+
+</section>
+
+@code {
+    [Parameter] public int PuntajeMax { get; set; }
+    [Parameter] public int PuntajeMaxUltimoSet { get; set; }
+    [Parameter] public int SetsMax { get; set; }
+    [Parameter] public string ConfiguracionEquipos { get; set; }
+
+
+    private string ConfiguracionEquiposImagen() => Util.ConfigEquiposImagenes[ConfiguracionEquipos];
+
+
+
+}

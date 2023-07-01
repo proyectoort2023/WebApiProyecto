@@ -43,6 +43,14 @@
             {"MUJERES","Equipo solo de mujeres" },
         };
 
+        public static Dictionary<string, string> ConfigEquiposImagenes = new Dictionary<string, string>()
+        {
+            {"HOMBRES","ce_hombres.png" },
+            {"MIXTO_5_1","ce_mix51.png" },
+            {"MIXTO_5_2","ce_mix52.png" },
+            {"MUJERES","ce_mujeres.png" },
+        };
+
 
 
 
