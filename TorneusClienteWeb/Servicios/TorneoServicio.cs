@@ -34,15 +34,6 @@ namespace TorneusClienteWeb.Servicios
 
         }
 
-        public TorneoDTO ObtenerTorneoActual()
-        {
-            return TorneoSeleccionado;
-        }
-
-        public List<TorneoDTO> ObtenerTorneos()
-        {
-            return Torneos;
-        }
 
         public async Task<List<TorneoDTO>> ObtenerTorneosOrganizador(int idUsuario)
         {
@@ -58,6 +49,16 @@ namespace TorneusClienteWeb.Servicios
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public List<TorneoDTO> ObtenerTorneos()
+        {
+            return Torneos;
+        }
+
+        public TorneoDTO ObtenerTorneoActual()
+        {
+            return TorneoSeleccionado;
         }
 
         public async Task<TorneoDTO> CrearTorneoOrganizador(TorneoCreacionDTO torneoDTO)
@@ -136,18 +137,34 @@ namespace TorneusClienteWeb.Servicios
 
 
         #region Métodos para admin de equipos
-        public async Task ListadoTorneosVigentes()
+
+        private async Task ListadoTorneosVigentesData()
         {
             try
             {
-                var torneosOrganizador = await _torneoServicioDatos.ObtenerTorneosVigentes();
-                Torneos = torneosOrganizador;
+                var torneosVigentes = await _torneoServicioDatos.ObtenerTorneosVigentes();
+                Torneos = torneosVigentes;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
 
+        }
+        public async Task<List<TorneoDTO>> ObtenerTorneosVigentes()
+        {
+            try
+            {
+                if (Torneos.Count < 1)
+                {
+                    await ListadoTorneosVigentesData();
+                }
+                return Torneos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         #endregion
 
