@@ -23,10 +23,10 @@
 
         public static Dictionary<string, string> RolesDiccionario = new Dictionary<string, string>()
         {
-            {"EQUIPO","/Equipo/Principal" },
-            {"ORGANIZADOR","/Organizador/Principal" },
+            {"EQUIPO","/EQUIPO/Principal" },
+            {"ORGANIZADOR","/ORGANIZADOR/Principal" },
             {"PLANILLERO","" },
-            {"ESPECTADOR","/Espectador/Principal" },
+            {"ESPECTADOR","/ESPECTADOR/Principal" },
         };
 
         public enum TipoImagen

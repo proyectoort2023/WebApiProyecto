@@ -7,20 +7,24 @@
 @inject HubConnection _hubConnection
 
 
-
-@if (Torneos != null && Torneos.Count > 0)
+@if (Torneos != null)
 {
-    @foreach (var torneo in Torneos)
+    @if (Torneos.Count > 0)
     {
-        <ItemTorneo Torneo="torneo" VisualizarDatosTorneo="VisualizarDatosTorneo" />
+        @foreach (var torneo in Torneos)
+        {
+            <ItemTorneo Torneo="torneo" VisualizarDatosTorneo="VisualizarDatosTorneo" />
+        }
+    }
+    else
+    {
+        <h2>Todavia no tiene torneos creados</h2>
     }
 }
 else
 {
-    <h2>Todavia no tiene torneos creados</h2>
+    <h2>Cargando...</h2>
 }
-
-<MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" OnClick="NuevoTorneo"/>
 
 
 <EspacioVertical Altura="10vh" />
@@ -28,7 +32,7 @@ else
 @code {
 
     List<MenuItem> menusItems = new();
-    List<TorneoDTO> Torneos = new();
+    List<TorneoDTO> Torneos = null;
 
     protected async override Task OnInitializedAsync()
     {

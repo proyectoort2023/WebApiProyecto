@@ -4,6 +4,7 @@ using BDTorneus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDTorneus.Migrations
 {
     [DbContext(typeof(TorneoContext))]
-    partial class TorneoContextModelSnapshot : ModelSnapshot
+    [Migration("20230702155833_UsuarioInscripciones")]
+    partial class UsuarioInscripciones
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -251,9 +254,6 @@ namespace BDTorneus.Migrations
 
                     b.Property<int>("CantidadCanchas")
                         .HasColumnType("int");
-
-                    b.Property<bool>("Cerrrado")
-                        .HasColumnType("bit");
 
                     b.Property<string>("ConfiguracionEquipos")
                         .HasColumnType("nvarchar(max)");

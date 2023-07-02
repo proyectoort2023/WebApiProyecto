@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using BDTorneus;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,6 @@ namespace Negocio.DTOs
 
         public List<EquipoDTO> Equipos { get; set; } = new List<EquipoDTO>();
         public List<TorneoDTO> Torneos { get; set; } = new List<TorneoDTO>();
+        public List<InscripcionDTO> Inscripciones { get; set; } = new List<InscripcionDTO>();
     }
 }

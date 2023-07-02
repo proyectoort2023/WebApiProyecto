@@ -77,6 +77,7 @@ namespace Negocio
 
                 torneo.HabilitacionInscripcion = false;
                 torneo.Suspendido = true;
+                torneo.Cerrrado = true;
 
                 int updateRealizado = await _db.SaveChangesAsync();
 
@@ -179,7 +180,8 @@ namespace Negocio
 
         public async Task<List<Torneo>> ObtenerTorneosVigentes()
         {
-            var listaTorneos = await _db.Torneos.OrderByDescending(o => o.Fecha)
+            var listaTorneos = await _db.Torneos.Where(w => w.Cerrrado == false)
+                                                .OrderByDescending(o => o.Fecha.Date)
                                                 .ToListAsync();
 
             return listaTorneos;

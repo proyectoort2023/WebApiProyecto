@@ -22,6 +22,7 @@ namespace BDTorneus
 
         public List<Equipo> Equipos { get; set; } =new List<Equipo>();
         public List<Torneo> Torneos { get; set; } = new List<Torneo>();
+        public List<Inscripcion> Inscripciones { get; set; } = new List<Inscripcion>();
 
     }
 }

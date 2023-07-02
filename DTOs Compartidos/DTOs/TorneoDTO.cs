@@ -34,6 +34,7 @@ namespace Negocio.DTOs
         public int CantidadCanchas { get; set; }
         public string Otros { get; set; }
         public bool Suspendido { get; set; }
+        public bool Cerrrado { get; set; }
 
         public int UsuarioId { get; set; }
         public UsuarioDTO Usuario { get; set; }

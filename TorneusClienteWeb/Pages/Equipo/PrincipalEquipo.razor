@@ -1,20 +1,123 @@
 ﻿@page "/EQUIPO/Principal"
 @inject ServicioMenu _servicioMenu
+@inject TorneoServicio _servicio_Torneo
+@inject UsuarioServicio _servicioUsuario
+@inject NotificacionesSignalRService _servicioNotificacionesSignalR
+@inject NavigationManager _nav
+@inject HubConnection _hubConnection
 
-<h3>Principal Equipo</h3>
+
+
+
+@if (Torneos != null)
+{
+    @if (Torneos.Count > 0)
+    {
+        @foreach (var torneo in Torneos)
+        {
+            <ItemTorneo Torneo="torneo" VisualizarDatosTorneo="VisualizarDatosTorneo" />
+        }
+    }
+    else
+    {
+        <h2>Todavia no tiene torneos creados</h2>
+    }
+}
+else
+{
+    <h2>Cargando...</h2>
+}
+
+<MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="fab fa-internet-explorer" Size="Size.Large" OnClick="NuevoTorneo" />
+
+
+<EspacioVertical Altura="10vh" />
 
 @code {
+
     List<MenuItem> menusItems = new();
+    List<TorneoDTO> Torneos = null;
 
     protected async override Task OnInitializedAsync()
     {
-        menusItems = new List<MenuItem>()
-        {
-            new MenuItem ("Mensajes","fa fa-envelope","/counter"),
-            new MenuItem ("Torneos","fa fa-trophy","/fetchdata"),
-            new MenuItem ("Mis suscripciones","fas fa-file-invoice","/login")
-        };
-        _servicioMenu.ActualizarItems(menusItems);
+        ActualizarMenu();
+        ActualizarTorneos();
+        await RecibidoresNotificacones();
+    }
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        ActualizarMenu();
     }
 
+    private async Task RecibidoresNotificacones()
+    {
+        _hubConnection.On<bool, int>("RecibidorNotficacionSuspension", async (suspendido, torneoId) =>
+        {
+            if (suspendido)
+            {
+                await _servicioNotificacionesSignalR.SuspenderTorneoSignalR(torneoId);
+                StateHasChanged();
+            }
+
+        });
+
+        _hubConnection.On<int>("RecibidorNotficacionEliminacion", async (torneoId) =>
+        {
+            await _servicioNotificacionesSignalR.EliminarTorneoSignalR(torneoId);
+            StateHasChanged();
+        });
+
+
+
+
+        if (_hubConnection.State == HubConnectionState.Disconnected)
+        {
+            await _hubConnection.StartAsync();
+        }
+        await _hubConnection.SendAsync("AgregarAGrupo", _servicioUsuario.ObtenerUsuarioLogueado().Rol);
+    }
+
+    private void ActualizarMenu()
+    {
+        menusItems = new List<MenuItem>()
+        {
+            new MenuItem ("Mensajes","fa fa-envelope","/"),
+            new MenuItem ("Mis torneos","fa fa-trophy","/ORGANIZADOR/Principal"),
+            new MenuItem ("Deudores","fa fa-money-bill","/")
+        };
+        _servicioMenu.ActualizarItems(menusItems);
+        _servicioMenu.ActualizarTitulo("Mis torneos");
+        _servicioMenu.ActualizarNavegacionPOP(true, true, "/");
+    }
+
+    private async void ActualizarTorneos()
+    {
+        try
+        {
+            int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            Torneos = await _servicio_Torneo.ObtenerTorneosOrganizador(idOrganizador);
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            _nav.NavigateTo("/", true);
+        }
+
+    }
+
+    private void NuevoTorneo()
+    {
+        _nav.NavigateTo("/ORGANIZADOR/CreacionTorneo");
+    }
+
+    private async Task VisualizarDatosTorneo(int torneoId)
+    {
+        await _servicio_Torneo.SeleccionTorneo(torneoId);
+        _nav.NavigateTo("/VisualizadorTorneo");
+    }
+
+
+
+
 }
+

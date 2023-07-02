@@ -33,10 +33,10 @@ namespace BDTorneus
         public bool HabilitacionInscripcion { get; set; }
         public int CantidadCanchas { get; set; }
         public string Otros { get; set; }
-        public bool Suspendido { get; set; }
+        public bool Suspendido { get; set; }       
+        public bool Cerrrado { get; set; }
 
         public int UsuarioId { get; set; }
-        [JsonIgnore]
         public Usuario Usuario { get; set; }
         public virtual List<Inscripcion> Inscripciones { get; set; } = new List<Inscripcion>();
         public virtual List<Partido> Fixture { get; set; }

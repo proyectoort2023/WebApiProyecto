@@ -19,6 +19,7 @@ namespace TorneusClienteWeb.Servicios
             _hubConnection = hubConnection;
         }
 
+        #region Métodos para organizadores
         public async Task ListadoTorneosOrganizadorData(int idUsuario)
         {
             try
@@ -130,6 +131,25 @@ namespace TorneusClienteWeb.Servicios
                 Torneos = Torneos.OrderByDescending(o => o.Fecha).ToList();
             }
         }
+
+        #endregion
+
+
+        #region Métodos para admin de equipos
+        public async Task ListadoTorneosVigentes()
+        {
+            try
+            {
+                var torneosOrganizador = await _torneoServicioDatos.ObtenerTorneosVigentes();
+                Torneos = torneosOrganizador;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+        #endregion
 
 
     }
