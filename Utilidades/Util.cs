@@ -7,6 +7,12 @@
         public static string URL_BASE_IMAGENES = "https://imagenescontenedor.blob.core.windows.net/torneusimagenes";
         public static string REGISTRARSE_GOOGLE = "REGISTRARSE_GOOGLE";
 
+        public static string IconoEstrella = "fas fa-star";
+        public static string IconoEquipo = "fas fa-users";
+        public static string IconoInscripcion = "fas fa-pencil-alt";
+        public static string IconoMedalla = "fas fa-medal";
+        public static string IconoJugados = "fas fa-sitemap";
+
         public enum  Roles
         {
                 EQUIPO,
@@ -50,7 +56,6 @@
             {"MIXTO_5_2","ce_mix52.png" },
             {"MUJERES","ce_mujeres.png" },
         };
-
 
 
 

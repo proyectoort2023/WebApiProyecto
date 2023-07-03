@@ -23,10 +23,7 @@
         </div>
     }
 
-    <section class="card-general color-lila animated-gradient">
-        <span>Fixture</span>
-        <img src="/imagenes/flecha.png" alt="" class="flecha-small">
-    </section>
+    <BotonAnimado Texto="Fixture" Icono="@Util.IconoEstrella" OnClick="VerFixture" />
 
     <JornadaVista Fecha="@TorneoSeleccionadoDTO.Fecha" 
                   HoraComienzo="@TorneoSeleccionadoDTO.HoraComienzo"
@@ -48,8 +45,8 @@
 }
 
 
-@code {
-    [Parameter] public TorneoDTO TorneoSeleccionadoDTO { get; set; }
+        @code {
+        [Parameter] public TorneoDTO TorneoSeleccionadoDTO { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
@@ -133,6 +130,10 @@
         }
     }
 
+    private void VerFixture()
+        {
+        
+        }
 
 
     private void EditarTorneo() => _nav.NavigateTo("/ORGANIZADOR/EdicionTorneo");

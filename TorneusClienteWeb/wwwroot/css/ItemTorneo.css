@@ -76,4 +76,18 @@
     z-index: 150;
 }
 
+.flex-column-customizable {
+    height: 100vh;
+    width:105vw;
+    margin:-30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    background: url("/imagenes/fondoGestionEq3.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 
