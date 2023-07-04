@@ -233,24 +233,53 @@ namespace WebApiTorneus.Controllers
 
 
         /// <summary>
-        /// Habilita la inscripción de los equipos
+        /// Habilita la inscripción de los equipos a un torneo
         /// </summary>
         /// <remarks>
         /// Este endpoint habilita por parte del organizador la inscripción de los equipos al torneo
         /// </remarks>
         /// <response code="200">OK. Inscripciones abiertas</response>
         /// <response code="400">No se pudo habilitar</response>
-        [ProducesResponseType(typeof(List<Torneo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize]
-        [HttpPatch("HabilitarInscripcion/{idTorneo}")]
+        [HttpGet("HabilitarInscripcion/{idTorneo}")]
         public async Task<IActionResult> GetHabilitarInscripcion(int idTorneo)
         {
             try
             {
-                var (habilitarTorneo, fechaComienzo) = await _torneoService.AbrirInscripciones(idTorneo);
+                bool habilitarTorneo = await _torneoService.AbrirInscripciones(idTorneo);
 
+                if (!habilitarTorneo) return BadRequest("No existe el torneo. Cod 23");
                 return Ok(habilitarTorneo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Cierra la inscripción de los equipos a un torneo
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint cierra por parte del organizador la inscripción de los equipos al torneo
+        /// </remarks>
+        /// <response code="200">OK. Inscripción cerrada</response>
+        /// <response code="400">No se pudo cerrar</response>
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
+        [HttpGet("CerrarInscripcion/{idTorneo}")]
+        public async Task<IActionResult> GetCerrarInscripcion(int idTorneo)
+        {
+            try
+            {
+                bool cerrarTorneo = await _torneoService.CerrarInscripciones(idTorneo);
+
+                if (!cerrarTorneo) return BadRequest("No existe el torneo. Cod 24");
+                return Ok(cerrarTorneo);
             }
             catch (Exception ex)
             {

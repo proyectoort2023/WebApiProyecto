@@ -133,6 +133,40 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
+        public async Task<bool> AbrirInscripcionesTorneoOrganizador(TorneoDTO torneoDTO)
+        {
+            try
+            {
+                bool resultado = await _torneoServicioDatos.AbrirInscripcionesTorneoOrganizador(torneoDTO.Id);
+                if (!resultado) throw new Exception("No se ha podiddo abrir la inscripcion del torneo seleccionado");
+
+                bool torneoAbierto = true;
+                await _hubConnection.SendAsync("EnviarAperturaCierreTorneo", torneoDTO.Id, torneoAbierto); 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> CerrarInscripcionesTorneoOrganizador(TorneoDTO torneoDTO)
+        {
+            try
+            {
+                bool resultado = await _torneoServicioDatos.CerrarInscripcionesTorneoOrganizador(torneoDTO.Id);
+                if (!resultado) throw new Exception("No se ha podiddo cerrar la inscripcion del torneo seleccionado");
+
+                bool torneoAbierto = false;
+                await _hubConnection.SendAsync("EnviarAperturaCierreTorneo", torneoDTO.Id, torneoAbierto);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         #endregion
 
 

@@ -214,6 +214,71 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 
         }
 
+        public async Task<bool> AbrirInscripcionesTorneoOrganizador(int torneoId)
+        {
+
+            try
+            {
+                if (torneoId < 1) throw new Exception("No existe el torneo");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.GetAsync($"api/Torneo/HabilitarInscripcion/{torneoId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var torneo = JsonConvert.DeserializeObject<bool>(content);
+                    return torneo;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+        public async Task<bool> CerrarInscripcionesTorneoOrganizador(int torneoId)
+        {
+
+            try
+            {
+                if (torneoId < 1) throw new Exception("No existe el torneo");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.GetAsync($"api/Torneo/CerrarInscripcion/{torneoId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var torneo = JsonConvert.DeserializeObject<bool>(content);
+                    return torneo;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+
 
     }
 }

@@ -64,5 +64,10 @@ namespace WebApiTorneus.HubSignalR
             await Clients.All.SendAsync("RecibidorNotficacionModificacion", torneoDTO);
         }
 
+        public async Task EnviarAperturaCierreTorneo(int torneoId, bool apertura)
+        {
+            await Clients.All.SendAsync("RecibidorAperturaCierreTorneo", torneoId, apertura);
+        }
+
     }
 }
