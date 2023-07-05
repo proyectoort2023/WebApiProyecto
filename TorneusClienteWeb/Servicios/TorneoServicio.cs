@@ -34,15 +34,6 @@ namespace TorneusClienteWeb.Servicios
 
         }
 
-        public TorneoDTO ObtenerTorneoActual()
-        {
-            return TorneoSeleccionado;
-        }
-
-        public List<TorneoDTO> ObtenerTorneos()
-        {
-            return Torneos;
-        }
 
         public async Task<List<TorneoDTO>> ObtenerTorneosOrganizador(int idUsuario)
         {
@@ -58,6 +49,16 @@ namespace TorneusClienteWeb.Servicios
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public List<TorneoDTO> ObtenerTorneos()
+        {
+            return Torneos;
+        }
+
+        public TorneoDTO ObtenerTorneoActual()
+        {
+            return TorneoSeleccionado;
         }
 
         public async Task<TorneoDTO> CrearTorneoOrganizador(TorneoCreacionDTO torneoDTO)
@@ -132,22 +133,77 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
+        public async Task<bool> AbrirInscripcionesTorneoOrganizador(TorneoDTO torneoDTO)
+        {
+            try
+            {
+                bool resultado = await _torneoServicioDatos.AbrirInscripcionesTorneoOrganizador(torneoDTO.Id);
+                if (!resultado) throw new Exception("No se ha podiddo abrir la inscripcion del torneo seleccionado");
+
+                TorneoSeleccionado.HabilitacionInscripcion = true;
+                await _hubConnection.SendAsync("EnviarAperturaCierreTorneo", torneoDTO.Id, TorneoSeleccionado.HabilitacionInscripcion); 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> CerrarInscripcionesTorneoOrganizador(TorneoDTO torneoDTO)
+        {
+            try
+            {
+                bool resultado = await _torneoServicioDatos.CerrarInscripcionesTorneoOrganizador(torneoDTO.Id);
+                if (!resultado) throw new Exception("No se ha podiddo cerrar la inscripcion del torneo seleccionado");
+
+                TorneoSeleccionado.HabilitacionInscripcion = false;
+                await _hubConnection.SendAsync("EnviarAperturaCierreTorneo", torneoDTO.Id, TorneoSeleccionado.HabilitacionInscripcion);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public int BuscarIndiceTorneo(int torneoId)
+        {
+            return Torneos.FindIndex(f => f.Id == torneoId);
+        }
+
         #endregion
 
 
         #region Métodos para admin de equipos
-        public async Task ListadoTorneosVigentes()
+
+        private async Task ListadoTorneosVigentesData()
         {
             try
             {
-                var torneosOrganizador = await _torneoServicioDatos.ObtenerTorneosVigentes();
-                Torneos = torneosOrganizador;
+                var torneosVigentes = await _torneoServicioDatos.ObtenerTorneosVigentes();
+                Torneos = torneosVigentes;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
 
+        }
+        public async Task<List<TorneoDTO>> ObtenerTorneosVigentes()
+        {
+            try
+            {
+                if (Torneos.Count < 1)
+                {
+                    await ListadoTorneosVigentesData();
+                }
+                return Torneos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         #endregion
 

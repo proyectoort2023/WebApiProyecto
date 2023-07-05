@@ -28,9 +28,6 @@ else
     <h2>Cargando...</h2>
 }
 
-<MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="fab fa-internet-explorer" Size="Size.Large" OnClick="NuevoTorneo" />
-
-
 <EspacioVertical Altura="10vh" />
 
 @code {
@@ -51,24 +48,21 @@ else
 
     private async Task RecibidoresNotificacones()
     {
-        _hubConnection.On<bool, int>("RecibidorNotficacionSuspension", async (suspendido, torneoId) =>
-        {
-            if (suspendido)
-            {
-                await _servicioNotificacionesSignalR.SuspenderTorneoSignalR(torneoId);
-                StateHasChanged();
-            }
+        //_hubConnection.On<bool, int>("RecibidorNotficacionSuspension", async (suspendido, torneoId) =>
+        //{
+        //    if (suspendido)
+        //    {
+        //        await _servicioNotificacionesSignalR.SuspenderTorneoSignalR(torneoId);
+        //        StateHasChanged();
+        //    }
 
-        });
+        //});
 
-        _hubConnection.On<int>("RecibidorNotficacionEliminacion", async (torneoId) =>
-        {
-            await _servicioNotificacionesSignalR.EliminarTorneoSignalR(torneoId);
-            StateHasChanged();
-        });
-
-
-
+        //_hubConnection.On<int>("RecibidorNotficacionEliminacion", async (torneoId) =>
+        //{
+        //    await _servicioNotificacionesSignalR.EliminarTorneoSignalR(torneoId);
+        //    StateHasChanged();
+        //});
 
         if (_hubConnection.State == HubConnectionState.Disconnected)
         {
@@ -82,11 +76,11 @@ else
         menusItems = new List<MenuItem>()
         {
             new MenuItem ("Mensajes","fa fa-envelope","/"),
-            new MenuItem ("Mis torneos","fa fa-trophy","/ORGANIZADOR/Principal"),
-            new MenuItem ("Deudores","fa fa-money-bill","/")
+            new MenuItem ("Torneos","fa fa-trophy","/EQUIPO/Principal"),
+            new MenuItem ("Gestíones","fas fa-volleyball-ball","/EQUIPO/Gestiones")
         };
         _servicioMenu.ActualizarItems(menusItems);
-        _servicioMenu.ActualizarTitulo("Mis torneos");
+        _servicioMenu.ActualizarTitulo("Torneos");
         _servicioMenu.ActualizarNavegacionPOP(true, true, "/");
     }
 
@@ -94,8 +88,7 @@ else
     {
         try
         {
-            int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
-            Torneos = await _servicio_Torneo.ObtenerTorneosOrganizador(idOrganizador);
+            Torneos = await _servicio_Torneo.ObtenerTorneosVigentes();
             StateHasChanged();
         }
         catch (Exception)
@@ -105,10 +98,6 @@ else
 
     }
 
-    private void NuevoTorneo()
-    {
-        _nav.NavigateTo("/ORGANIZADOR/CreacionTorneo");
-    }
 
     private async Task VisualizarDatosTorneo(int torneoId)
     {

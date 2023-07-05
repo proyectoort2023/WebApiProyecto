@@ -17,7 +17,7 @@
     protected async override Task OnInitializedAsync()
     {
         _servicioMenu.ActualizarTitulo("Torneo");
-        _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
+        _servicioMenu.ActualizarNavegacionPOP(true, false, $"/{_servicioUsuario.ObtenerUsuarioLogueado().Rol}/Principal");
         TorneoVistaDTO = _servicioTorneo.ObtenerTorneoActual();
 
         _hubConnection.On<TorneoDTO>("RecibidorNotficacionModificacion", async (torneoDTO) =>

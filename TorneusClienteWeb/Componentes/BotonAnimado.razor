@@ -1,0 +1,18 @@
+﻿
+
+<section class="card-general color-lila animated-gradient" @onclick="OnClickEvento">
+    <i class="@Icono tamanioIcono"></i>
+    <span>@Texto</span>
+    <img src="/imagenes/flecha.png" alt="" class="flecha-small">
+</section>
+
+@code {
+    [Parameter] public EventCallback<EventArgs> OnClick { get; set; }
+    [Parameter] public string Texto { get; set; }
+    [Parameter] public string Icono { get; set; }
+
+    private async Task OnClickEvento()
+    {
+        await OnClick.InvokeAsync(EventArgs.Empty);
+    }
+}

@@ -47,7 +47,7 @@ namespace WebApiTorneus.BackgroundServices
                         if (torneo.FechaComienzo.Date.AddDays(-1) == fechaHoy.Date && fechaHoy.TimeOfDay > horaLimite)
                         {
                             var torneoService = scope.ServiceProvider.GetRequiredService<TorneoService>();
-                            bool resultado = await torneoService.CerrarInscripciones(torneo);
+                            bool resultado = await torneoService.CerrarInscripciones(torneo.IdTorneo);
                             if (resultado) torneos.Remove(torneo);
                         }
                     }

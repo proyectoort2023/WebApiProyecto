@@ -90,11 +90,18 @@ input[type="file"] {
     height:30px;
     width:30px;
 }
+.tamanioTotal {
+    height: 100%;
+    width:auto;
+}
 
 .color-lila > span {
     text-align: center;
-    width: 100%;
     font-size: 1.5rem;
+}
+
+.tamanioIcono {
+    font-size: 1.3rem;
 }
 
 .animated-gradient {

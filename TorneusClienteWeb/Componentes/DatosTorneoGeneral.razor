@@ -23,10 +23,7 @@
         </div>
     }
 
-    <section class="card-general color-lila animated-gradient">
-        <span>Fixture</span>
-        <img src="/imagenes/flecha.png" alt="" class="flecha-small">
-    </section>
+    <BotonAnimado Texto="Fixture" Icono="@Util.IconoEstrella" OnClick="VerFixture" />
 
     <JornadaVista Fecha="@TorneoSeleccionadoDTO.Fecha" 
                   HoraComienzo="@TorneoSeleccionadoDTO.HoraComienzo"
@@ -92,9 +89,31 @@
     {
         try
         {
-            if (!hab)
+            string pregunta = hab ? "cerrar" : "abir";
+            string tituloModal = hab ? "Cierre" : "Apertura";
+
+            var parametros = new DialogParameters();
+            parametros.Add(nameof(DialogComponent.Mensaje), $"Desea {pregunta} las inscripciones para los equipos?");
+
+            var result = await _dialogService.Show<DialogComponent>($"{tituloModal} de inscripciones", parametros).Result;
+
+            if (!result.Canceled)
             {
-                //aqui tengo que habilitar por medio del servicio
+                if (!hab)
+                {
+                    //Habilita inscripcion
+                    bool resultado = await _servicioTorneo.AbrirInscripcionesTorneoOrganizador(TorneoSeleccionadoDTO);
+                    if (resultado) _snackbar.Add("Inscripciones abiertas", Severity.Success);
+                    else _snackbar.Add("No se ha podido abrir la inscripcion", Severity.Warning);
+                }
+                else
+                {
+                    //Cierra inscripcion
+                    bool resultado = await _servicioTorneo.CerrarInscripcionesTorneoOrganizador(TorneoSeleccionadoDTO);
+                    if (resultado) _snackbar.Add("Inscripciones cerradas", Severity.Success);
+                    else _snackbar.Add("No se ha podido cerrar la inscripcion", Severity.Warning);
+                }
+                StateHasChanged();
             }
         }
         catch (Exception ex)
@@ -133,6 +152,10 @@
         }
     }
 
+    private void VerFixture()
+        {
+        
+        }
 
 
     private void EditarTorneo() => _nav.NavigateTo("/ORGANIZADOR/EdicionTorneo");
