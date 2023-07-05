@@ -45,8 +45,8 @@
 }
 
 
-        @code {
-        [Parameter] public TorneoDTO TorneoSeleccionadoDTO { get; set; }
+@code {
+    [Parameter] public TorneoDTO TorneoSeleccionadoDTO { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
@@ -91,7 +91,29 @@
         {
             if (!hab)
             {
-                //aqui tengo que habilitar por medio del servicio
+                //Habilita inscripcion
+                bool resultado = await _servicioTorneo.AbrirInscripcionesTorneoOrganizador(TorneoSeleccionadoDTO);
+                if (resultado)
+                {
+                    _snackbar.Add("Inscripciones abiertas", Severity.Success);
+                }
+                else
+                {
+                    _snackbar.Add("No se ha podido abrir la inscripcion", Severity.Warning);
+                }
+            }
+            else
+            {
+                //Cierra inscripcion
+                bool resultado = await _servicioTorneo.CerrarInscripcionesTorneoOrganizador(TorneoSeleccionadoDTO);
+                if (resultado)
+                {
+                    _snackbar.Add("Inscripciones cerradas", Severity.Success);
+                }
+                else
+                {
+                    _snackbar.Add("No se ha podido cerrar la inscripcion", Severity.Warning);
+                }
             }
         }
         catch (Exception ex)

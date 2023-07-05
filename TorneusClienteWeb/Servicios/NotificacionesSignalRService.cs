@@ -47,6 +47,11 @@ namespace TorneusClienteWeb.Servicios
             _torneoServicio.ObtenerTorneos().Add(torneoDTO);
         }
 
+        public void AbrirCerrarInscripciones(int torneoId, bool habilitacionTorneo)
+        {
+            int posicion = _torneoServicio.ObtenerTorneos().FindIndex(f => f.Id == torneoId);
+            _torneoServicio.ObtenerTorneos()[posicion].HabilitacionInscripcion = habilitacionTorneo;
+        }
 
 
 
