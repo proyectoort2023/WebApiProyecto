@@ -140,8 +140,8 @@ namespace TorneusClienteWeb.Servicios
                 bool resultado = await _torneoServicioDatos.AbrirInscripcionesTorneoOrganizador(torneoDTO.Id);
                 if (!resultado) throw new Exception("No se ha podiddo abrir la inscripcion del torneo seleccionado");
 
-                bool torneoAbierto = true;
-                await _hubConnection.SendAsync("EnviarAperturaCierreTorneo", torneoDTO.Id, torneoAbierto); 
+                TorneoSeleccionado.HabilitacionInscripcion = true;
+                await _hubConnection.SendAsync("EnviarAperturaCierreTorneo", torneoDTO.Id, TorneoSeleccionado.HabilitacionInscripcion); 
                 return true;
             }
             catch (Exception ex)
@@ -157,14 +157,19 @@ namespace TorneusClienteWeb.Servicios
                 bool resultado = await _torneoServicioDatos.CerrarInscripcionesTorneoOrganizador(torneoDTO.Id);
                 if (!resultado) throw new Exception("No se ha podiddo cerrar la inscripcion del torneo seleccionado");
 
-                bool torneoAbierto = false;
-                await _hubConnection.SendAsync("EnviarAperturaCierreTorneo", torneoDTO.Id, torneoAbierto);
+                TorneoSeleccionado.HabilitacionInscripcion = false;
+                await _hubConnection.SendAsync("EnviarAperturaCierreTorneo", torneoDTO.Id, TorneoSeleccionado.HabilitacionInscripcion);
                 return true;
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public int BuscarIndiceTorneo(int torneoId)
+        {
+            return Torneos.FindIndex(f => f.Id == torneoId);
         }
 
         #endregion

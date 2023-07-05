@@ -49,7 +49,7 @@ namespace TorneusClienteWeb.Servicios
 
         public void AbrirCerrarInscripciones(int torneoId, bool habilitacionTorneo)
         {
-            int posicion = _torneoServicio.ObtenerTorneos().FindIndex(f => f.Id == torneoId);
+            int posicion = _torneoServicio.BuscarIndiceTorneo(torneoId);
             _torneoServicio.ObtenerTorneos()[posicion].HabilitacionInscripcion = habilitacionTorneo;
         }
 
