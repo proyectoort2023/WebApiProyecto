@@ -120,6 +120,24 @@ input[type="file"] {
     }
 }
 
+@keyframes textoAnimado  {
+    0% {
+        font-size: 0.8rem;
+    }
+
+    50% {
+        font-size: 1.2rem;
+    }
+    100% {
+        font-size: 0.8rem;
+    }
+}
+.animacionInscripcion {
+    animation: textoAnimado 2s linear infinite;
+    color:orange;
+}
+
+
 .font-size-small{
     font-size: 0.8rem;
 }

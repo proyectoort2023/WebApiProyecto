@@ -22,6 +22,14 @@
             <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error" @onclick="EliminarTorneo" />
         </div>
     }
+    @if (ValidarInscripcion())
+    {
+        <div class="d-flex justify-content-center align-items-center" @onclick="SuspenderTorneo">
+            <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning" />
+            <span class="m-1 animacionInscripcion">Inscribirme</span>
+        </div>
+      
+    }
 
     <BotonAnimado Texto="Fixture" Icono="@Util.IconoEstrella" OnClick="VerFixture" />
 
@@ -153,12 +161,20 @@
     }
 
     private void VerFixture()
-        {
-        
-        }
+    {
+
+    }
 
 
     private void EditarTorneo() => _nav.NavigateTo("/ORGANIZADOR/EdicionTorneo");
 
+    private bool ValidarInscripcion() => _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.EQUIPO.ToString()
+                                                        && TorneoSeleccionadoDTO.Cerrrado == false
+                                                        && TorneoSeleccionadoDTO.Suspendido == false;
+
+    private async Task Inscribirme()
+    {
+        
+    }
 
 }
