@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BDTorneus;
+using DTOs_Compartidos.DTOs;
 using Negocio.DTOs;
 
 namespace WebApiTorneus.AMProfile
@@ -17,6 +18,8 @@ namespace WebApiTorneus.AMProfile
             CreateMap<Partido, PartidoDTO>().ReverseMap();
             CreateMap<Inscripcion, InscripcionDTO>().ReverseMap();
             CreateMap<Jugador, JugadorDTO>().ReverseMap();
+            CreateMap<EquipoCreacionDTO, Equipo>().ReverseMap();
+            
         }
     }
 }

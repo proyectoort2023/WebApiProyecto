@@ -2,8 +2,8 @@
 <div class="container-equipo">
     <div class="equipo-grid sombraEquipo color-fondo-equipo">
         <div class="flex-equipo">
-            <span>Los totoras del sur del este</span>
-            <span>6</span>
+            <span>@RecortarNombreEquipo()</span>
+            <span>@Equipo.Jugadores.Count</span>
         </div>
 
     </div>
@@ -12,12 +12,11 @@
     <div class="lista-jugadores-grid sombraEquipo color-fondo-equipo" id="contenedor">
         <div>
             <ul class="hidden">
-                <li>Jugador 1</li>
-                <li>Jugador 2</li>
-                <li>Jugador 3</li>
-                <li>Jugador 4</li>
-                <li>Jugador 5</li>
-                <li>Jugador 6</li>
+               @foreach(var jugador in Equipo.Jugadores)
+                {
+                    <i class="fas fa-child"></i>
+                    <li>@jugador.Cedula - @jugador.NombreCompleto</li>
+                }
             </ul>
         </div>
     </div>
@@ -26,7 +25,7 @@
     <div class="grid-vacio-abajo-derecha"></div>
 
     <div class="avatar-equipo">
-        <img src="escudo.jpg" alt="">
+        <img src="@Equipo.Logo" alt="Logo de equipo">
     </div>
 </div>
 
@@ -35,7 +34,14 @@
 
     protected async override Task OnInitializedAsync()
     {
-      
 
     }
+
+    private string RecortarNombreEquipo()
+    {
+        return Equipo.Nombre.Substring(1, 15);
+    }
+
+
+
 }

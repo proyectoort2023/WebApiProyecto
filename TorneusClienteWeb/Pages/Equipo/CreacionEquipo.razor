@@ -1,0 +1,144 @@
+﻿@page "/EQUIPOS/Creacion"
+@inject NavigationManager _nav
+@inject ISnackbar _snackbar
+
+<VistaLogoEquipo ModoEdicion="true" NombreImagenLogo="@Equipo.Logo" SubirImagen="ActualizarImagen" />
+
+
+
+
+ <EditForm Model="@Equipo" OnValidSubmit="Registrar">
+        <DataAnnotationsValidator />
+
+    <div class="card-general">
+        <MudTextField @bind-Value="Equipo.Nombre"
+                      Label="Nombre del equipo"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      For="@(() => Equipo.Nombre)" />
+
+        <EspacioVertical Altura="@espaciado" />
+
+
+        <MudTextField @bind-Value="Equipo.Abreviatura"
+                      Label="Abreviatura del equipo"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      For="@(() => Equipo.Abreviatura)" />
+
+        <EspacioVertical Altura="@espaciado" />
+    </div>
+      
+            <div class="card-general">
+                <table>
+                    <tr>
+                        <th>43562585</th>
+                        <th>Ruben Garcia</th>
+                        <th>20/11/1988</th>
+                    </tr>
+
+            <tr>
+                <td>Lista de jugadores Cedula</td>
+                <td>Nombre</td>
+                <td>Fecha Nacimiento</td>
+            </tr>
+
+                     <tr>
+                        <td>
+                            <MudTextField @bind-Value="Jugador.Cedula"
+                                          Label="Cedula"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"/>
+                        </td>
+
+                <td>
+                    <MudTextField @bind-Value="Jugador.NombreCompleto"
+                                  Label="Nombre del jugador"
+                                  Variant="Variant.Outlined"
+                                  Margin="Margin.Dense" />
+                </td>
+                <td>
+                    <MudDatePicker Label="Fecha de Nacimiento" TitleDateFormat="dd/MM/yyyy" @bind-Date="fechaNacimiento" Validation="ValidarFecha" />
+                </td>
+                    </tr>
+
+                </table>
+
+             </div>
+
+     
+        <EspacioVertical Altura="20px" />
+        <div class="center-container-login">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Crear equipo</MudButton>
+        </div>
+
+        </EditForm>
+
+
+
+@code {
+
+    private EquipoDTO Equipo = new();
+    private List<JugadorDTO> Jugadores = new();
+    private JugadorDTO Jugador = new();
+
+    DateTime? fechaNacimiento = DateTime.Today.Date.AddYears(15);
+
+    private string espaciado = "10px";
+
+    private async Task ActualizarImagen(ImagenDTO tipoImagenUrl)
+    {
+        Equipo.Logo = tipoImagenUrl.UrlImagen;
+        //StateHasChanged();
+    }
+
+    private async Task Registrar()
+    {
+        try
+        {
+            //TorneoParaCreacionDTO.UsuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            //TorneoParaCreacionDTO.Fecha = fechaTorneo.Value.Date;
+            //TorneoParaCreacionDTO.HoraComienzo = fechaTorneo.Value.Date.Add(horaComienzo.Value);
+            //var torneoNuevo = await _servicioTorneo.CrearTorneoOrganizador(TorneoParaCreacionDTO);
+            //int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            //await _servicioTorneo.ListadoTorneosOrganizadorData(idOrganizador);
+            _nav.NavigateTo("/ORGANIZADOR/Principal");
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+
+    }
+
+    private string ValidarFecha(DateTime? fecha)
+    {
+        if (fecha == null) return "La fecha es requerida.";
+
+        if (fecha > DateTime.Today.Date.AddYears(-13)) return "El jugador debe ser mayor de 12";
+
+        // Realizar validaciones adicionales si es necesario
+
+        return string.Empty; // La fecha es válida
+    }
+
+    private void AgregarCrearJugador()
+    {
+        try
+        {
+            Jugador.FechaNacimiento = fechaNacimiento.Value.Date;
+
+
+
+        }
+        catch (Exception ex)
+        {
+            
+            throw;
+        }
+    }
+
+
+
+
+}

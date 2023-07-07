@@ -1,0 +1,62 @@
+﻿
+@inject ImagenServicio _imagenServicio
+@inject IConfiguration _config
+
+<section class="vista-equipo-avatar">
+
+    <div style="background-image: url('@UrlImagenLogo()')">
+        @if (ModoEdicion)
+        {
+            <label for="file-upload-logo2" class="equipo-file-upload-logo"></label>
+            <InputFile OnChange="@SubirArchivoLogo" accept="image/*" id="file-upload-logo2" />
+        }
+       
+    </div>
+    
+</section>
+
+
+@code {
+    [Parameter] public string NombreImagenLogo { get; set; }
+    [Parameter] public EventCallback<ImagenDTO> SubirImagen { get; set; }
+    [Parameter] public bool ModoEdicion { get; set; }
+
+    private ImagenDTO imagenUrl = new();
+    private string baseUrlImagen;
+
+    protected async override Task OnInitializedAsync()
+    {
+        baseUrlImagen = _config["UrlBaseParaImagenes"];
+    }
+    private async Task GuardarImagenCallBack()
+    {
+        await SubirImagen.InvokeAsync(imagenUrl);
+    }
+
+    private string UrlImagenLogo() =>   $"{baseUrlImagen}{NombreImagenLogo}";
+
+    private async Task SubirArchivoLogo(InputFileChangeEventArgs e)
+    {
+        try
+        {
+            if (!string.IsNullOrEmpty(NombreImagenLogo))
+            {
+                imagenUrl.UrlImagen = await _imagenServicio.ActualizarImagenFile(e, NombreImagenLogo);
+            }
+            else
+            {
+                imagenUrl.UrlImagen = await _imagenServicio.SubirImagenFile(e);
+            }
+            imagenUrl.TipoImagenSubida = Util.TipoImagen.LOGO.ToString();
+            await GuardarImagenCallBack();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+
+
+}
+

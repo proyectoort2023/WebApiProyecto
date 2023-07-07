@@ -20,7 +20,7 @@ else
     }
 }
 
-<MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" />
+<MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" OnClick="CrearEquipo"/>
 
 <EspacioVertical Altura="10vh" />
 
@@ -32,5 +32,10 @@ else
     protected async override Task OnInitializedAsync()
     {
         EquiposDTO = await _servicioEquipo.ObtenerEquiposPorAdministrador();
+    }
+
+    private void CrearEquipo()
+    {
+        _nav.NavigateTo("/EQUIPOS/Creacion");
     }
 }

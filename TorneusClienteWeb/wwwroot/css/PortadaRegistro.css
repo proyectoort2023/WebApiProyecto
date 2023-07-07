@@ -34,3 +34,25 @@ banner-upload{
         text-align: center;
         margin-top: 10px;
     }
+
+
+
+    /*Portada registro de equipo*/
+
+.vista-equipo-avatar{
+    display:flex;
+    justify-content:center;
+}
+    .vista-equipo-avatar div {
+        position: relative;
+        height: 25vw;
+        width: 25vw;
+        border-radius: 50%;
+        box-shadow: 1px 1px 15px 2px blueviolet;
+        box-sizing: border-box;
+        background-size: cover;
+        margin-bottom: 30px;
+    }
+
+
+

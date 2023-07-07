@@ -24,7 +24,8 @@ namespace Negocio
         {
             try
             {
-                List<Equipo> equipos = await _db.Equipos.Where(w => w.UsuarioId == usuarioId).ToListAsync();
+                List<Equipo> equipos = await _db.Equipos.Include(i => i.Jugadores)
+                                                        .Where(w => w.UsuarioId == usuarioId).ToListAsync();
 
                 return equipos;
             }
