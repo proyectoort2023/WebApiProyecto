@@ -10,6 +10,7 @@ namespace TorneusClienteWeb.Servicios
         private readonly EquipoServicioDatos _equipoServicioDatos;
         private List<EquipoDTO> Equipos = null;
         private EquipoDTO Equipo;
+
         [Inject] private HubConnection _hubConnection { get; set; }
         [Inject] private UsuarioServicio _usuarioServicio { get; set; }
 
@@ -45,6 +46,19 @@ namespace TorneusClienteWeb.Servicios
             try
             {
                 Equipos = await _equipoServicioDatos.ObtenerEquiposPorAdministrador(usuarioId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<JugadorDTO>> ObtenerJugadoresTodos()
+        {
+            try
+            {
+                var jugadores =  await _equipoServicioDatos.ObtenerJugadoresTodos();
+                return jugadores;
             }
             catch (Exception ex)
             {

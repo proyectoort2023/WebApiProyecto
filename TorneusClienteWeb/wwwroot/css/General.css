@@ -207,3 +207,12 @@ table tr:nth-child(1) {
     left: 5px;
     top: 0;
 }
+
+.color-purpura{
+    background-color: purple;
+    color:white;
+}
+
+.color-beige {
+    background-color: beige;
+}

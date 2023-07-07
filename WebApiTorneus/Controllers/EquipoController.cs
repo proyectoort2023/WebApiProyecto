@@ -34,7 +34,7 @@ namespace WebApiTorneus.Controllers
             /// </remarks>
             /// <response code="200">OK. Listado de equipos obtenido</response>
             /// <response code="400">Validaciones varias no conformadas</response>
-            [ProducesResponseType(typeof(BoolModel), StatusCodes.Status200OK)]
+            [ProducesResponseType(typeof(List<EquipoDTO>), StatusCodes.Status200OK)]
             [ProducesResponseType(StatusCodes.Status400BadRequest)]
             [Authorize(Roles = "EQUIPO")]
             [HttpGet("ObtenerEquipos/{usuarioId}")]
@@ -56,6 +56,36 @@ namespace WebApiTorneus.Controllers
                 }
             }
 
+
+
+        /// <summary>
+        /// Permite la obtención de un listado de todos los jugadores registrados en el sistema 
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve todos los jugadores registrados en el sistema 
+        /// </remarks>
+        /// <response code="200">OK. Listado de equipos obtenido</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(List<JugadorDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
+        [HttpGet("ObtenerJugadores")]
+        public async Task<IActionResult> GetJugadores()
+        {
+            try
+            {
+
+                List<Jugador> listado = await _equipoService.ObtenerTodosJugadores();
+
+                List<JugadorDTO> jugadoresDTO = _mapper.Map<List<Jugador>, List<JugadorDTO>>(listado);
+
+                return Ok(jugadoresDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }

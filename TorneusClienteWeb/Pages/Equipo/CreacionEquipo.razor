@@ -1,10 +1,11 @@
 ﻿@page "/EQUIPOS/Creacion"
 @inject NavigationManager _nav
 @inject ISnackbar _snackbar
+@inject EquipoServicio _servicioEquipo
+
+
 
 <VistaLogoEquipo ModoEdicion="true" NombreImagenLogo="@Equipo.Logo" SubirImagen="ActualizarImagen" />
-
-
 
 
  <EditForm Model="@Equipo" OnValidSubmit="Registrar">
@@ -29,40 +30,60 @@
         <EspacioVertical Altura="@espaciado" />
     </div>
       
-            <div class="card-general">
-                <table>
+            <div class="card-general table">
+        @if (Jugadores.Count > 0)
+        {
+            <table class="table table-striped">
+                <tr>
+                    <th style="width:20%">Cedula</th>
+                    <th style="width:60%">Nombre</th>
+                    <th style="width:20%">Edad</th>
+                </tr>
+                @foreach (var jug in Jugadores)
+                {
                     <tr>
-                        <th>43562585</th>
-                        <th>Ruben Garcia</th>
-                        <th>20/11/1988</th>
+                        <td>@jug.Cedula</td>
+                        <td>@jug.NombreCompleto</td>
+                        <td>@CalcularEdad(jug.FechaNacimiento)</td>
                     </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p>No tiene ningun jugador en el equipo</p>
+        }
 
-            <tr>
-                <td>Lista de jugadores Cedula</td>
-                <td>Nombre</td>
-                <td>Fecha Nacimiento</td>
-            </tr>
+        <EspacioVertical Altura="20px" />
+      
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HabilitarNuevoJugador"> >> </MudButton>
 
-                     <tr>
-                        <td>
-                            <MudTextField @bind-Value="Jugador.Cedula"
-                                          Label="Cedula"
-                                          Variant="Variant.Outlined"
-                                          Margin="Margin.Dense"/>
-                        </td>
+         <EspacioVertical Altura="20px" />
 
-                <td>
-                    <MudTextField @bind-Value="Jugador.NombreCompleto"
-                                  Label="Nombre del jugador"
-                                  Variant="Variant.Outlined"
-                                  Margin="Margin.Dense" />
-                </td>
-                <td>
-                    <MudDatePicker Label="Fecha de Nacimiento" TitleDateFormat="dd/MM/yyyy" @bind-Date="fechaNacimiento" Validation="ValidarFecha" />
-                </td>
-                    </tr>
+        @if (habilitadoNuevoJugador)
+        {
+            <div class="card-general color-beige">
+                <h4>Jugador</h4>
+                <MudTextField @bind-Value="JugadorNuevo.Cedula"
+                              Label="Cedula"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense" />
 
-                </table>
+                <EspacioVertical Altura="15px" />
+
+                <MudTextField @bind-Value="JugadorNuevo.NombreCompleto"
+                              Label="Nombre del jugador"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense" />
+
+                <EspacioVertical Altura="15px" />
+
+                <MudDatePicker Label="Fecha de Nacimiento" TitleDateFormat="dd/MM/yyyy" @bind-Date="fechaNacimiento" Validation="ValidarFecha" />
+
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary">Agregar al equipo</MudButton>
+            </div>
+        }
+       
 
              </div>
 
@@ -80,11 +101,17 @@
 
     private EquipoDTO Equipo = new();
     private List<JugadorDTO> Jugadores = new();
-    private JugadorDTO Jugador = new();
+    private JugadorDTO JugadorNuevo = new();
 
     DateTime? fechaNacimiento = DateTime.Today.Date.AddYears(15);
 
     private string espaciado = "10px";
+    private bool habilitadoNuevoJugador = true;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Jugadores = await _servicioEquipo.ObtenerJugadoresTodos();
+    }
 
     private async Task ActualizarImagen(ImagenDTO tipoImagenUrl)
     {
@@ -126,18 +153,27 @@
     {
         try
         {
-            Jugador.FechaNacimiento = fechaNacimiento.Value.Date;
+            JugadorNuevo.FechaNacimiento = fechaNacimiento.Value.Date;
 
 
 
         }
         catch (Exception ex)
         {
-            
+
             throw;
         }
     }
 
+    private int CalcularEdad(DateTime fechaNacimientoJugador)
+    {
+        return DateTime.Today.Date.Year - fechaNacimientoJugador.Year;
+    }
+
+    private async Task HabilitarNuevoJugador()
+    {
+        habilitadoNuevoJugador = true;
+    }
 
 
 

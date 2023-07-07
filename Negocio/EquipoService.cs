@@ -34,5 +34,21 @@ namespace Negocio
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<Jugador>> ObtenerTodosJugadores()
+        {
+            try
+            {
+                List<Jugador> jugadores = await _db.Jugadores.ToListAsync();
+
+                return jugadores;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
     }
 }
