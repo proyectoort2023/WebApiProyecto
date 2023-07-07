@@ -65,6 +65,7 @@
             <div class="card-general color-beige">
                 <h4>Jugador</h4>
                 <MudTextField @bind-Value="JugadorNuevo.Cedula"
+                              TextChanged="onChangedTextCedula"
                               Label="Cedula"
                               Variant="Variant.Outlined"
                               Margin="Margin.Dense" />
@@ -74,13 +75,24 @@
                 <MudTextField @bind-Value="JugadorNuevo.NombreCompleto"
                               Label="Nombre del jugador"
                               Variant="Variant.Outlined"
-                              Margin="Margin.Dense" />
+                              Margin="Margin.Dense"
+                              Disabled="@disableEdicioNuevoJugador" />
 
                 <EspacioVertical Altura="15px" />
 
-                <MudDatePicker Label="Fecha de Nacimiento" TitleDateFormat="dd/MM/yyyy" @bind-Date="fechaNacimiento" Validation="ValidarFecha" />
+                <MudDatePicker Label="Fecha de Nacimiento" 
+                    TitleDateFormat="dd/MM/yyyy"
+                    @bind-Date="fechaNacimiento"
+                    Validation="ValidarFecha"
+                               Disabled="@disableEdicioNuevoJugador" />
 
-                <MudButton Variant="Variant.Outlined" Color="Color.Primary">Agregar al equipo</MudButton>
+                <MudSwitch @bind-Checked="@JugadorNuevo.Capitan" 
+                            Label="Capitán" LabelPosition="LabelPosition.Start" 
+                            Color="Color.Primary"
+                            Size="Size.Large" />
+
+                <EspacioVertical Altura="10px" />
+                <MudButton Variant="Variant.Outlined" Color="Color.Primary" Disabled="@disableEdicioNuevoJugador">Agregar al equipo</MudButton>
             </div>
         }
        
@@ -103,7 +115,12 @@
     private List<JugadorDTO> Jugadores = new();
     private JugadorDTO JugadorNuevo = new();
 
-    DateTime? fechaNacimiento = DateTime.Today.Date.AddYears(15);
+    int cantidadCapitanes = 0;
+
+    bool disableEdicioNuevoJugador = false;
+
+
+    DateTime? fechaNacimiento = DateTime.Today.Date.AddYears(-15);
 
     private string espaciado = "10px";
     private bool habilitadoNuevoJugador = true;
@@ -149,19 +166,24 @@
         return string.Empty; // La fecha es válida
     }
 
-    private void AgregarCrearJugador()
+    private async Task AgregarCrearJugador()
     {
         try
         {
-            JugadorNuevo.FechaNacimiento = fechaNacimiento.Value.Date;
+            if (JugadorNuevo.Id == 0)
+            {
+                JugadorNuevo.FechaNacimiento = fechaNacimiento.Value.Date;
+
+                JugadorNuevo.Id = await _servicioEquipo.RegistrarJugador(JugadorNuevo);
+            }
 
 
-
+            Jugadores.Add(JugadorNuevo);
+          
         }
         catch (Exception ex)
         {
-
-            throw;
+            _snackbar.
         }
     }
 
@@ -175,6 +197,26 @@
         habilitadoNuevoJugador = true;
     }
 
+    private void onChangedTextCedula(string texto)
+    { 
+
+        if (texto.Length < 6) return;
+
+        if (!ValidadorCedula.Validar(texto)) return;
+
+        var jugadorBuscado = Jugadores.SingleOrDefault(s => s.Cedula == texto);
+        if (jugadorBuscado == null) {
+            disableEdicioNuevoJugador = false;   
+        };
+
+        JugadorNuevo.Id = jugadorBuscado.Id;
+        JugadorNuevo.Cedula = jugadorBuscado.Cedula;
+        JugadorNuevo.NombreCompleto = jugadorBuscado.NombreCompleto;
+        JugadorNuevo.FechaNacimiento = jugadorBuscado.FechaNacimiento;
+        JugadorNuevo.Capitan = jugadorBuscado.Capitan;
+
+        disableEdicioNuevoJugador = true;
+    }
 
 
 }

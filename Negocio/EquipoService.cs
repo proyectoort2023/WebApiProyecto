@@ -49,6 +49,30 @@ namespace Negocio
             }
         }
 
+        public async Task<int> RegistrarJugador(Jugador jugador)
+        {
+            try
+            {
+                bool jugadorDuplicado = await JugadorDuplicado(jugador.Cedula);
+
+                if (jugadorDuplicado) throw new Exception("El jugador está duplicado");
+
+               var nuevoJugador = await _db.Jugadores.AddAsync(jugador);
+                await _db.SaveChangesAsync();
+                return nuevoJugador.Entity.Id;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> JugadorDuplicado(string cedula)
+        {
+            bool duplicado = await _db.Jugadores.AnyAsync(a => a.Cedula == cedula);
+            return duplicado;
+        }
+
 
     }
 }

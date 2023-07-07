@@ -87,6 +87,32 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+        /// <summary>
+        /// Permite el registro de un nuevo jugador
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint registra si no está duplicado un nuevo jugador
+        /// </remarks>
+        /// <response code="200">OK. Jugador creado </response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
+        [HttpPost("/Jugador/Crear")]
+        public async Task<IActionResult> CrearJugador([FromBody] JugadorDTO jugadorDTO)
+        {
+            try
+            {
+                Jugador jugador = _mapper.Map<JugadorDTO, Jugador>(jugadorDTO);
+                int idJugadorNuevo = await _equipoService.RegistrarJugador(jugador);
+                return Ok(idJugadorNuevo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
     }
 }

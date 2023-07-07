@@ -66,6 +66,21 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
+        public async Task<int> RegistrarJugador(JugadorDTO jugadorDTO)
+        {
+            try
+            {
+                if (jugadorDTO == null) throw new Exception("Hay datos varios del jugador");
+
+                int idJugador = await _equipoServicioDatos.RegistrarJugador(jugadorDTO);
+                return idJugador;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
 
 
