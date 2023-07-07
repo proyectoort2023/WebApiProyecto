@@ -8,6 +8,17 @@
 @inject HubConnection _hubConnection
 
 
+@if(EquiposDTO == null)
+{
+  <Cargando />
+}
+else
+{
+    if (EquiposDTO.Count == 0)
+    {
+        <h3>No tiene equipos creados aun...</h3>
+    }
+}
 
 <MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" />
 

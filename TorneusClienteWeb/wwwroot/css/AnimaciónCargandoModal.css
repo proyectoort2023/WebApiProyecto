@@ -1,0 +1,22 @@
+﻿.cargando {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(247,247,247,255);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cargando-contenido {
+    text-align: center;
+    color: white;
+}
+
+.cargando-contenido img {
+   width:100%;
+   height:auto;
+}
+
