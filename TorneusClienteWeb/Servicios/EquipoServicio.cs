@@ -7,17 +7,53 @@ namespace TorneusClienteWeb.Servicios
 {
     public class EquipoServicio
     {
-        private readonly TorneoServicioDatos _torneoServicioDatos;
         private readonly EquipoServicioDatos _equipoServicioDatos;
-        private TorneoDTO TorneoSeleccionado = new();
-        private List<TorneoDTO> Torneos = new();
+        private List<EquipoDTO> Equipos = null;
+        private EquipoDTO Equipo;
         [Inject] private HubConnection _hubConnection { get; set; }
+        [Inject] private UsuarioServicio _usuarioServicio { get; set; }
 
-        public EquipoServicio(TorneoServicioDatos torneoServicioDatos, EquipoServicioDatos equipoServicioDatos, HubConnection hubConnection)
+        public EquipoServicio(EquipoServicioDatos equipoServicioDatos, HubConnection hubConnection, UsuarioServicio usuarioServicio)
         {
-            _torneoServicioDatos = torneoServicioDatos;
             _equipoServicioDatos = equipoServicioDatos;
             _hubConnection = hubConnection;
+            _usuarioServicio = usuarioServicio;
         }
+
+
+        public async Task<List<EquipoDTO>> ObtenerEquiposPorAdministrador()
+        {
+            try
+            {
+                int usuarioId = _usuarioServicio.ObtenerUsuarioLogueado().Id;
+
+                if (Equipos == null)
+                {
+                    await CargarEquiposPorAdministrador(usuarioId);
+                }
+                return Equipos;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private async Task CargarEquiposPorAdministrador(int usuarioId)
+        {
+            try
+            {
+                Equipos = await _equipoServicioDatos.ObtenerEquiposPorAdministrador(usuarioId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
+
     }
 }

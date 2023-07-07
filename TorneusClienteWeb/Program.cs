@@ -80,6 +80,9 @@ builder.Services.AddScoped<ImagenServicioDatos>();
 
 builder.Services.AddScoped<NotificacionesSignalRService>();
 
+builder.Services.AddScoped<EquipoServicio>();
+builder.Services.AddScoped<EquipoServicioDatos>();
+
 
 
 

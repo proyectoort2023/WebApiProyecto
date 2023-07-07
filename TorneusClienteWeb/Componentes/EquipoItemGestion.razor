@@ -1,0 +1,41 @@
+﻿
+<div class="container-equipo">
+    <div class="equipo-grid sombraEquipo color-fondo-equipo">
+        <div class="flex-equipo">
+            <span>Los totoras del sur del este</span>
+            <span>6</span>
+        </div>
+
+    </div>
+    <div class="grid-Vacio"></div>
+
+    <div class="lista-jugadores-grid sombraEquipo color-fondo-equipo" id="contenedor">
+        <div>
+            <ul class="hidden">
+                <li>Jugador 1</li>
+                <li>Jugador 2</li>
+                <li>Jugador 3</li>
+                <li>Jugador 4</li>
+                <li>Jugador 5</li>
+                <li>Jugador 6</li>
+            </ul>
+        </div>
+    </div>
+    <div class="grid-vacio-abajo"></div>
+    <div class="boton-extender-grid sombraEquipo"> >> </div>
+    <div class="grid-vacio-abajo-derecha"></div>
+
+    <div class="avatar-equipo">
+        <img src="escudo.jpg" alt="">
+    </div>
+</div>
+
+@code {
+    [Parameter] public EquipoDTO Equipo { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+      
+
+    }
+}

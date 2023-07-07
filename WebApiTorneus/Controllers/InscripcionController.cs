@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Negocio;
 using Negocio.DTOs;
 using Negocio.Models;
+using System.Collections.Generic;
 using WebApiTorneus.Services;
 
 namespace WebApiTorneus.Controllers
@@ -68,7 +69,7 @@ namespace WebApiTorneus.Controllers
             try
             {
                 var inscripcionListado = await _inscripcionService.ObtenerInscripcionesSegunUsuario(usuarioId);
-                List<InscripcionDTO> inscripcionesDTO = _mapper.Map<List<InscripcionDTO>, List<Inscripcion>>(inscripcionListado);
+                List<InscripcionDTO> inscripcionesDTO = _mapper.Map <List<Inscripcion>,List <InscripcionDTO>>(inscripcionListado);
 
                 return Ok(inscripcionesDTO);
             }

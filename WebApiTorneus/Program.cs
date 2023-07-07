@@ -93,6 +93,7 @@ builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TorneoService>();
 builder.Services.AddScoped<ImagenService>();
 builder.Services.AddScoped<InscripcionService>();
+builder.Services.AddScoped<EquipoService>();
 
 
 var app = builder.Build();

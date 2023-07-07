@@ -1,26 +1,36 @@
 ﻿@page "/EQUIPO/Gestiones"
-
+@inject NavigationManager _nav
 
 <div class="flex-column-customizable">
     <div style="width:85vw;margin-bottom:90px;">
-        <BotonAnimado Texto="Mis inscripciones" Icono="@Util.IconoInscripcion" OnClick="Ver" />
-        <BotonAnimado Texto="Torneos Jugados" Icono="@Util.IconoJugados" OnClick="Ver" />
-        <BotonAnimado Texto="Mis Equipos" Icono="@Util.IconoEquipo" OnClick="Ver" />
-        <BotonAnimado Texto="Mis Medallas" Icono="@Util.IconoMedalla" OnClick="Ver" />
+        <BotonAnimado Texto="Mis inscripciones" Icono="@Util.IconoInscripcion" OnClick="IrAMisInscripciones" />
+        <BotonAnimado Texto="Torneos Jugados" Icono="@Util.IconoJugados" OnClick="IrATorneosJugados" />
+        <BotonAnimado Texto="Mis Equipos" Icono="@Util.IconoEquipo" OnClick="IrAMisEquipos" />
+        <BotonAnimado Texto="Mis Medallas" Icono="@Util.IconoMedalla" OnClick="IrAMisMedallas" />
     </div>
     
 </div>
 
 
 
-    
-
 @code {
 
+    private void IrAMisInscripciones()
+    {
+       
+    }
 
+    private void IrATorneosJugados()
+    {
 
+    }
 
-    private void Ver()
+    private void IrAMisEquipos()
+    {
+        _nav.NavigateTo("/EQUIPO/AdminEquipos");
+    }
+
+    private void IrAMisMedallas()
     {
 
     }

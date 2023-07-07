@@ -1,6 +1,7 @@
 ﻿@page "/EQUIPO/AdminEquipos"
 @inject ServicioMenu _servicioMenu
 @inject TorneoServicio _servicio_Torneo
+@inject EquipoServicio _servicioEquipo
 @inject UsuarioServicio _servicioUsuario
 @inject NotificacionesSignalRService _servicioNotificacionesSignalR
 @inject NavigationManager _nav
@@ -15,5 +16,10 @@
 
 @code {
 
+    private List<EquipoDTO> EquiposDTO { get; set; } = null;
 
+    protected async override Task OnInitializedAsync()
+    {
+        EquiposDTO = await _servicioEquipo.ObtenerEquiposPorAdministrador();
+    }
 }
