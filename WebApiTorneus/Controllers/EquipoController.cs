@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BDTorneus;
+using DTOs_Compartidos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -98,7 +99,7 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "EQUIPO")]
-        [HttpPost("/Jugador/Crear")]
+        [HttpPost("Jugador/Crear")]
         public async Task<IActionResult> CrearJugador([FromBody] JugadorDTO jugadorDTO)
         {
             try
@@ -106,6 +107,32 @@ namespace WebApiTorneus.Controllers
                 Jugador jugador = _mapper.Map<JugadorDTO, Jugador>(jugadorDTO);
                 int idJugadorNuevo = await _equipoService.RegistrarJugador(jugador);
                 return Ok(idJugadorNuevo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Permite la actualizar el valor si es capitan o no del equipo de un jugador
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint actualiza el valor si es capitan o no del equipo de un jugador
+        /// </remarks>
+        /// <response code="200">OK. Valor de capitan cambiado </response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
+        [HttpPost("Jugador/ActualizarCapitan")]
+        public async Task<IActionResult> ActualizarCapitanJugador([FromBody] JugadorCapitan jugadorCapitan)
+        {
+            try
+            {
+                bool actualizarDatoCapitan = await _equipoService.ModificarCapital(jugadorCapitan);
+                return Ok(actualizarDatoCapitan);
             }
             catch (Exception ex)
             {

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using DTOs_Compartidos.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Negocio.DTOs;
+using System.Linq.Expressions;
 using TorneusClienteWeb.Servicios_de_Datos;
 
 namespace TorneusClienteWeb.Servicios
@@ -74,6 +76,26 @@ namespace TorneusClienteWeb.Servicios
 
                 int idJugador = await _equipoServicioDatos.RegistrarJugador(jugadorDTO);
                 return idJugador;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<bool> ModificarCapitanJugador(int idCapitan, bool valorNuevo)
+        {
+            try
+            {
+                JugadorCapitan jugadorCapitan = new()
+                {
+                    CapitanId = idCapitan,
+                    NuevoValor = valorNuevo
+                };
+
+                bool modificadoCapitanJugador = await _equipoServicioDatos.ModificarCapitalJugador(jugadorCapitan);
+                return modificadoCapitanJugador;
             }
             catch (Exception ex)
             {

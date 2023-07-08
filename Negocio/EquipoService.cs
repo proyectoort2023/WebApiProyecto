@@ -1,4 +1,5 @@
 ﻿using BDTorneus;
+using DTOs_Compartidos.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Negocio.Validaciones;
@@ -24,7 +25,8 @@ namespace Negocio
         {
             try
             {
-                List<Equipo> equipos = await _db.Equipos.Include(i => i.Jugadores)
+                List<Equipo> equipos = await _db.Equipos.AsNoTracking()
+                                                        .Include(i => i.Jugadores)
                                                         .Where(w => w.UsuarioId == usuarioId).ToListAsync();
 
                 return equipos;
@@ -39,7 +41,7 @@ namespace Negocio
         {
             try
             {
-                List<Jugador> jugadores = await _db.Jugadores.ToListAsync();
+                List<Jugador> jugadores = await _db.Jugadores.AsNoTracking().ToListAsync();
 
                 return jugadores;
             }
@@ -71,6 +73,27 @@ namespace Negocio
         {
             bool duplicado = await _db.Jugadores.AnyAsync(a => a.Cedula == cedula);
             return duplicado;
+        }
+
+        public async Task<bool> ModificarCapital(JugadorCapitan jugadorCapitan)
+        {
+            try
+            {
+                Jugador jugadorBuscado = await _db.Jugadores.FindAsync(jugadorCapitan.CapitanId);
+
+                if (jugadorBuscado == null) throw new Exception("No se ha encontrado al jugador buscado. W022");
+
+                jugadorBuscado.Capitan = jugadorCapitan.NuevoValor;
+
+                int cantidadModificados = await _db.SaveChangesAsync();
+
+                return cantidadModificados > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+          
         }
 
 

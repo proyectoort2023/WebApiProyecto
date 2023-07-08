@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using DTOs_Compartidos.Models;
+using Microsoft.AspNetCore.Components;
 using Negocio.DTOs;
 using Negocio.Models;
 using Newtonsoft.Json;
@@ -103,6 +104,31 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
+        public async Task<bool> ModificarCapitalJugador(JugadorCapitan jugadorCapitan)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.PostAsJsonAsync($"api/Equipo/Jugador/ActualizarCapitan", jugadorCapitan);
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var contentError = await response.Content.ReadAsStringAsync();
+                    var error = JsonConvert.DeserializeObject<string>(contentError);
+                    throw new Exception(error);
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<bool>(content);
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
     }
