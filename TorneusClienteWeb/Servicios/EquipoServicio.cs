@@ -55,54 +55,9 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task<List<JugadorDTO>> ObtenerJugadoresTodos()
-        {
-            try
-            {
-                var jugadores =  await _equipoServicioDatos.ObtenerJugadoresTodos();
-                return jugadores;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+       
 
-        public async Task<int> RegistrarJugador(JugadorDTO jugadorDTO)
-        {
-            try
-            {
-                if (jugadorDTO == null) throw new Exception("Hay datos varios del jugador");
-
-                int idJugador = await _equipoServicioDatos.RegistrarJugador(jugadorDTO);
-                return idJugador;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-
-        public async Task<bool> ModificarCapitanJugador(int idCapitan, bool valorNuevo)
-        {
-            try
-            {
-                JugadorCapitan jugadorCapitan = new()
-                {
-                    CapitanId = idCapitan,
-                    NuevoValor = valorNuevo
-                };
-
-                bool modificadoCapitanJugador = await _equipoServicioDatos.ModificarCapitalJugador(jugadorCapitan);
-                return modificadoCapitanJugador;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
+      
 
 
 

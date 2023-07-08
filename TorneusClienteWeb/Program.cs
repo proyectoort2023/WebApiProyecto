@@ -83,6 +83,9 @@ builder.Services.AddScoped<NotificacionesSignalRService>();
 builder.Services.AddScoped<EquipoServicio>();
 builder.Services.AddScoped<EquipoServicioDatos>();
 
+builder.Services.AddScoped<JugadorServicio>();
+builder.Services.AddScoped<JugadorServicioDatos>();
+
 
 
 

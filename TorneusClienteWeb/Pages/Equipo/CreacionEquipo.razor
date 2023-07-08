@@ -3,6 +3,7 @@
 @inject ISnackbar _snackbar
 @inject EquipoServicio _servicioEquipo
 @inject ServicioMenu _servicioMenu
+@inject JugadorServicio _servicioJugador
 
 
 
@@ -58,11 +59,6 @@
                            Validation="ValidarFecha"
                            Disabled="@disableEdicioNuevoJugador" />
 
-            <MudSwitch @bind-Checked="@JugadorNuevo.Capitan"
-                       Label="Capitán" LabelPosition="LabelPosition.Start"
-                       Color="Color.Primary"
-                       Size="Size.Large" />
-
             <EspacioVertical Altura="10px" />
 
             <MudButton Variant="Variant.Outlined" 
@@ -80,24 +76,30 @@
          
         @if (Equipo.Jugadores.Count > 0)
         {
-         <div class="card-general">
-            <table class="table table-striped">
+        <div class="card-general card-general-transparente">
+            <table class="tabla-equipo">
                 <tr>
+                    <th style="width:10%"></th>
                     <th style="width:20%">Cedula</th>
                     <th style="width:60%">Nombre</th>
-                    <th style="width:20%">Edad</th>
+                    <th style="width:10%">Edad</th>
                     <th></th>
                 </tr>
                 @foreach (var jug in Equipo.Jugadores)
                 {
                     <tr>
+                        <td><i class="far fa-hand-pointer color-verde" @onclick="() => AsignarCapitan(jug.NombreCompleto)"></i></td>
                         <td>@jug.Cedula</td>
                         <td>@jug.NombreCompleto</td>
                         <td>@CalcularEdad(jug.FechaNacimiento)</td>
-                        <td>Eliminar</td>
+                        <td><i class="far fa-trash-alt color-rojo" @onclick="() => EliminarJugadorEquipo(jug.Id)"></i></td>
                     </tr>
                 }
             </table>
+
+             <EspacioVertical Altura="30px" />
+
+            <p>Capitan: @Equipo.Capitan</p>
         </div>
         }
         else
@@ -142,7 +144,7 @@
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/EQUIPO/Gestiones");
         _servicioMenu.ActualizarTitulo("Registro de equipo");
 
-        Jugadores = await _servicioEquipo.ObtenerJugadoresTodos();
+        Jugadores = await _servicioJugador.ObtenerJugadoresTodos();
     }
 
     private async Task ActualizarImagen(ImagenDTO tipoImagenUrl)
@@ -166,7 +168,7 @@
     {
         try
         {
-            //valido si son minimo 6 jugadores
+
 
 
             //TorneoParaCreacionDTO.UsuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
@@ -175,7 +177,7 @@
             //var torneoNuevo = await _servicioTorneo.CrearTorneoOrganizador(TorneoParaCreacionDTO);
             //int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
             //await _servicioTorneo.ListadoTorneosOrganizadorData(idOrganizador);
-            _nav.NavigateTo("/ORGANIZADOR/Principal");
+            _nav.NavigateTo("/EQUIPO/Principal");
         }
         catch (Exception ex)
         {
@@ -204,17 +206,16 @@
                 _snackbar.Add("La cedula no es válida", Severity.Warning);
                 return;
             }
+            if (Equipo.Jugadores.Any(a => a.Cedula == JugadorNuevo.Cedula))
+            {
+                _snackbar.Add("El jugador ya está en tu equipo", Severity.Warning);
+                return;
+            }
             if (JugadorNuevo.Id == 0)
             {
                 JugadorNuevo.FechaNacimiento = fechaNacimiento.Value.Date;
-                JugadorNuevo.Id = await _servicioEquipo.RegistrarJugador(JugadorNuevo);
+                JugadorNuevo.Id = await _servicioJugador.RegistrarJugador(JugadorNuevo);
                 Jugadores.Add(JugadorNuevo);
-            }
-
-            bool verificarCambioCapitan = VerificarCambioCapitan(JugadorNuevo.Cedula);
-            if (verificarCambioCapitan)
-            {
-                await _servicioEquipo.ModificarCapitanJugador(JugadorNuevo.Id, JugadorNuevo.Capitan);
             }
 
             Equipo.Jugadores.Add(JugadorNuevo);
@@ -235,11 +236,6 @@
         return DateTime.Today.Date.Year - fechaNacimientoJugador.Year;
     }
 
-    private bool VerificarCambioCapitan(string cedulaJugador)
-    {
-        var jugadorBuscado = BuscarJugadorPorCedula(cedulaJugador);
-        return jugadorBuscado.Capitan != JugadorNuevo.Capitan;
-    }
 
 
     private void onChangedTextCedula(string texto)
@@ -259,7 +255,6 @@
         JugadorNuevo.Cedula = jugadorBuscado.Cedula;
         JugadorNuevo.NombreCompleto = jugadorBuscado.NombreCompleto;
         JugadorNuevo.FechaNacimiento = jugadorBuscado.FechaNacimiento;
-        JugadorNuevo.Capitan = jugadorBuscado.Capitan;
 
         disableEdicioNuevoJugador = true;
     }
@@ -267,6 +262,19 @@
     private JugadorDTO BuscarJugadorPorCedula(string cedula)
     {
         return Jugadores.SingleOrDefault(s => s.Cedula == cedula);
+    }
+
+    private void AsignarCapitan(string capitan)
+    {
+        Equipo.Capitan = capitan;
+    }
+
+    private void EliminarJugadorEquipo(int idJugador)
+    {
+        Equipo.Jugadores.RemoveAll(rem => rem.Id == idJugador);
+        int cantidadJugadores = Equipo.Jugadores.Count;
+
+        if (cantidadJugadores < 6) disableBotonRegistrar = true;
     }
 
 
