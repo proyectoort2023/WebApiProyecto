@@ -1,19 +1,41 @@
 ﻿@page "/EQUIPO/AdminEquipos"
 @inject ServicioMenu _servicioMenu
 @inject TorneoServicio _servicio_Torneo
+@inject EquipoServicio _servicioEquipo
 @inject UsuarioServicio _servicioUsuario
 @inject NotificacionesSignalRService _servicioNotificacionesSignalR
 @inject NavigationManager _nav
 @inject HubConnection _hubConnection
 
 
+@if(EquiposDTO == null)
+{
+  <Cargando />
+}
+else
+{
+    if (EquiposDTO.Count == 0)
+    {
+        <h3>No tiene equipos creados aun...</h3>
+    }
+}
 
-<MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" />
+<MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" OnClick="CrearEquipo"/>
 
 <EspacioVertical Altura="10vh" />
 
 
 @code {
 
+    private List<EquipoDTO> EquiposDTO { get; set; } = null;
 
+    protected async override Task OnInitializedAsync()
+    {
+        EquiposDTO = await _servicioEquipo.ObtenerEquiposPorAdministrador();
+    }
+
+    private void CrearEquipo()
+    {
+        _nav.NavigateTo("/EQUIPOS/Creacion");
+    }
 }

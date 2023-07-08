@@ -1,23 +1,110 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using DTOs_Compartidos.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Negocio.DTOs;
+using System.Linq.Expressions;
 using TorneusClienteWeb.Servicios_de_Datos;
 
 namespace TorneusClienteWeb.Servicios
 {
     public class EquipoServicio
     {
-        private readonly TorneoServicioDatos _torneoServicioDatos;
         private readonly EquipoServicioDatos _equipoServicioDatos;
-        private TorneoDTO TorneoSeleccionado = new();
-        private List<TorneoDTO> Torneos = new();
-        [Inject] private HubConnection _hubConnection { get; set; }
+        private List<EquipoDTO> Equipos = null;
+        private EquipoDTO Equipo;
 
-        public EquipoServicio(TorneoServicioDatos torneoServicioDatos, EquipoServicioDatos equipoServicioDatos, HubConnection hubConnection)
+        [Inject] private HubConnection _hubConnection { get; set; }
+        [Inject] private UsuarioServicio _usuarioServicio { get; set; }
+
+        public EquipoServicio(EquipoServicioDatos equipoServicioDatos, HubConnection hubConnection, UsuarioServicio usuarioServicio)
         {
-            _torneoServicioDatos = torneoServicioDatos;
             _equipoServicioDatos = equipoServicioDatos;
             _hubConnection = hubConnection;
+            _usuarioServicio = usuarioServicio;
         }
+
+
+        public async Task<List<EquipoDTO>> ObtenerEquiposPorAdministrador()
+        {
+            try
+            {
+                int usuarioId = _usuarioServicio.ObtenerUsuarioLogueado().Id;
+
+                if (Equipos == null)
+                {
+                    await CargarEquiposPorAdministrador(usuarioId);
+                }
+                return Equipos;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        private async Task CargarEquiposPorAdministrador(int usuarioId)
+        {
+            try
+            {
+                Equipos = await _equipoServicioDatos.ObtenerEquiposPorAdministrador(usuarioId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<List<JugadorDTO>> ObtenerJugadoresTodos()
+        {
+            try
+            {
+                var jugadores =  await _equipoServicioDatos.ObtenerJugadoresTodos();
+                return jugadores;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<int> RegistrarJugador(JugadorDTO jugadorDTO)
+        {
+            try
+            {
+                if (jugadorDTO == null) throw new Exception("Hay datos varios del jugador");
+
+                int idJugador = await _equipoServicioDatos.RegistrarJugador(jugadorDTO);
+                return idJugador;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<bool> ModificarCapitanJugador(int idCapitan, bool valorNuevo)
+        {
+            try
+            {
+                JugadorCapitan jugadorCapitan = new()
+                {
+                    CapitanId = idCapitan,
+                    NuevoValor = valorNuevo
+                };
+
+                bool modificadoCapitanJugador = await _equipoServicioDatos.ModificarCapitalJugador(jugadorCapitan);
+                return modificadoCapitanJugador;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
+
     }
 }

@@ -1,0 +1,273 @@
+﻿@page "/EQUIPOS/Creacion"
+@inject NavigationManager _nav
+@inject ISnackbar _snackbar
+@inject EquipoServicio _servicioEquipo
+@inject ServicioMenu _servicioMenu
+
+
+
+<VistaLogoEquipo ModoEdicion="true" NombreImagenLogo="@Equipo.Logo" SubirImagen="ActualizarImagen" />
+
+
+ <EditForm Model="@Equipo" OnValidSubmit="Registrar">
+        <DataAnnotationsValidator />
+
+    <div class="card-general">
+        <MudTextField @bind-Value="Equipo.Nombre"
+                      Label="Nombre del equipo"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      For="@(() => Equipo.Nombre)" />
+
+        <EspacioVertical Altura="@espaciado" />
+
+
+        <MudTextField @bind-Value="Equipo.Abreviatura"
+                      Label="Abreviatura del equipo"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      For="@(() => Equipo.Abreviatura)" />
+
+        <EspacioVertical Altura="@espaciado" />
+    </div>
+
+
+    @if (Equipo.Jugadores.Count < 13)
+    {
+        <div class="card-general color-beige">
+            <h4>Jugador</h4>
+            <MudTextField @bind-Value="JugadorNuevo.Cedula"
+                          TextChanged="onChangedTextCedula"
+                          Label="Cedula"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense" />
+
+            <EspacioVertical Altura="15px" />
+
+            <MudTextField @bind-Value="JugadorNuevo.NombreCompleto"
+                          Label="Nombre del jugador"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Disabled="@disableEdicioNuevoJugador" />
+
+            <EspacioVertical Altura="15px" />
+
+            <MudDatePicker Label="Fecha de Nacimiento"
+                           TitleDateFormat="dd/MM/yyyy"
+            @bind-Date="fechaNacimiento"
+                           Validation="ValidarFecha"
+                           Disabled="@disableEdicioNuevoJugador" />
+
+            <MudSwitch @bind-Checked="@JugadorNuevo.Capitan"
+                       Label="Capitán" LabelPosition="LabelPosition.Start"
+                       Color="Color.Primary"
+                       Size="Size.Large" />
+
+            <EspacioVertical Altura="10px" />
+
+            <MudButton Variant="Variant.Outlined" 
+                       Color="Color.Primary"
+                       OnClick="AgregarCrearJugador">Agregar al equipo</MudButton>
+        </div>
+    }
+
+
+
+       <EspacioVertical Altura="30px" />
+
+
+
+         
+        @if (Equipo.Jugadores.Count > 0)
+        {
+         <div class="card-general">
+            <table class="table table-striped">
+                <tr>
+                    <th style="width:20%">Cedula</th>
+                    <th style="width:60%">Nombre</th>
+                    <th style="width:20%">Edad</th>
+                    <th></th>
+                </tr>
+                @foreach (var jug in Equipo.Jugadores)
+                {
+                    <tr>
+                        <td>@jug.Cedula</td>
+                        <td>@jug.NombreCompleto</td>
+                        <td>@CalcularEdad(jug.FechaNacimiento)</td>
+                        <td>Eliminar</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        }
+        else
+        {
+            <p>No tiene ningun jugador en el equipo</p>
+        }
+
+     
+     
+          <EspacioVertical Altura="20px" />
+
+            <div class="center-container-login">
+                    <MudButton Variant="Variant.Filled" 
+                    Color="Color.Primary" 
+                    ButtonType="ButtonType.Submit"
+                    Disabled="@disableBotonRegistrar">Crear equipo</MudButton>
+            </div>
+
+        </EditForm>
+
+
+
+@code {
+
+    private EquipoDTO Equipo = new();
+    private List<JugadorDTO> Jugadores = new();
+    private JugadorDTO JugadorNuevo = new();
+
+    int cantidadCapitanes = 0;
+
+    bool disableEdicioNuevoJugador = false;
+    bool disableBotonRegistrar = true;
+
+
+    DateTime? fechaNacimiento = DateTime.Today.Date.AddYears(-13);
+
+    private string espaciado = "10px";
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/EQUIPO/Gestiones");
+        _servicioMenu.ActualizarTitulo("Registro de equipo");
+
+        Jugadores = await _servicioEquipo.ObtenerJugadoresTodos();
+    }
+
+    private async Task ActualizarImagen(ImagenDTO tipoImagenUrl)
+    {
+        Equipo.Logo = tipoImagenUrl.UrlImagen;
+        //StateHasChanged();
+    }
+
+    private void LimpiarCasillasJugadores()
+    {
+        fechaNacimiento = DateTime.Today.Date.AddYears(-13);
+        JugadorNuevo = new JugadorDTO(){
+          Id =0,
+          Cedula="",
+          FechaNacimiento = fechaNacimiento.Value,
+          NombreCompleto=""
+        };
+    }
+
+    private async Task Registrar()
+    {
+        try
+        {
+            //valido si son minimo 6 jugadores
+
+
+            //TorneoParaCreacionDTO.UsuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            //TorneoParaCreacionDTO.Fecha = fechaTorneo.Value.Date;
+            //TorneoParaCreacionDTO.HoraComienzo = fechaTorneo.Value.Date.Add(horaComienzo.Value);
+            //var torneoNuevo = await _servicioTorneo.CrearTorneoOrganizador(TorneoParaCreacionDTO);
+            //int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+            //await _servicioTorneo.ListadoTorneosOrganizadorData(idOrganizador);
+            _nav.NavigateTo("/ORGANIZADOR/Principal");
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+
+    }
+
+    private string ValidarFecha(DateTime? fecha)
+    {
+        if (fecha == null) return "La fecha es requerida.";
+
+        if (fecha > DateTime.Today.Date.AddYears(-13)) return "El jugador debe ser mayor de 12";
+
+        // Realizar validaciones adicionales si es necesario
+
+        return string.Empty; // La fecha es válida
+    }
+
+    private async Task AgregarCrearJugador()
+    {
+        try
+        {
+            if (!ValidadorCedula.Validar(JugadorNuevo.Cedula))
+            {
+                _snackbar.Add("La cedula no es válida", Severity.Warning);
+                return;
+            }
+            if (JugadorNuevo.Id == 0)
+            {
+                JugadorNuevo.FechaNacimiento = fechaNacimiento.Value.Date;
+                JugadorNuevo.Id = await _servicioEquipo.RegistrarJugador(JugadorNuevo);
+                Jugadores.Add(JugadorNuevo);
+            }
+
+            bool verificarCambioCapitan = VerificarCambioCapitan(JugadorNuevo.Cedula);
+            if (verificarCambioCapitan)
+            {
+                await _servicioEquipo.ModificarCapitanJugador(JugadorNuevo.Id, JugadorNuevo.Capitan);
+            }
+
+            Equipo.Jugadores.Add(JugadorNuevo);
+
+            if (Equipo.Jugadores.Count >= 6) disableBotonRegistrar = false;
+
+            _snackbar.Add("Jugador agregado al equipo", Severity.Success);
+            LimpiarCasillasJugadores();
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
+
+    private int CalcularEdad(DateTime fechaNacimientoJugador)
+    {
+        return DateTime.Today.Date.Year - fechaNacimientoJugador.Year;
+    }
+
+    private bool VerificarCambioCapitan(string cedulaJugador)
+    {
+        var jugadorBuscado = BuscarJugadorPorCedula(cedulaJugador);
+        return jugadorBuscado.Capitan != JugadorNuevo.Capitan;
+    }
+
+
+    private void onChangedTextCedula(string texto)
+    { 
+
+        if (texto.Length < 6) return;
+
+        if (!ValidadorCedula.Validar(texto)) return;
+
+        var jugadorBuscado = BuscarJugadorPorCedula(texto);
+        if (jugadorBuscado == null) {
+            disableEdicioNuevoJugador = false;
+            return;
+        };
+
+        JugadorNuevo.Id = jugadorBuscado.Id;
+        JugadorNuevo.Cedula = jugadorBuscado.Cedula;
+        JugadorNuevo.NombreCompleto = jugadorBuscado.NombreCompleto;
+        JugadorNuevo.FechaNacimiento = jugadorBuscado.FechaNacimiento;
+        JugadorNuevo.Capitan = jugadorBuscado.Capitan;
+
+        disableEdicioNuevoJugador = true;
+    }
+
+    private JugadorDTO BuscarJugadorPorCedula(string cedula)
+    {
+        return Jugadores.SingleOrDefault(s => s.Cedula == cedula);
+    }
+
+
+}

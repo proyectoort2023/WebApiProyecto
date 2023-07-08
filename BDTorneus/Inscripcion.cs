@@ -18,5 +18,7 @@ namespace BDTorneus
         public double Monto { get; set; }
         public string MedioPago { get; set; }
         public string Estado { get; set; }
+        public int UsuarioId { get; set; }
+        public List<Usuario> Usuario { get; set; }
     }
 }

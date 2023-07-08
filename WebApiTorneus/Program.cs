@@ -72,6 +72,7 @@ cadenaConexionBD = "LocalConnection";
 cadenaConexionBD = "ProduccionConnection";
 #endif
 
+
 builder.Services.AddDbContext<TorneoContext>(opciones =>
 {
     opciones.UseSqlServer(builder.Configuration.GetConnectionString(cadenaConexionBD));
@@ -91,6 +92,8 @@ builder.Services.AddResponseCompression(opts =>
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<TorneoService>();
 builder.Services.AddScoped<ImagenService>();
+builder.Services.AddScoped<InscripcionService>();
+builder.Services.AddScoped<EquipoService>();
 
 
 var app = builder.Build();

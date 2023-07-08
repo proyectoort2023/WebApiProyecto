@@ -18,5 +18,6 @@ namespace Negocio.DTOs
         public int UsuarioId { get; set; }
         public UsuarioDTO Usuario { get; set; }
         public List<InscripcionDTO> Inscripciones { get; set; } = new List<InscripcionDTO>();
+        public List<JugadorDTO> Jugadores { get; set; } = new List<JugadorDTO>();
     }
 }

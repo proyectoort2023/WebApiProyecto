@@ -1,0 +1,47 @@
+﻿
+<div class="container-equipo">
+    <div class="equipo-grid sombraEquipo color-fondo-equipo">
+        <div class="flex-equipo">
+            <span>@RecortarNombreEquipo()</span>
+            <span>@Equipo.Jugadores.Count</span>
+        </div>
+
+    </div>
+    <div class="grid-Vacio"></div>
+
+    <div class="lista-jugadores-grid sombraEquipo color-fondo-equipo" id="contenedor">
+        <div>
+            <ul class="hidden">
+               @foreach(var jugador in Equipo.Jugadores)
+                {
+                    <i class="fas fa-child"></i>
+                    <li>@jugador.Cedula - @jugador.NombreCompleto</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="grid-vacio-abajo"></div>
+    <div class="boton-extender-grid sombraEquipo"> >> </div>
+    <div class="grid-vacio-abajo-derecha"></div>
+
+    <div class="avatar-equipo">
+        <img src="@Equipo.Logo" alt="Logo de equipo">
+    </div>
+</div>
+
+@code {
+    [Parameter] public EquipoDTO Equipo { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+
+    }
+
+    private string RecortarNombreEquipo()
+    {
+        return Equipo.Nombre.Substring(1, 15);
+    }
+
+
+
+}

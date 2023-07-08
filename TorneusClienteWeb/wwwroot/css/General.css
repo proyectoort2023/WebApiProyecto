@@ -120,6 +120,24 @@ input[type="file"] {
     }
 }
 
+@keyframes textoAnimado  {
+    0% {
+        font-size: 0.8rem;
+    }
+
+    50% {
+        font-size: 1.2rem;
+    }
+    100% {
+        font-size: 0.8rem;
+    }
+}
+.animacionInscripcion {
+    animation: textoAnimado 2s linear infinite;
+    color:orange;
+}
+
+
 .font-size-small{
     font-size: 0.8rem;
 }
@@ -168,4 +186,33 @@ table tr:nth-child(1) {
 }
 .color-redorange-vista{
     color: orangered;
+}
+
+
+
+
+.equipo-file-upload-logo {
+    position: absolute;
+    border: none;
+    display: inline-block;
+    padding: 1.2vw;
+    cursor: pointer;
+    background-image: url("/imagenes/upload.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.9;
+    width: 30px;
+    height: 30px;
+    z-index: 100;
+    left: 5px;
+    top: 0;
+}
+
+.color-purpura{
+    background-color: purple;
+    color:white;
+}
+
+.color-beige {
+    background-color: beige;
 }
