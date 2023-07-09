@@ -8,8 +8,9 @@ namespace TorneusClienteWeb.Modelos
     {
         public ProfileAutomapper()
         {
-            CreateMap<TorneoDTO, TorneoDTO>();
+            CreateMap<TorneoDTO, TorneoDTO>().ReverseMap();
             CreateMap<TorneoDTO, TorneoActualizacionDTO>().ReverseMap();
+            CreateMap<EquipoDTO, EquipoCreacionDTO>().ReverseMap();
         }
        
     }

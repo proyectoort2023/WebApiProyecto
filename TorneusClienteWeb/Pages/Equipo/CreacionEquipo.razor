@@ -4,6 +4,7 @@
 @inject EquipoServicio _servicioEquipo
 @inject ServicioMenu _servicioMenu
 @inject JugadorServicio _servicioJugador
+@inject IMapper _autoMapper
 
 
 
@@ -124,7 +125,7 @@
 
 @code {
 
-    private EquipoDTO Equipo = new();
+    private EquipoCreacionDTO Equipo = new();
     private List<JugadorDTO> Jugadores = new();
     private JugadorDTO JugadorNuevo = new();
 
@@ -168,16 +169,10 @@
     {
         try
         {
-
-
-
-            //TorneoParaCreacionDTO.UsuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
-            //TorneoParaCreacionDTO.Fecha = fechaTorneo.Value.Date;
-            //TorneoParaCreacionDTO.HoraComienzo = fechaTorneo.Value.Date.Add(horaComienzo.Value);
-            //var torneoNuevo = await _servicioTorneo.CrearTorneoOrganizador(TorneoParaCreacionDTO);
-            //int idOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
-            //await _servicioTorneo.ListadoTorneosOrganizadorData(idOrganizador);
-            _nav.NavigateTo("/EQUIPO/Principal");
+            EquipoDTO equipoDTO = _autoMapper.Map<EquipoCreacionDTO, EquipoDTO>(Equipo);
+            await _servicioEquipo.RegistrarEquipo(equipoDTO);
+            
+            _nav.NavigateTo("/EQUIPO/AdminEquipos");
         }
         catch (Exception ex)
         {

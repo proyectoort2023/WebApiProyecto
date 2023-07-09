@@ -1,5 +1,6 @@
 ﻿using BDTorneus;
 using DTOs_Compartidos.Models;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Negocio.Validaciones;
@@ -37,7 +38,40 @@ namespace Negocio
             }
         }
 
-      
+
+        public async Task<int> CrearEquipoNuevo(Equipo equipoNuevo)
+        {
+            try
+            {
+                if (equipoNuevo == null) throw new Exception("El equipo no tiene datos para guardar . W50");
+                string mensajeError = "";
+
+                ValidadorEquipo validacion = new(_db);
+                ValidationResult resultado = validacion.Validate(equipoNuevo);
+                if (!resultado.IsValid)
+                {
+                    resultado.Errors.ForEach(f => mensajeError += f.ErrorMessage);
+                    throw new Exception(mensajeError);
+                }
+               
+                foreach (var jugador in equipoNuevo.Jugadores)
+                {
+                    _db.Entry(jugador).State = EntityState.Unchanged;
+                }
+
+                var equipoRegistrado = await _db.Equipos.AddAsync(equipoNuevo);
+                await _db.SaveChangesAsync();
+
+                return equipoRegistrado.Entity.Id;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
 
 
     }

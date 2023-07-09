@@ -59,6 +59,39 @@ namespace WebApiTorneus.Controllers
 
 
 
+        /// <summary>
+        /// Permite la creación de un equipo para el rol EQUIPO
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint permite crear al administrador de equipos un equipo nuevo
+        /// </remarks>
+        /// <response code="200">OK.El equipo se ha creado</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
+        [HttpPost("Crear")]
+        public async Task<IActionResult> PostCreacion([FromBody] EquipoDTO equipoDTO)
+        {
+            try
+            {
+                if (equipoDTO == null) BadRequest("No hay datos de equipo para registrar. W51");
+
+                equipoDTO.Nombre = equipoDTO.Nombre.ToUpper().Trim();
+                equipoDTO.Abreviatura = equipoDTO.Abreviatura.ToUpper().Trim();
+                equipoDTO.Capitan = string.IsNullOrEmpty(equipoDTO.Capitan) ? "" : equipoDTO.Capitan;
+
+                Equipo equipo = _mapper.Map<Equipo>(equipoDTO);
+
+                int equipoNuevoId = await _equipoService.CrearEquipoNuevo(equipo);
+
+                return Ok(equipoNuevoId);
+            }
+            catch (Exception ex)
+            {
+              return BadRequest(ex.Message);
+            }
+        }
 
 
     }

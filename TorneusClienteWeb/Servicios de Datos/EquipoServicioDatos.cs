@@ -49,5 +49,35 @@ namespace TorneusClienteWeb.Servicios_de_Datos
             }
         }
 
+
+        public async Task<int> CreaNuevoEquipo(EquipoDTO equipoDTO)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.PostAsJsonAsync("api/Equipo/Crear", equipoDTO);
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var contentError = await response.Content.ReadAsStringAsync();
+                    var error = JsonConvert.DeserializeObject<string>(contentError);
+                    throw new Exception(error);
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<int>(content);
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
+
     }
 }

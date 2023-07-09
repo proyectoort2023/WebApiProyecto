@@ -55,10 +55,34 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-       
 
-      
+        public async Task RegistrarEquipo (EquipoDTO equipoDTO)
+        {
+            try
+            {
+                if (equipoDTO == null) throw new Exception("No existe el equipo");
 
+                equipoDTO.Nombre = equipoDTO.Nombre.ToUpper().Trim();
+                equipoDTO.Abreviatura = equipoDTO.Abreviatura.ToUpper().Trim();
+                equipoDTO.UsuarioId = _usuarioServicio.ObtenerUsuarioLogueado().Id;
+
+                int equipoId = await _equipoServicioDatos.CreaNuevoEquipo(equipoDTO);
+
+                if (equipoId < 1) throw new Exception("No se puedo crear el equipo");
+
+                await AgregarEquipoNuevoAListado(equipoDTO);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task AgregarEquipoNuevoAListado(EquipoDTO equipoDTO)
+        {
+            Equipos.Add(equipoDTO);
+        }
 
 
     }

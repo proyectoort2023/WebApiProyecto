@@ -1,4 +1,6 @@
-﻿
+﻿@inject IConfiguration _config
+
+
 <div class="container-equipo">
     <div class="equipo-grid sombraEquipo color-fondo-equipo">
         <div class="flex-equipo">
@@ -14,34 +16,37 @@
             <ul class="hidden">
                @foreach(var jugador in Equipo.Jugadores)
                 {
-                    <i class="fas fa-child"></i>
-                    <li>@jugador.Cedula - @jugador.NombreCompleto</li>
+                    <li>  <span class="fas fa-child"></span>  @jugador.Cedula - @jugador.NombreCompleto</li>
                 }
             </ul>
         </div>
     </div>
-    <div class="grid-vacio-abajo"></div>
-    <div class="boton-extender-grid sombraEquipo"> >> </div>
-    <div class="grid-vacio-abajo-derecha"></div>
 
     <div class="avatar-equipo">
-        <img src="@Equipo.Logo" alt="Logo de equipo">
+        <img src="@VerLogoURL()" alt="Logo de equipo">
     </div>
 </div>
 
 @code {
     [Parameter] public EquipoDTO Equipo { get; set; }
 
+    private string baseUrlImagen;
+
     protected async override Task OnInitializedAsync()
     {
-
+        baseUrlImagen = _config["UrlBaseParaImagenes"];
     }
 
     private string RecortarNombreEquipo()
     {
-        return Equipo.Nombre.Substring(1, 15);
+        string recorte = Equipo.Nombre.Length >= 15 ? Equipo.Nombre.Substring(1, 15) : Equipo.Nombre;
+        return recorte;
     }
 
+    private string VerLogoURL(){
 
-
+        string rutaImagen = $"{baseUrlImagen}{Equipo.Logo}";
+        return rutaImagen;
+    }
+        
 }

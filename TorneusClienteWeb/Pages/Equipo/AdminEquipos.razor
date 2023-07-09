@@ -10,13 +10,21 @@
 
 @if(EquiposDTO == null)
 {
-  <Cargando />
+    <Cargando />
 }
 else
 {
     if (EquiposDTO.Count == 0)
     {
         <h3>No tiene equipos creados aun...</h3>
+    }
+    else
+    {
+        foreach(var equipo in EquiposDTO)
+        { 
+             <EquipoItemGestion Equipo="equipo" />
+        }
+       
     }
 }
 
