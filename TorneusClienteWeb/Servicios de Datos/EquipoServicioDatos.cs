@@ -35,8 +35,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
                 if (!response.IsSuccessStatusCode)
                 {
                     var contentError = await response.Content.ReadAsStringAsync();
-                    var error = JsonConvert.DeserializeObject<string>(contentError);
-                    throw new Exception(error);
+                    throw new Exception(contentError);
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
@@ -62,8 +61,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
                 if (!response.IsSuccessStatusCode)
                 {
                     var contentError = await response.Content.ReadAsStringAsync();
-                    var error = JsonConvert.DeserializeObject<string>(contentError);
-                    throw new Exception(error);
+                    throw new Exception(contentError);
                 }
 
                 var content = await response.Content.ReadAsStringAsync();

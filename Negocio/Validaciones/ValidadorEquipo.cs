@@ -18,7 +18,7 @@ namespace Negocio.Validaciones
 
             RuleFor(t => t.UsuarioId).NotEmpty();
             RuleFor(t => t.Nombre).MinimumLength(3).MaximumLength(30).WithMessage("El nombre debe tener entre 3 y 30 caracteres. ");
-            RuleFor(t => t.Deporte).NotEmpty().NotNull().WithMessage("Falta la asignación del deporte dle equipo");
+            RuleFor(t => t.Deporte).NotEmpty().NotNull().WithMessage("Falta la asignación del deporte del equipo");
             RuleFor(t => t.Abreviatura).MinimumLength(3).MaximumLength(6).WithMessage("El nombre de contacto debe tener entre 3 y 6 caracteres. ");
             RuleFor(t => t.Logo).NotEmpty().WithMessage("Debe seleccionar imagen para el logo. ");
             RuleFor(us => us.Nombre).NotEmpty().Must(NombreNoExiste).WithMessage("El nombre está duplicado");
