@@ -14,6 +14,7 @@ namespace Negocio.DTOs
         public string Deporte { get; set; }
         public string Abreviatura { get; set; }
         public string Logo { get; set; }
+        public string Capitan { get; set; }
 
         public int UsuarioId { get; set; }
         public UsuarioDTO Usuario { get; set; }

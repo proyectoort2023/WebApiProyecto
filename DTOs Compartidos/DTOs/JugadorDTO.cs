@@ -16,6 +16,5 @@ namespace Negocio.DTOs
         [RegularExpression(@"[0-9]+$", ErrorMessage = "La cédula debe ser numerica sin puntos ni guiones")]
         public string Cedula { get; set; }
         public DateTime FechaNacimiento { get; set; }
-        public bool Capitan { get; set; }
     }
 }

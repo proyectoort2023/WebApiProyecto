@@ -63,6 +63,9 @@ input[type="file"] {
     font-weight: 400;
     font-size: 0.8rem;
 }
+.card-general-transparente {
+   background-color: transparent;
+}
 
 .card-general p {
     margin:0;
@@ -215,4 +218,23 @@ table tr:nth-child(1) {
 
 .color-beige {
     background-color: beige;
+}
+
+.tabla-equipo th, .tabla-equipo td{
+    padding: 5px 0; 
+}
+.tabla-equipo th {
+    background-color: forestgreen;
+}
+
+.tabla-equipo tr:nth-child(odd) {
+    background-color: #ebebeb;
+}
+
+.color-verde {
+    color: blue;
+}
+
+.color-rojo{
+    color: red;
 }

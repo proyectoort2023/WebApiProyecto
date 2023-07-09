@@ -9,14 +9,14 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Negocio.Validaciones
 {
-    public class ValidacionEquipo : AbstractValidator<Equipo>
+    public class ValidadorEquipo : AbstractValidator<Equipo>
     {
         private readonly TorneoContext _db;
-        public ValidacionEquipo(TorneoContext db)
+        public ValidadorEquipo(TorneoContext db)
         {
             _db = db;
 
-            RuleFor(t => t.Usuario.Id).NotEmpty();
+            RuleFor(t => t.UsuarioId).NotEmpty();
             RuleFor(t => t.Nombre).MinimumLength(3).MaximumLength(30).WithMessage("El nombre debe tener entre 3 y 30 caracteres. ");
             RuleFor(t => t.Deporte).NotEmpty().NotNull().WithMessage("Falta la asignación del deporte dle equipo");
             RuleFor(t => t.Abreviatura).MinimumLength(3).MaximumLength(6).WithMessage("El nombre de contacto debe tener entre 3 y 6 caracteres. ");

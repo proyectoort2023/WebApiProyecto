@@ -13,6 +13,7 @@ namespace BDTorneus
         public string Deporte { get; set; }
         public string Abreviatura { get; set; } 
         public string Logo { get; set; }
+        public string Capitan { get; set; }
 
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; }

@@ -55,12 +55,23 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task<List<JugadorDTO>> ObtenerJugadoresTodos()
+
+        public async Task RegistrarEquipo (EquipoDTO equipoDTO)
         {
             try
             {
-                var jugadores =  await _equipoServicioDatos.ObtenerJugadoresTodos();
-                return jugadores;
+                if (equipoDTO == null) throw new Exception("No existe el equipo");
+
+                equipoDTO.Nombre = equipoDTO.Nombre.ToUpper().Trim();
+                equipoDTO.Abreviatura = equipoDTO.Abreviatura.ToUpper().Trim();
+                equipoDTO.UsuarioId = _usuarioServicio.ObtenerUsuarioLogueado().Id;
+
+                int equipoId = await _equipoServicioDatos.CreaNuevoEquipo(equipoDTO);
+
+                if (equipoId < 1) throw new Exception("No se puedo crear el equipo");
+
+                await AgregarEquipoNuevoAListado(equipoDTO);
+
             }
             catch (Exception ex)
             {
@@ -68,42 +79,10 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task<int> RegistrarJugador(JugadorDTO jugadorDTO)
+        public async Task AgregarEquipoNuevoAListado(EquipoDTO equipoDTO)
         {
-            try
-            {
-                if (jugadorDTO == null) throw new Exception("Hay datos varios del jugador");
-
-                int idJugador = await _equipoServicioDatos.RegistrarJugador(jugadorDTO);
-                return idJugador;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            Equipos.Add(equipoDTO);
         }
-
-
-        public async Task<bool> ModificarCapitanJugador(int idCapitan, bool valorNuevo)
-        {
-            try
-            {
-                JugadorCapitan jugadorCapitan = new()
-                {
-                    CapitanId = idCapitan,
-                    NuevoValor = valorNuevo
-                };
-
-                bool modificadoCapitanJugador = await _equipoServicioDatos.ModificarCapitalJugador(jugadorCapitan);
-                return modificadoCapitanJugador;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-
 
 
     }

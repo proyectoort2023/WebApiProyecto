@@ -20,6 +20,7 @@ namespace DTOs_Compartidos.DTOs
         public string Abreviatura { get; set; }
         [Required(ErrorMessage = "Obligatorio")]
         public string Logo { get; set; }
+        public string Capitan { get; set; }
 
         [Required(ErrorMessage = "Obligatorio")]
         public int UsuarioId { get; set; }

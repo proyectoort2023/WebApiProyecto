@@ -1,5 +1,6 @@
 ﻿using BDTorneus;
 using DTOs_Compartidos.Models;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Negocio.Validaciones;
@@ -37,31 +38,32 @@ namespace Negocio
             }
         }
 
-        public async Task<List<Jugador>> ObtenerTodosJugadores()
+
+        public async Task<int> CrearEquipoNuevo(Equipo equipoNuevo)
         {
             try
             {
-                List<Jugador> jugadores = await _db.Jugadores.AsNoTracking().ToListAsync();
+                if (equipoNuevo == null) throw new Exception("El equipo no tiene datos para guardar . W50");
+                string mensajeError = "";
 
-                return jugadores;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
+                ValidadorEquipo validacion = new(_db);
+                ValidationResult resultado = validacion.Validate(equipoNuevo);
+                if (!resultado.IsValid)
+                {
+                    resultado.Errors.ForEach(f => mensajeError += f.ErrorMessage);
+                    throw new Exception(mensajeError);
+                }
+               
+                foreach (var jugador in equipoNuevo.Jugadores)
+                {
+                    _db.Entry(jugador).State = EntityState.Unchanged;
+                }
 
-        public async Task<int> RegistrarJugador(Jugador jugador)
-        {
-            try
-            {
-                bool jugadorDuplicado = await JugadorDuplicado(jugador.Cedula);
-
-                if (jugadorDuplicado) throw new Exception("El jugador está duplicado");
-
-               var nuevoJugador = await _db.Jugadores.AddAsync(jugador);
+                var equipoRegistrado = await _db.Equipos.AddAsync(equipoNuevo);
                 await _db.SaveChangesAsync();
-                return nuevoJugador.Entity.Id;
+
+                return equipoRegistrado.Entity.Id;
+
             }
             catch (Exception ex)
             {
@@ -69,32 +71,7 @@ namespace Negocio
             }
         }
 
-        public async Task<bool> JugadorDuplicado(string cedula)
-        {
-            bool duplicado = await _db.Jugadores.AnyAsync(a => a.Cedula == cedula);
-            return duplicado;
-        }
 
-        public async Task<bool> ModificarCapital(JugadorCapitan jugadorCapitan)
-        {
-            try
-            {
-                Jugador jugadorBuscado = await _db.Jugadores.FindAsync(jugadorCapitan.CapitanId);
-
-                if (jugadorBuscado == null) throw new Exception("No se ha encontrado al jugador buscado. W022");
-
-                jugadorBuscado.Capitan = jugadorCapitan.NuevoValor;
-
-                int cantidadModificados = await _db.SaveChangesAsync();
-
-                return cantidadModificados > 0;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-          
-        }
 
 
     }

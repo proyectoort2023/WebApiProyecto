@@ -60,83 +60,36 @@ namespace WebApiTorneus.Controllers
 
 
         /// <summary>
-        /// Permite la obtención de un listado de todos los jugadores registrados en el sistema 
+        /// Permite la creación de un equipo para el rol EQUIPO
         /// </summary>
         /// <remarks>
-        /// Este endpoint devuelve todos los jugadores registrados en el sistema 
+        /// Este endpoint permite crear al administrador de equipos un equipo nuevo
         /// </remarks>
-        /// <response code="200">OK. Listado de equipos obtenido</response>
-        /// <response code="400">Validaciones varias no conformadas</response>
-        [ProducesResponseType(typeof(List<JugadorDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "EQUIPO")]
-        [HttpGet("ObtenerJugadores")]
-        public async Task<IActionResult> GetJugadores()
-        {
-            try
-            {
-
-                List<Jugador> listado = await _equipoService.ObtenerTodosJugadores();
-
-                List<JugadorDTO> jugadoresDTO = _mapper.Map<List<Jugador>, List<JugadorDTO>>(listado);
-
-                return Ok(jugadoresDTO);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// Permite el registro de un nuevo jugador
-        /// </summary>
-        /// <remarks>
-        /// Este endpoint registra si no está duplicado un nuevo jugador
-        /// </remarks>
-        /// <response code="200">OK. Jugador creado </response>
+        /// <response code="200">OK.El equipo se ha creado</response>
         /// <response code="400">Validaciones varias no conformadas</response>
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "EQUIPO")]
-        [HttpPost("Jugador/Crear")]
-        public async Task<IActionResult> CrearJugador([FromBody] JugadorDTO jugadorDTO)
+        [HttpPost("Crear")]
+        public async Task<IActionResult> PostCreacion([FromBody] EquipoDTO equipoDTO)
         {
             try
             {
-                Jugador jugador = _mapper.Map<JugadorDTO, Jugador>(jugadorDTO);
-                int idJugadorNuevo = await _equipoService.RegistrarJugador(jugador);
-                return Ok(idJugadorNuevo);
+                if (equipoDTO == null) BadRequest("No hay datos de equipo para registrar. W51");
+
+                equipoDTO.Nombre = equipoDTO.Nombre.ToUpper().Trim();
+                equipoDTO.Abreviatura = equipoDTO.Abreviatura.ToUpper().Trim();
+                equipoDTO.Capitan = string.IsNullOrEmpty(equipoDTO.Capitan) ? "" : equipoDTO.Capitan;
+
+                Equipo equipo = _mapper.Map<Equipo>(equipoDTO);
+
+                int equipoNuevoId = await _equipoService.CrearEquipoNuevo(equipo);
+
+                return Ok(equipoNuevoId);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        /// <summary>
-        /// Permite la actualizar el valor si es capitan o no del equipo de un jugador
-        /// </summary>
-        /// <remarks>
-        /// Este endpoint actualiza el valor si es capitan o no del equipo de un jugador
-        /// </remarks>
-        /// <response code="200">OK. Valor de capitan cambiado </response>
-        /// <response code="400">Validaciones varias no conformadas</response>
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "EQUIPO")]
-        [HttpPost("Jugador/ActualizarCapitan")]
-        public async Task<IActionResult> ActualizarCapitanJugador([FromBody] JugadorCapitan jugadorCapitan)
-        {
-            try
-            {
-                bool actualizarDatoCapitan = await _equipoService.ModificarCapital(jugadorCapitan);
-                return Ok(actualizarDatoCapitan);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
+              return BadRequest(ex.Message);
             }
         }
 
