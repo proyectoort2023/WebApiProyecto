@@ -16,7 +16,7 @@ namespace DTOs_Compartidos.DTOs
         public string Nombre { get; set; }
         public string Deporte { get; set; } = "VOLEY";
         [Required(ErrorMessage = "Obligatorio")]
-        [StringLength(6, MinimumLength = 3, ErrorMessage = "Debe tener entre 3 y 6 caracteres")]
+        [StringLength(10, MinimumLength = 3, ErrorMessage = "Debe tener entre 3 y 10 caracteres")]
         public string Abreviatura { get; set; }
         public string Logo { get; set; }
         public string Capitan { get; set; }
