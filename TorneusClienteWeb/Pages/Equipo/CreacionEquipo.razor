@@ -5,6 +5,7 @@
 @inject ServicioMenu _servicioMenu
 @inject JugadorServicio _servicioJugador
 @inject IMapper _autoMapper
+@inject IDialogService _dialogService
 
 
 
@@ -36,8 +37,8 @@
 
     @if (Equipo.Jugadores.Count < 13)
     {
-        <div class="card-general color-beige">
-            <h4>Jugador</h4>
+        <div class="card-general color-violet">
+            <h5>Jugador</h5>
             <MudTextField @bind-Value="JugadorNuevo.Cedula"
                           TextChanged="onChangedTextCedula"
                           Label="Cedula"
@@ -62,9 +63,12 @@
 
             <EspacioVertical Altura="10px" />
 
-            <MudButton Variant="Variant.Outlined" 
-                       Color="Color.Primary"
-                       OnClick="AgregarCrearJugador">Agregar al equipo</MudButton>
+            <div class="d-flex justify-content-center">
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           OnClick="AgregarCrearJugador">Agregar al equipo</MudButton>
+            </div>
+           
         </div>
     }
 
@@ -112,7 +116,7 @@
      
           <EspacioVertical Altura="20px" />
 
-            <div class="center-container-login">
+            <div class="d-flex justify-content-center">
                     <MudButton Variant="Variant.Filled" 
                     Color="Color.Primary" 
                     ButtonType="ButtonType.Submit"
@@ -129,8 +133,6 @@
     private List<JugadorDTO> Jugadores = new();
     private JugadorDTO JugadorNuevo = new();
 
-    int cantidadCapitanes = 0;
-
     bool disableEdicioNuevoJugador = false;
     bool disableBotonRegistrar = true;
 
@@ -142,7 +144,7 @@
     protected async override Task OnInitializedAsync()
     {
 
-        _servicioMenu.ActualizarNavegacionPOP(true, false, "/EQUIPO/Gestiones");
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/EQUIPO/AdminEquipos");
         _servicioMenu.ActualizarTitulo("Registro de equipo");
 
         Jugadores = await _servicioJugador.ObtenerJugadoresTodos();
@@ -171,7 +173,7 @@
         {
             EquipoDTO equipoDTO = _autoMapper.Map<EquipoCreacionDTO, EquipoDTO>(Equipo);
             await _servicioEquipo.RegistrarEquipo(equipoDTO);
-            
+
             _nav.NavigateTo("/EQUIPO/AdminEquipos");
         }
         catch (Exception ex)
@@ -186,8 +188,6 @@
         if (fecha == null) return "La fecha es requerida.";
 
         if (fecha > DateTime.Today.Date.AddYears(-13)) return "El jugador debe ser mayor de 12";
-
-        // Realizar validaciones adicionales si es necesario
 
         return string.Empty; // La fecha es válida
     }
@@ -217,6 +217,7 @@
 
             if (Equipo.Jugadores.Count >= 6) disableBotonRegistrar = false;
 
+            HabilitarCamposRegistroJugador();
             _snackbar.Add("Jugador agregado al equipo", Severity.Success);
             LimpiarCasillasJugadores();
         }
@@ -242,7 +243,7 @@
 
         var jugadorBuscado = BuscarJugadorPorCedula(texto);
         if (jugadorBuscado == null) {
-            disableEdicioNuevoJugador = false;
+            HabilitarCamposRegistroJugador();
             return;
         };
 
@@ -251,7 +252,7 @@
         JugadorNuevo.NombreCompleto = jugadorBuscado.NombreCompleto;
         JugadorNuevo.FechaNacimiento = jugadorBuscado.FechaNacimiento;
 
-        disableEdicioNuevoJugador = true;
+        DeshabilitarCamposRegistroJugador();
     }
 
     private JugadorDTO BuscarJugadorPorCedula(string cedula)
@@ -264,13 +265,36 @@
         Equipo.Capitan = capitan;
     }
 
-    private void EliminarJugadorEquipo(int idJugador)
+    private async Task EliminarJugadorEquipo(int idJugador)
     {
+        string nombreJugador = Equipo.Jugadores.SingleOrDefault(s => s.Id == idJugador).NombreCompleto;
+        var parametros = new DialogParameters();
+        parametros.Add(nameof(DialogComponent.Mensaje), $"Sacar jugador del equipo");
+
+        var result = await _dialogService.Show<DialogComponent>($"Desea sacar a {nombreJugador} del equipo?", parametros).Result;
+
+        if (result.Canceled) return;
+
+
+       
         Equipo.Jugadores.RemoveAll(rem => rem.Id == idJugador);
         int cantidadJugadores = Equipo.Jugadores.Count;
 
         if (cantidadJugadores < 6) disableBotonRegistrar = true;
+
+        if (nombreJugador == Equipo.Capitan) Equipo.Capitan = "";
     }
+
+    private void HabilitarCamposRegistroJugador()
+    {
+        disableEdicioNuevoJugador = false;
+    }
+
+    private void DeshabilitarCamposRegistroJugador()
+    {
+        disableEdicioNuevoJugador = true;
+    }
+
 
 
 }

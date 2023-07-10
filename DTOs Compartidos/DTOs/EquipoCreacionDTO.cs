@@ -18,11 +18,9 @@ namespace DTOs_Compartidos.DTOs
         [Required(ErrorMessage = "Obligatorio")]
         [StringLength(6, MinimumLength = 3, ErrorMessage = "Debe tener entre 3 y 6 caracteres")]
         public string Abreviatura { get; set; }
-        [Required(ErrorMessage = "Obligatorio")]
         public string Logo { get; set; }
         public string Capitan { get; set; }
 
-        [Required(ErrorMessage = "Obligatorio")]
         public int UsuarioId { get; set; }
         public UsuarioDTO Usuario { get; set; }
         public List<JugadorDTO> Jugadores { get; set; } = new List<JugadorDTO>();
