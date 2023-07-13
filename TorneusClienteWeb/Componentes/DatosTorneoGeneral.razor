@@ -5,6 +5,8 @@
 @inject IDialogService _dialogService
 @inject HubConnection _hubConnection
 @inject NavigationManager _nav
+@inject EquipoServicio _servicioEquipo
+@inject InscripcionServicio _servicioInscripcion
 
 @if (TorneoSeleccionadoDTO != null)
 {
@@ -172,9 +174,39 @@
                                                         && TorneoSeleccionadoDTO.Cerrrado == false
                                                         && TorneoSeleccionadoDTO.Suspendido == false;
 
-    private void Inscribirme()
+    private async Task Inscribirme()
     {
-        _nav.NavigateTo("/EQUIPO/Inscripcion");
+        int equipoId = 0;
+        double monto = 0;
+        string modalidad = "";
+
+        var listaEquipos = await _servicioEquipo.ObtenerEquiposPorAdministrador();
+
+        if (listaEquipos.Count > 1)
+        {
+            var result = await _dialogService.Show<SelectorEquipoModal>($"Elección equipo participante").Result; //cuando tiene mas de un equipo debe seleccionar el que va a participar
+
+            if (!result.Canceled) equipoId = (int)result.Data;
+            return;
+
+        }
+        if (listaEquipos.Count == 1) equipoId = listaEquipos[0].Id;
+
+        if (listaEquipos.Count == 0)
+        {
+            _snackbar.Add("No tiene equipo/s creados para las inscripciones de torneos", Severity.Warning);
+        }
+       
+
+        await _servicioInscripcion.AgregarInscripcionNueva(equipoId, monto, modalidad);
+
+        //snack del equipo inscripto correctamente
+
+           _nav.NavigateTo("/EQUIPO/Inscripcion");
     }
+
+
+
+
 
 }

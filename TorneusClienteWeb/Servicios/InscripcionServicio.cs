@@ -9,6 +9,7 @@ namespace TorneusClienteWeb.Servicios
         [Inject] private UsuarioServicio _usuarioServicio { get; set; }
 
         private List<InscripcionDTO> _inscripciones { get; set; } = new List<InscripcionDTO>();
+        private InscripcionDTO _inscripcionSeleccionado;
 
         public InscripcionServicio(TorneoServicio torneoServicio)
         {
@@ -28,7 +29,7 @@ namespace TorneusClienteWeb.Servicios
           return _inscripciones;
         }
 
-        public async Task AgregarInscripcionNueva()
+        public async Task AgregarInscripcionNueva(int equipoId, double monto, string modalidad)
         {
             //por web api inicial
         }
