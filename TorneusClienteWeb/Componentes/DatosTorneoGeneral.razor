@@ -24,7 +24,7 @@
     }
     @if (ValidarInscripcion())
     {
-        <div class="d-flex justify-content-center align-items-center" @onclick="SuspenderTorneo">
+        <div class="d-flex justify-content-center align-items-center" @onclick="Inscribirme">
             <MudIcon Icon=@Icons.Material.Filled.AutoDelete Title="Suspender" Size="Size.Large" Color="Color.Warning" />
             <span class="m-1 animacionInscripcion">Inscribirme</span>
         </div>
@@ -172,9 +172,9 @@
                                                         && TorneoSeleccionadoDTO.Cerrrado == false
                                                         && TorneoSeleccionadoDTO.Suspendido == false;
 
-    private async Task Inscribirme()
+    private void Inscribirme()
     {
-        
+        _nav.NavigateTo("/EQUIPO/Inscripcion");
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using DTOs_Compartidos.Models;
+using Microsoft.AspNetCore.SignalR;
 using Negocio.DTOs;
 
 namespace WebApiTorneus.HubSignalR
@@ -67,6 +68,11 @@ namespace WebApiTorneus.HubSignalR
         public async Task EnviarAperturaCierreTorneo(int torneoId, bool apertura)
         {
             await Clients.All.SendAsync("RecibidorAperturaCierreTorneo", torneoId, apertura);
+        }
+
+        public async Task EnviarNotificacionMercadoPago(WebHook webHook)
+        {
+            await Clients.All.SendAsync("RecibidorNotificacionMercadoPago", webHook);
         }
 
     }

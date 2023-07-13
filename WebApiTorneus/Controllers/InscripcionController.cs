@@ -1,12 +1,18 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using BDTorneus;
 using DTOs_Compartidos.Models;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Negocio;
 using Negocio.DTOs;
 using Negocio.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using WebApiTorneus.HubSignalR;
 using WebApiTorneus.Services;
 using static Utilidades.Util;
 
@@ -18,10 +24,12 @@ namespace WebApiTorneus.Controllers
     {
         private readonly IMapper _mapper;
         private readonly InscripcionService _inscripcionService;
-        public InscripcionController(IMapper mapper, UsuarioService usuarioService, InscripcionService inscripcionService)
+        private IHubContext<TorneusHub> _torneoHub;
+        public InscripcionController(IMapper mapper, UsuarioService usuarioService, InscripcionService inscripcionService, IHubContext<TorneusHub> torneoHub)
         {
             _mapper = mapper;
             _inscripcionService = inscripcionService;
+            _torneoHub = torneoHub;
         }
 
 
@@ -94,13 +102,21 @@ namespace WebApiTorneus.Controllers
         /// <response code="200">OK</response>
         [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
         [HttpPost("Notificacion/Mercadopago")]
-        public async Task<IActionResult> WebHooksMercadoPago([FromBody] WebHook webHook)
+        public async Task<IActionResult> WebHooksMercadoPago()
         {
             try
             {
-            
+                using (StreamReader reader = new StreamReader(Request.Body))
+                {
+                    string jsonString = await reader.ReadToEndAsync();
 
-                return Ok(webHook);
+                    WebHook webhookData = JsonConvert.DeserializeObject<WebHook>(jsonString);
+
+                    await _torneoHub.Clients.All.SendAsync("RecibidorNotificacionMercadoPago", webhookData);
+                }
+
+
+                    return Ok();
             }
             catch (Exception ex)
             {

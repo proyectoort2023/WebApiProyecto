@@ -1,0 +1,26 @@
+﻿@page "/EQUIPO/Inscripcion"
+@inject NavigationManager _nav
+@inject HubConnection _hubConnection
+
+<h2>Inscripciones</h2>
+
+
+<p>@wb</p>
+
+@code {
+
+    string wb = "nada";
+
+
+    protected async override Task OnInitializedAsync()
+
+    {
+        _hubConnection.On<WebHook>("RecibidorNotificacionMercadoPago", async (webHook) =>
+       {
+           wb = webHook.ToString();
+           StateHasChanged();
+
+       });
+    }
+
+}
