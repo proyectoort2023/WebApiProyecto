@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using BDTorneus;
+using DTOs_Compartidos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Negocio;
 using Negocio.DTOs;
 using Negocio.Models;
 using System.Collections.Generic;
 using WebApiTorneus.Services;
+using static Utilidades.Util;
 
 namespace WebApiTorneus.Controllers
 {
@@ -33,6 +36,7 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">No encontrado</response>
         [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
         [HttpPost("Agregar")]
         public async Task<IActionResult> AgregarInscripcionNueva([FromBody] InscripcionDTO inscripcionDTO)
         {
@@ -53,18 +57,17 @@ namespace WebApiTorneus.Controllers
 
 
         /// <summary>
-        /// Permite el login de un usuario con rol Espectador
+        /// Permite obtener las inscripciones de un usuario con rol Equipo
         /// </summary>
         /// <remarks>
-        /// Este endpoint devuelve token de tipo JWT con el usuario logueado
-        /// { Id = int, Mail = string, Rol = "ESPECTADOR" o "EQUIPO" o "ESPECTADOR" o "PLANILLERO", Token = string }
+        /// Este endpoint permite obtener las inscripciones de un usuario con rol Equipo
         /// </remarks>
-        /// <response code="200">OK. El usuario se encontró correctamente. Se devuelve un token JWT</response>
+        /// <response code="200">OK. Listado obtenido</response>
         /// <response code="400">Validaciones varias erroneas</response>
         [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("Listado/{usuarioId}")]
-        public async Task<IActionResult> GetLoginEspectador(int usuarioId)
+        public async Task<IActionResult> GetInscripconesSegunUsuario(int usuarioId)
         {
             try
             {
@@ -81,7 +84,29 @@ namespace WebApiTorneus.Controllers
 
 
 
+        /// <summary>
+        /// Notificaciones de estado de pago de Mercado Pago
+        /// </summary>
+        /// <returns> retorna Ok segun requerimiento de Mercado Pago</returns>
+        /// <remarks>
+        /// Recibe notofocación de pago de Mercado Pago API y notifica a través de SignalR al usuario que realizó el pago de la suscripción
+        /// </remarks>
+        /// <response code="200">OK</response>
+        [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
+        [HttpPost("Notificacion/Mercadopago")]
+        public async Task<IActionResult> WebHooksMercadoPago([FromBody] WebHook webHook)
+        {
+            try
+            {
+            
 
+                return Ok(webHook);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 
