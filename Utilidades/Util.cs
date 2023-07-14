@@ -13,6 +13,8 @@
         public static string IconoMedalla = "fas fa-medal";
         public static string IconoJugados = "fas fa-sitemap";
 
+        public static string TIPO_PRECIO_POR_EQUIPO = "EQUIPO";
+
         public enum  Roles
         {
                 EQUIPO,
@@ -57,6 +59,18 @@
             {"MUJERES","ce_mujeres.png" },
         };
 
+        public enum EstadoPago
+        {
+          PENDIENTE,
+          RECHAZADO,
+          PAGADO
+        }
+
+        public static Dictionary<string, string> MediosPagoImagenDiccionario = new Dictionary<string, string>()
+        {
+            {"EFECTIVO","ruta imagen a mostrar" },
+            {"MERCADOPAGO","RUTA DE MERCADOPAGO" },
+        };
 
 
 

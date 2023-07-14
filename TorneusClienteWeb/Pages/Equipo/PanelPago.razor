@@ -1,0 +1,22 @@
+﻿@page "/EQUIPO/PanelPago"
+@inject NavigationManager _nav
+@inject ServicioMenu _servicioMenu
+
+
+<MudButton>
+    <img src="/imagenes/mercadopago-logo.png" alt="" class="card-general" />
+</MudButton>
+
+<MudButton>
+    <img src="/imagenes/pago-efectivo-logo5.png" alt="" class="card-general"/>
+</MudButton>
+
+
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/EQUIPO/Gestiones");
+        _servicioMenu.ActualizarTitulo("Panel de pago");
+    }
+}

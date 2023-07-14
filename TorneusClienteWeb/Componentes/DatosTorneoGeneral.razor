@@ -176,33 +176,44 @@
 
     private async Task Inscribirme()
     {
-        int equipoId = 0;
-        double monto = 0;
-        string modalidad = "";
 
-        var listaEquipos = await _servicioEquipo.ObtenerEquiposPorAdministrador();
-
-        if (listaEquipos.Count > 1)
+        try
         {
-            var result = await _dialogService.Show<SelectorEquipoModal>($"Elección equipo participante").Result; //cuando tiene mas de un equipo debe seleccionar el que va a participar
+            int equipoId = 0;
+            double precio =  _servicioTorneo.ObtenerTorneoActual().Precio;
+            string tipoPrecio = _servicioTorneo.ObtenerTorneoActual().TipoPrecio;
 
-            if (!result.Canceled) equipoId = (int)result.Data;
-            return;
+            var listaEquipos = await _servicioEquipo.ObtenerEquiposPorAdministrador();
 
+            if (listaEquipos.Count > 0)
+            {
+                var result = await _dialogService.Show<SelectorEquipoModal>($"Elección equipo participante").Result; //cuando tiene mas de un equipo debe seleccionar el que va a participar
+
+                if (result.Canceled) return;
+
+                equipoId = (int)result.Data;
+            }
+            else
+            {
+                _snackbar.Add("No tiene equipo/s creados para las inscripciones de torneos", Severity.Warning);
+                return;
+            }
+
+            int cantidadJugadores = _servicioEquipo.CantidadJugadoresEquipo(equipoId);
+
+            await _servicioInscripcion.AgregarInscripcionNueva(equipoId, precio, tipoPrecio, cantidadJugadores);
+
+            _snackbar.Add("Se ha inscrripto su equipo correctamente", Severity.Success);
+
+            _nav.NavigateTo("/EQUIPO/PanelPago");
         }
-        if (listaEquipos.Count == 1) equipoId = listaEquipos[0].Id;
-
-        if (listaEquipos.Count == 0)
+        catch (Exception ex)
         {
-            _snackbar.Add("No tiene equipo/s creados para las inscripciones de torneos", Severity.Warning);
+
+            _snackbar.Add(ex.Message, Severity.Warning);
         }
+
        
-
-        await _servicioInscripcion.AgregarInscripcionNueva(equipoId, monto, modalidad);
-
-        //snack del equipo inscripto correctamente
-
-           _nav.NavigateTo("/EQUIPO/Inscripcion");
     }
 
 

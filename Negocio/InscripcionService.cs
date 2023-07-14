@@ -1,4 +1,5 @@
 ﻿using BDTorneus;
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Negocio.Validaciones;
@@ -27,7 +28,10 @@ namespace Negocio
             {
                 if (usuarioId < 0) throw new Exception("El usuario no se encuentra para obtener las inscripciones");
 
-                List<Inscripcion> inscripciones = await _db.Inscripciones.Where(w => w.UsuarioId == usuarioId).ToListAsync();
+                List<Inscripcion> inscripciones = await _db.Inscripciones.Include(i => i.Usuario)
+                                                                          .Include(i => i.Usuario)
+                                                                          .Include(i => i.Torneo)
+                                                                          .Where(w => w.UsuarioId == usuarioId).ToListAsync();
 
                 if (inscripciones == null) throw new Exception("No hay inscricpiones válidas");
 
@@ -43,7 +47,28 @@ namespace Negocio
         {
             try
             {
+                string mensajeError = "";
+
+                ValidadorCreacionInscripcion validacion = new(_db);
+                ValidationResult resultValidacion = validacion.Validate(inscripcion);
+                if (!resultValidacion.IsValid)
+                {
+                    resultValidacion.Errors.ForEach(f => mensajeError += f.ErrorMessage);
+                    throw new Exception(mensajeError);
+                }
+
+
+                inscripcion.Usuario = await _db.Usuarios.FindAsync(inscripcion.UsuarioId);
+                inscripcion.Torneo = await _db.Torneos.FindAsync(inscripcion.TorneoId);
+                inscripcion.Equipo = await _db.Equipos.FindAsync(inscripcion.EquipoId);
+
+                _db.Entry(inscripcion.Usuario).State = EntityState.Unchanged;
+                _db.Entry(inscripcion.Torneo).State = EntityState.Unchanged;
+                _db.Entry(inscripcion.Equipo).State = EntityState.Unchanged;
+
+
                 var inscrpcionNueva = await _db.Inscripciones.AddAsync(inscripcion);
+
                 await _db.SaveChangesAsync();
 
                 return inscrpcionNueva.Entity;

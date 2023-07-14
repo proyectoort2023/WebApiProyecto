@@ -11,12 +11,16 @@ namespace Negocio.DTOs
 {
     public class InscripcionDTO
     {
+        public int Id { get; set; }
         public int TorneoId { get; set; }
-        public TorneoDTO Torneo { get; set; }
         public int EquipoId { get; set; }
-        public EquipoDTO Equipo { get; set; }
+
+        public int UsuarioId { get; set; }
         public double Monto { get; set; }
         public string MedioPago { get; set; }
         public string Estado { get; set; }
+        public string PreferenciaMP { get; set; }
+        public string OrdenPagoMP { get; set; }
+      
     }
 }

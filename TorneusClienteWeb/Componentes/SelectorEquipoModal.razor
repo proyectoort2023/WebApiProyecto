@@ -36,10 +36,10 @@
     protected async override Task OnInitializedAsync()
     {
         equipos = await _servicioEquipo.ObtenerEquiposPorAdministrador();
-
+        equipoIdSeleccionado = equipos[0].Id;
     }
 
     private void Cerrar() => MudDialog.Cancel();
 
-    private void OK() => MudDialog.Close(DialogResult.Ok(true));
+    private void OK() => MudDialog.Close(DialogResult.Ok(equipoIdSeleccionado));
 }

@@ -84,6 +84,13 @@ namespace TorneusClienteWeb.Servicios
             Equipos.Add(equipoDTO);
         }
 
+        public int CantidadJugadoresEquipo(int equipoId)
+        {
+            int cantidad = 0;
+            cantidad = Equipos.SingleOrDefault(w => w.Id == equipoId).Jugadores.Count();
+            return cantidad;
+        }
+
 
     }
 }

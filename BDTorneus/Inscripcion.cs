@@ -11,6 +11,7 @@ namespace BDTorneus
     [DataContract(IsReference = true)]
     public class Inscripcion
     {
+        public int Id { get; set; }
         public int TorneoId { get; set; }
         public Torneo Torneo { get; set; }
         public int EquipoId { get; set; }
@@ -18,7 +19,9 @@ namespace BDTorneus
         public double Monto { get; set; }
         public string MedioPago { get; set; }
         public string Estado { get; set; }
+        public string PreferenciaMP { get; set; }
+        public string OrdenPagoMP { get; set; }
         public int UsuarioId { get; set; }
-        public List<Usuario> Usuario { get; set; }
+        public Usuario Usuario{ get; set; }
     }
 }
