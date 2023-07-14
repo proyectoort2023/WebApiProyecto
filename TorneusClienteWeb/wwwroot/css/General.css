@@ -216,8 +216,8 @@ table tr:nth-child(1) {
     color:white;
 }
 
-.color-beige {
-    background-color: beige;
+.color-violet {
+    background-color: #e7dfed;
 }
 
 .tabla-equipo th, .tabla-equipo td{
@@ -237,4 +237,8 @@ table tr:nth-child(1) {
 
 .color-rojo{
     color: red;
+}
+
+.card-general h5{
+    text-align:center;
 }

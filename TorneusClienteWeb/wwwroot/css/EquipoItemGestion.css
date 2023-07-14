@@ -4,7 +4,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 8vh 1fr;
-    gap: 0px 0px;
+    grid-gap: 3px 0;
     grid-auto-flow: row;
     width: 100%;
     grid-template-areas:

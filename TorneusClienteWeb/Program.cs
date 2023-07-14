@@ -86,6 +86,9 @@ builder.Services.AddScoped<EquipoServicioDatos>();
 builder.Services.AddScoped<JugadorServicio>();
 builder.Services.AddScoped<JugadorServicioDatos>();
 
+builder.Services.AddScoped<InscripcionServicio>();
+builder.Services.AddScoped<InscripcionServicioDatos>();
+
 
 
 

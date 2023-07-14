@@ -19,10 +19,12 @@ namespace Negocio.Validaciones
             RuleFor(t => t.UsuarioId).NotEmpty();
             RuleFor(t => t.Nombre).MinimumLength(3).MaximumLength(30).WithMessage("El nombre debe tener entre 3 y 30 caracteres. ");
             RuleFor(t => t.Deporte).NotEmpty().NotNull().WithMessage("Falta la asignación del deporte del equipo");
-            RuleFor(t => t.Abreviatura).MinimumLength(3).MaximumLength(6).WithMessage("El nombre de contacto debe tener entre 3 y 6 caracteres. ");
+            RuleFor(t => t.Abreviatura).MinimumLength(3).MaximumLength(10).WithMessage("El nombre de contacto debe tener entre 3 y 10 caracteres. ");
             RuleFor(t => t.Logo).NotEmpty().WithMessage("Debe seleccionar imagen para el logo. ");
             RuleFor(us => us.Nombre).NotEmpty().Must(NombreNoExiste).WithMessage("El nombre está duplicado");
             RuleFor(us => us.Abreviatura).NotEmpty().Must(AbreviaturaNoExiste).WithMessage("La abreviatura está duplicada");
+            RuleFor(us => us.Abreviatura).NotEmpty().Must(AbreviaturaNoExiste).WithMessage("La abreviatura está duplicada");
+            RuleFor(equipo => equipo.Jugadores).Must(DuplicadoJugador).WithMessage("Hay algun jugador duplicado en su selección"); ;
         }
 
         private bool NombreNoExiste(string nombre)
@@ -33,6 +35,25 @@ namespace Negocio.Validaciones
         private bool AbreviaturaNoExiste(string abreviatura)
         {
             return !_db.Equipos.Any(c => c.Abreviatura == abreviatura.ToUpper().Trim());
+        }
+        private bool DuplicadoJugador(List<Jugador> jugadores)
+        {
+            Dictionary<string, int> jugadorContador = new Dictionary<string, int>();
+
+            foreach (var jugador in jugadores)
+            {
+                if (jugadorContador.ContainsKey(jugador.Cedula))
+                {
+                    jugadorContador[jugador.Cedula] += 1;
+                }
+                else
+                {
+                    jugadorContador.Add(jugador.Cedula, 1);
+                }
+            }
+            bool valoresDuplicados = jugadorContador.Any(key => key.Value > 1);
+
+            return !valoresDuplicados;
         }
 
 

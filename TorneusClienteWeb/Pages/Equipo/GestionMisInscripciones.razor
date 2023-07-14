@@ -1,0 +1,44 @@
+﻿@page "/EQUIPO/MisInscripciones"
+@inject NavigationManager _nav
+@inject HubConnection _hubConnection
+@inject ServicioMenu _servicioMenu
+@inject InscripcionServicio _servicioInscripcion
+
+
+@if (Inscripciones != null)
+{
+    if(Inscripciones.Count == 0)
+    {
+        <h3>No tiene inscripciones registradas...</h3>
+    }
+    else
+    {
+        //iterar inscripciones
+    }
+}
+else
+{
+   <Cargando />
+}
+
+@code {
+    private List<InscripcionDTO> Inscripciones;
+
+
+    protected async override Task OnInitializedAsync()
+
+    {
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/EQUIPO/Principal");
+        _servicioMenu.ActualizarTitulo("Mis inscripciones");
+
+        Inscripciones = await _servicioInscripcion.ObtenerInscripciones();
+
+
+        _hubConnection.On<WebHook>("RecibidorNotificacionMercadoPago", async (webHook) =>
+       {
+           StateHasChanged();
+
+       });
+    }
+
+}

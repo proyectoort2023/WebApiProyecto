@@ -72,6 +72,7 @@ cadenaConexionBD = "LocalConnection";
 cadenaConexionBD = "ProduccionConnection";
 #endif
 
+//cadenaConexionBD = "ProduccionConnection";
 
 builder.Services.AddDbContext<TorneoContext>(opciones =>
 {
@@ -112,6 +113,7 @@ app.UseSwaggerUI();
 
 
 //creacion o acceso a la base de datos a traves de las migraciones
+
 //using (var scope = app.Services.CreateScope())
 //{
 //    var db = scope.ServiceProvider.GetRequiredService<TorneoContext>();

@@ -52,7 +52,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
-        public async Task<InscripcionDTO> ObtenerTorneosVigentes(InscripcionDTO inscripcionDTO)
+        public async Task<InscripcionDTO> RegistrarNuevaInscripcion(InscripcionDTO inscripcionDTO)
         {
 
             try

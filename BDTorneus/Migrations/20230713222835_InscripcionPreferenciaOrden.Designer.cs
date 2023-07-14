@@ -4,6 +4,7 @@ using BDTorneus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDTorneus.Migrations
 {
     [DbContext(typeof(TorneoContext))]
-    partial class TorneoContextModelSnapshot : ModelSnapshot
+    [Migration("20230713222835_InscripcionPreferenciaOrden")]
+    partial class InscripcionPreferenciaOrden
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,9 +69,6 @@ namespace BDTorneus.Migrations
                     b.Property<string>("Estado")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<string>("MedioPago")
                         .HasColumnType("nvarchar(max)");
 
@@ -87,8 +87,6 @@ namespace BDTorneus.Migrations
                     b.HasKey("TorneoId", "EquipoId");
 
                     b.HasIndex("EquipoId");
-
-                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Inscripciones");
                 });
@@ -380,6 +378,24 @@ namespace BDTorneus.Migrations
                     b.ToTable("EquipoJugador");
                 });
 
+            modelBuilder.Entity("InscripcionUsuario", b =>
+                {
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InscripcionesTorneoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InscripcionesEquipoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UsuarioId", "InscripcionesTorneoId", "InscripcionesEquipoId");
+
+                    b.HasIndex("InscripcionesTorneoId", "InscripcionesEquipoId");
+
+                    b.ToTable("InscripcionUsuario");
+                });
+
             modelBuilder.Entity("BDTorneus.Equipo", b =>
                 {
                     b.HasOne("BDTorneus.Usuario", "Usuario")
@@ -405,17 +421,9 @@ namespace BDTorneus.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BDTorneus.Usuario", "Usuario")
-                        .WithMany("Inscripciones")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Equipo");
 
                     b.Navigation("Torneo");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("BDTorneus.Notificacion", b =>
@@ -474,6 +482,21 @@ namespace BDTorneus.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("InscripcionUsuario", b =>
+                {
+                    b.HasOne("BDTorneus.Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BDTorneus.Inscripcion", null)
+                        .WithMany()
+                        .HasForeignKey("InscripcionesTorneoId", "InscripcionesEquipoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("BDTorneus.Equipo", b =>
                 {
                     b.Navigation("Inscripciones");
@@ -489,8 +512,6 @@ namespace BDTorneus.Migrations
             modelBuilder.Entity("BDTorneus.Usuario", b =>
                 {
                     b.Navigation("Equipos");
-
-                    b.Navigation("Inscripciones");
 
                     b.Navigation("Torneos");
                 });
