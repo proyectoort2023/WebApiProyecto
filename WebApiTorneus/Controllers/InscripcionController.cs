@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Azure.Core;
 using BDTorneus;
+using DTOs_Compartidos.DTOs;
 using DTOs_Compartidos.Models;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
@@ -117,6 +118,70 @@ namespace WebApiTorneus.Controllers
 
 
                     return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+
+
+        /// <summary>
+        /// Permite a un usuario de equipo u organizador actualizar los datos del medio de pago efectivo
+        /// </summary>
+        /// <returns> bool: verdadero si se actualizaron los datos</returns>
+        /// <remarks>
+        /// Actualiza el campo medio de pago y el estado enviado (pendiente o pagado)
+        /// </remarks>
+        /// <response code="200">OK. Se actualizaron los datos</response>
+        /// <response code="400">No encontrado</response>
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
+        [HttpPost("MedioPago/Efectivo")]
+        public async Task<IActionResult> ActualizarMedioPagoEfectivo([FromBody] (int inscripcionId,string estado) inscripcionTupla)
+        {
+            try
+            {
+                (int inscripcionId, string estado) = inscripcionTupla;
+
+                bool actualizarDatosPago = await _inscripcionService.ActualizarPagoEfectivo(estado, inscripcionId);
+
+                return Ok(actualizarDatosPago);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Permite a un usuario de equipo actualizar los datos del medio de pago mercadopago
+        /// </summary>
+        /// <returns> bool: verdadero si se actualizaron los datos</returns>
+        /// <remarks>
+        /// Actualiza el campo medio de pago, el estado enviado por mercadolibre(pendiente o pagado), ordenid de mercadopago y preferenciaid brindada por mp
+        /// </remarks>
+        /// <response code="200">OK. Se actualizaron los datos</response>
+        /// <response code="400">No encontrado</response>
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
+        [HttpPost("MedioPago/MercadoPago")]
+        public async Task<IActionResult> ActualizarMercadopago([FromBody] PreferenciaMercadopagoDTO preferenciaMP)
+        {
+            try
+            {
+                if (preferenciaMP == null) throw new Exception("No hay preferencias de mercadopago. W69");
+
+                bool actualizadoDatosPago = await _inscripcionService.ActualizarPagoMercadoPago(preferenciaMP);
+
+                return Ok(actualizadoDatosPago);
             }
             catch (Exception ex)
             {

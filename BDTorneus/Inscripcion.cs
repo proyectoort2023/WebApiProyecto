@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -11,6 +13,7 @@ namespace BDTorneus
     [DataContract(IsReference = true)]
     public class Inscripcion
     {
+
         public int Id { get; set; }
         public int TorneoId { get; set; }
         public Torneo Torneo { get; set; }
