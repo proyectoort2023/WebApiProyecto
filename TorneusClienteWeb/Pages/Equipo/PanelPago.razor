@@ -13,13 +13,17 @@
 @inject ILocalStorageService _localStorage
 
 
-<MudButton>
-    <img src="/imagenes/mercadopago-logo.png" alt="" class="card-general" @onclick="LanzarCheckouMercadopago" />
-</MudButton>
 
-<MudButton>
-    <img src="/imagenes/pago-efectivo-logo5.png" alt="" class="card-general" @onclick="ActualizarEstadoEfectivo"/>
-</MudButton>
+<div class="d-flex justify-content-center align-items-center" >
+    <MudButton>
+        <img src="/imagenes/mercadopago-logo.png" alt="" class="card-general" @onclick="LanzarCheckouMercadopago" />
+    </MudButton>
+
+    <MudButton>
+        <img src="/imagenes/pago-efectivo-logo5.png" alt="" class="card-general" @onclick="ActualizarEstadoEfectivo" />
+    </MudButton>
+</div>
+
 
 
 

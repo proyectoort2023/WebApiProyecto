@@ -12,7 +12,7 @@
         <img src="@UrlMedioPago()" alt="">
     </article>
 
-    <article class="card-general-pie">
+    <article class="card-general-pie" style="background-color: @colorEstadoPago()">
         <span>@InscripcionDTO.Estado.ToUpper()</span>
     </article>
 </section>
@@ -26,5 +26,10 @@
     private string UrlMedioPago()
     {
         return $"/imagenes/mediopago_{InscripcionDTO.MedioPago}.png";
+    }
+
+    private string colorEstadoPago()
+    {
+        return Util.ColorEstadoPAgo[InscripcionDTO.Estado];
     }
 }

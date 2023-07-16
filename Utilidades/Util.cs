@@ -76,10 +76,12 @@
            MERCADOPAGO
         }
 
-        public static Dictionary<string, string> MediosPagoImagenDiccionario = new Dictionary<string, string>()
+        public static Dictionary<string, string> ColorEstadoPAgo = new Dictionary<string, string>()
         {
-            {"EFECTIVO","ruta imagen a mostrar" },
-            {"MERCADOPAGO","RUTA DE MERCADOPAGO" },
+            {"NO_SELECCIONAD","grey" },
+            {"PENDIENTE","darkorange" },
+            {"RECHAZADO","red" },
+            {"PAGADO","forestgreen" }
         };
 
 
