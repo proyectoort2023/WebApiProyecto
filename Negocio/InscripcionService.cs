@@ -115,6 +115,7 @@ namespace Negocio
                 inscripcion.MedioPago = Util.MedioPago.MERCADOPAGO.ToString();
                 inscripcion.Estado = Util.EstadoPago.PAGADO.ToString();
                 inscripcion.PreferenciaMP = preferencia.PreferenciaId;
+                inscripcion.OrdenPagoMP = preferencia.OrdenPagoId;
 
                 int actualizados = await _db.SaveChangesAsync();
                 if  (actualizados == 0) throw new Exception("No se ha podido actualiza el pago. W81");
