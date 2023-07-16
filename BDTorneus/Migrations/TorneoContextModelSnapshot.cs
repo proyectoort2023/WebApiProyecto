@@ -57,17 +57,23 @@ namespace BDTorneus.Migrations
 
             modelBuilder.Entity("BDTorneus.Inscripcion", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<int>("TorneoId")
                         .HasColumnType("int");
 
                     b.Property<int>("EquipoId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Estado")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
 
                     b.Property<string>("MedioPago")
                         .HasColumnType("nvarchar(max)");
@@ -81,12 +87,11 @@ namespace BDTorneus.Migrations
                     b.Property<string>("PreferenciaMP")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UsuarioId")
-                        .HasColumnType("int");
-
-                    b.HasKey("TorneoId", "EquipoId");
+                    b.HasKey("Id", "TorneoId", "EquipoId", "UsuarioId");
 
                     b.HasIndex("EquipoId");
+
+                    b.HasIndex("TorneoId");
 
                     b.HasIndex("UsuarioId");
 

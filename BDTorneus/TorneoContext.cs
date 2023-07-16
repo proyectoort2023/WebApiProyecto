@@ -18,7 +18,9 @@ namespace BDTorneus
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Inscripcion>().HasKey(prop => new { prop.TorneoId, prop.EquipoId });
+            modelBuilder.Entity<Inscripcion>().Property(prop => prop.Id).ValueGeneratedOnAdd();
+
+           modelBuilder.Entity<Inscripcion>().HasKey(prop => new {prop.Id, prop.TorneoId, prop.EquipoId, prop.UsuarioId });
         }
 
         public DbSet<Jugador> Jugadores { get; set; }

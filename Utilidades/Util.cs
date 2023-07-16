@@ -6,6 +6,9 @@
         public static string TOKEN_LOCAL = "LoginTorneoStorageToken102023";
         public static string URL_BASE_IMAGENES = "https://imagenescontenedor.blob.core.windows.net/torneusimagenes";
         public static string REGISTRARSE_GOOGLE = "REGISTRARSE_GOOGLE";
+        public static string ACCESSKEY = "ACCESSKEY_MERCADOPAGO";
+
+        public static string MERCADOPAGO_CONST = "MERCADOPAGO_CONST";
 
         public static string IconoEstrella = "fas fa-star";
         public static string IconoEquipo = "fas fa-users";
@@ -61,9 +64,16 @@
 
         public enum EstadoPago
         {
+          NO_SELECCIONADO,
           PENDIENTE,
           RECHAZADO,
           PAGADO
+        }
+
+        public enum MedioPago
+        {
+           EFECTIVO,
+           MERCADOPAGO
         }
 
         public static Dictionary<string, string> MediosPagoImagenDiccionario = new Dictionary<string, string>()

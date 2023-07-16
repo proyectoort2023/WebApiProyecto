@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BDTorneus.Migrations
 {
     /// <inheritdoc />
-    public partial class inicial : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,8 +19,7 @@ namespace BDTorneus.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombreCompleto = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Cedula = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Capitan = table.Column<bool>(type: "bit", nullable: false)
+                    FechaNacimiento = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,6 +71,7 @@ namespace BDTorneus.Migrations
                     Deporte = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Abreviatura = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Capitan = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UsuarioId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -113,6 +113,7 @@ namespace BDTorneus.Migrations
                     CantidadCanchas = table.Column<int>(type: "int", nullable: false),
                     Otros = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Suspendido = table.Column<bool>(type: "bit", nullable: false),
+                    Cerrrado = table.Column<bool>(type: "bit", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -141,28 +142,33 @@ namespace BDTorneus.Migrations
                         column: x => x.EquiposId,
                         principalTable: "Equipos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_EquipoJugador_Jugadores_JugadoresId",
                         column: x => x.JugadoresId,
                         principalTable: "Jugadores",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Inscripciones",
                 columns: table => new
                 {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TorneoId = table.Column<int>(type: "int", nullable: false),
                     EquipoId = table.Column<int>(type: "int", nullable: false),
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
                     Monto = table.Column<double>(type: "float", nullable: false),
                     MedioPago = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PreferenciaMP = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrdenPagoMP = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Inscripciones", x => new { x.TorneoId, x.EquipoId });
+                    table.PrimaryKey("PK_Inscripciones", x => new { x.Id, x.TorneoId, x.EquipoId, x.UsuarioId });
                     table.ForeignKey(
                         name: "FK_Inscripciones_Equipos_EquipoId",
                         column: x => x.EquipoId,
@@ -173,6 +179,12 @@ namespace BDTorneus.Migrations
                         name: "FK_Inscripciones_Torneos_TorneoId",
                         column: x => x.TorneoId,
                         principalTable: "Torneos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_Inscripciones_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
@@ -257,6 +269,16 @@ namespace BDTorneus.Migrations
                 name: "IX_Inscripciones_EquipoId",
                 table: "Inscripciones",
                 column: "EquipoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inscripciones_TorneoId",
+                table: "Inscripciones",
+                column: "TorneoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inscripciones_UsuarioId",
+                table: "Inscripciones",
+                column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notificaciones_EquipoId",

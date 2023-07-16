@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BDTorneus;
+using DTOs_Compartidos.DTOs;
+using Microsoft.AspNetCore.Components;
 using Negocio.DTOs;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
@@ -80,5 +82,67 @@ namespace TorneusClienteWeb.Servicios_de_Datos
             }
 
         }
+
+
+        public async Task<bool> ActualizarDatosPagoEfetivo(MedioPagoEfectivoDTO inscripcionEf )
+        {
+
+            try
+            {
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.PostAsJsonAsync("api/Inscripcion/MedioPago/Efectivo", inscripcionEf);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var resultado = JsonConvert.DeserializeObject<bool>(content);
+                    return resultado;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+        public async Task<bool> ActualizarDatosPagoMercadopago(PreferenciaMercadopagoDTO preferenciaMP)
+        {
+
+            try
+            {
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.PostAsJsonAsync("api/Inscripcion/MedioPago/MercadoPago", preferenciaMP);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var resultado = JsonConvert.DeserializeObject<bool>(content);
+                    return resultado;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
     }
 }

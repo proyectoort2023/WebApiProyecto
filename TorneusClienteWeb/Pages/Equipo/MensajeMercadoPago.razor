@@ -1,0 +1,84 @@
+﻿@page "/EQUIPO/NotificacionMercadoPago"
+@inject ILocalStorageService _localStorage
+@inject NavigationManager _nav
+@inject InscripcionServicio _servicioInscripcion
+@inject UsuarioServicio _servicioUsuario
+@inject ISnackbar _snackbar;
+@using System.Threading;
+
+
+<div>
+    <img src="@UrlResultado()" alt="" class="imagen-adaptada" />
+</div>
+
+
+@code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string resultadoMp { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string payment_id { get; set; }
+
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string preference_id { get; set; }
+
+
+    string imagenResultado = "";
+    PreferenciaMercadopagoDTO preferenciaMP;
+
+    protected async override Task OnInitializedAsync()
+    {
+        preferenciaMP = await _localStorage.GetItemAsync<PreferenciaMercadopagoDTO>(Util.MERCADOPAGO_CONST);
+        var usuarioLogueado = await _localStorage.GetItemAsync<UsuarioLogueado>(Util.TOKEN_LOCAL);
+
+        _servicioUsuario.ActualizarUsuarioLogueado(usuarioLogueado);
+
+        if (preferenciaMP == null) NavegarRaiz();
+
+        AnalizarRedireccionMercadoPago();
+    }
+
+    private void NavegarRaiz()
+    {
+        _nav.NavigateTo("/", true);
+    }
+
+    private string UrlResultado()
+    {
+        return $"/imagenes/MP_{resultadoMp}.png";
+    }
+
+    private async void AnalizarRedireccionMercadoPago()
+    {
+        try
+        {
+            preferenciaMP.OrdenPagoId = payment_id; ;
+
+
+            if (resultadoMp == Util.EstadoPago.PAGADO.ToString())
+            {
+                await _servicioInscripcion.ActualizarMercadoPago(preferenciaMP); 
+            }
+            Thread.Sleep(3000);
+            NavegarRaiz();
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+
+            Thread.Sleep(5000);
+
+            NavegarRaiz();
+        }
+       
+    }
+
+
+
+
+
+}

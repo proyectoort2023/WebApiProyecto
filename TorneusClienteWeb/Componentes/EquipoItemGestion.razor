@@ -16,7 +16,13 @@
             <ul class="hidden">
                @foreach(var jugador in Equipo.Jugadores)
                 {
-                    <li>  <span class="fas fa-child"></span>  @jugador.Cedula - @jugador.NombreCompleto</li>
+                    <li>  <span class="fas fa-child"></span>  @jugador.Cedula - @jugador.NombreCompleto
+                        @if (Equipo.Capitan == jugador.NombreCompleto)
+                        {
+                            <span class="fas fa-star"></span>
+                        }
+
+                    </li>
                 }
             </ul>
         </div>

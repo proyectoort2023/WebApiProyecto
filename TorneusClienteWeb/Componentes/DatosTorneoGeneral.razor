@@ -172,7 +172,8 @@
 
     private bool ValidarInscripcion() => _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.EQUIPO.ToString()
                                                         && TorneoSeleccionadoDTO.Cerrrado == false
-                                                        && TorneoSeleccionadoDTO.Suspendido == false;
+                                                        && TorneoSeleccionadoDTO.Suspendido == false
+                                                        && TorneoSeleccionadoDTO.HabilitacionInscripcion == true;
 
     private async Task Inscribirme()
     {

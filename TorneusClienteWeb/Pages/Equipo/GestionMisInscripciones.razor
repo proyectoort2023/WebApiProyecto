@@ -13,7 +13,10 @@
     }
     else
     {
-        //iterar inscripciones
+        @foreach (var inscripcion in Inscripciones)
+        {
+            <ItemInscripcion InscripcionDTO="inscripcion" />
+        }
     }
 }
 else

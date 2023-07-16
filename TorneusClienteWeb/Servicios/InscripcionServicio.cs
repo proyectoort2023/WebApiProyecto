@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BDTorneus;
+using DTOs_Compartidos.DTOs;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Identity.Client;
 using Negocio.DTOs;
+using System.Drawing;
 using System.Linq.Expressions;
 using TorneusClienteWeb.Servicios_de_Datos;
 using Utilidades;
@@ -13,6 +17,7 @@ namespace TorneusClienteWeb.Servicios
         [Inject] private InscripcionServicioDatos _inscripcionServicio { get; set; }
 
         private List<InscripcionDTO> _inscripciones { get; set; } = new List<InscripcionDTO>();
+
         private InscripcionDTO _inscripcionSeleccionado;
 
         public InscripcionServicio(TorneoServicio torneoServicio, UsuarioServicio usuarioServicio, InscripcionServicioDatos inscripcionServicio)
@@ -22,17 +27,30 @@ namespace TorneusClienteWeb.Servicios
             _inscripcionServicio = inscripcionServicio;
         }
 
-        private async Task CargaInscripciones()
+        private async Task CargarInscripciones()
         {
-            //por web api inicial
+            try
+            {
+                int usuarioId = _usuarioServicio.ObtenerUsuarioLogueado().Id;
+                _inscripciones = await _inscripcionServicio.ObtenerInscripcionesDeUsuario(usuarioId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<List<InscripcionDTO>> ObtenerInscripciones()
         {
           if (_inscripciones.Count == 0)
             {
-                await CargaInscripciones();
+                await CargarInscripciones();
             }
           return _inscripciones;
+        }
+
+        public InscripcionDTO ObtenerInscripcionActual()
+        {
+            return _inscripcionSeleccionado;
         }
 
         public async Task AgregarInscripcionNueva(int equipoId, double precio, string tipoPrecio, int cantidadJugadores)
@@ -45,7 +63,7 @@ namespace TorneusClienteWeb.Servicios
                     TorneoId = _torneoServicio.ObtenerTorneoActual().Id,
                     EquipoId = equipoId,
                     Monto = CalculoMontoAPagar(precio, tipoPrecio, cantidadJugadores),
-                    Estado = Util.EstadoPago.PENDIENTE.ToString(),
+                    Estado = Util.EstadoPago.NO_SELECCIONADO.ToString(),
                     MedioPago = "",
                     OrdenPagoMP = "",
                     PreferenciaMP = ""
@@ -53,17 +71,16 @@ namespace TorneusClienteWeb.Servicios
 
                 InscripcionDTO nuevaInscripcion = await _inscripcionServicio.RegistrarNuevaInscripcion(inscripcion);
 
-                _inscripciones.Add(nuevaInscripcion);
+                if (nuevaInscripcion == null) throw new Exception("No se ha podido realizar la inscripcion");
 
+                _inscripciones.Add(nuevaInscripcion);
+                _inscripcionSeleccionado = nuevaInscripcion;
 
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-          
-
-
 
         }
 
@@ -77,7 +94,37 @@ namespace TorneusClienteWeb.Servicios
         public bool ExisteInscripcion(int torneoId) => _inscripciones.Any(a => a.TorneoId == torneoId);
 
 
+        public async Task<bool> ActualizarMedioPagoEfectivo(string estado)
+        {
+            try
+            {
+                MedioPagoEfectivoDTO inscripcionEf = new()
+                {
+                    Estado = estado,
+                    InscripcionId = _inscripcionSeleccionado.Id
+                };
 
+                bool resultado = await _inscripcionServicio.ActualizarDatosPagoEfetivo(inscripcionEf);
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<bool> ActualizarMercadoPago(PreferenciaMercadopagoDTO preferenciaMP)
+        {
+            try
+            {
+                bool resultado = await _inscripcionServicio.ActualizarDatosPagoMercadopago(preferenciaMP);
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
 

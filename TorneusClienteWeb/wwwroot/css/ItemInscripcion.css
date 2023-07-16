@@ -1,0 +1,53 @@
+﻿
+.card-general-relativo {
+    position: relative;
+    margin-top: 40px;
+    margin-left: 20px;
+    width:90% !important;
+    overflow:visible;
+    color: white;
+    font-size: 1.1rem;
+    background: linear-gradient(90deg, rgba(22,0,36,0.9276960784313726) 0%, rgba(97,9,121,0.8968837535014006) 35%, rgba(245,83,220,0.9080882352941176) 100%);
+}
+
+.card-general-encabezado {
+    position: absolute;
+    top: -30px;
+    left: -20px;
+    padding: 2px;
+    border-radius: 10px;
+    background: radial-gradient(circle at 100% 100%, #ffffff 0, #ffffff 3px, transparent 3px) 0% 0%/8px 8px no-repeat, radial-gradient(circle at 0 100%, #ffffff 0, #ffffff 3px, transparent 3px) 100% 0%/8px 8px no-repeat, radial-gradient(circle at 100% 0, #ffffff 0, #ffffff 3px, transparent 3px) 0% 100%/8px 8px no-repeat, radial-gradient(circle at 0 0, #ffffff 0, #ffffff 3px, transparent 3px) 100% 100%/8px 8px no-repeat, linear-gradient(#ffffff, #ffffff) 50% 50%/calc(100% - 10px) calc(100% - 16px) no-repeat, linear-gradient(#ffffff, #ffffff) 50% 50%/calc(100% - 16px) calc(100% - 10px) no-repeat, linear-gradient(23deg, #ffffff 0%, #f0f0f0 100%);
+    border-radius: 8px;
+    padding: 9px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    padding: 9px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    padding: 9px;
+    box-sizing: border-box;
+    width: 30%;
+}
+
+.card-general-pie {
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 5px solid white;
+    background-color: orange;
+    width: 40%;
+    text-align: center;
+    font-size:0.9rem;
+}
+
+
+.card-general-encabezado img {
+    width: 100%;
+    height: auto;
+}
+
+.card-general-relativo span {
+    padding: 5px;
+}
