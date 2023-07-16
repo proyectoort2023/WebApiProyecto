@@ -58,7 +58,10 @@ namespace BDTorneus.Migrations
             modelBuilder.Entity("BDTorneus.Inscripcion", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("TorneoId")
                         .HasColumnType("int");

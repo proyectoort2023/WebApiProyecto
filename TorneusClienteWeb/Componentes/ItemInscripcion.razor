@@ -1,0 +1,30 @@
+﻿
+
+
+
+<section class="card-general card-general-relativo">
+    <article class="d-flex justify-content-center align-items-center flex-column">
+        <span>@InscripcionDTO.Torneo.Nombre</span>
+        <span>$ @InscripcionDTO.Monto</span>
+    </article>
+
+    <article class="card-general-encabezado">
+        <img src="@UrlMedioPago()" alt="">
+    </article>
+
+    <article class="card-general-pie">
+        <span>@InscripcionDTO.Estado.ToUpper()</span>
+    </article>
+</section>
+
+
+
+@code {
+    [Parameter]
+    public InscripcionDTO InscripcionDTO { get; set; }
+
+    private string UrlMedioPago()
+    {
+        return $"/imagenes/mediopago_{InscripcionDTO.MedioPago}.png";
+    }
+}

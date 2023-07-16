@@ -13,7 +13,9 @@ namespace Negocio.DTOs
     {
         public int Id { get; set; }
         public int TorneoId { get; set; }
+        public TorneoDTO Torneo { get; set; }
         public int EquipoId { get; set; }
+        public EquipoDTO Equipo { get; set; }
 
         public int UsuarioId { get; set; }
         public double Monto { get; set; }

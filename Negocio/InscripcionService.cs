@@ -34,8 +34,7 @@ namespace Negocio
             {
                 if (usuarioId < 0) throw new Exception("El usuario no se encuentra para obtener las inscripciones");
 
-                List<Inscripcion> inscripciones = await _db.Inscripciones.Include(i => i.Usuario)
-                                                                          .Include(i => i.Usuario)
+                List<Inscripcion> inscripciones = await _db.Inscripciones.Include(i => i.Equipo)
                                                                           .Include(i => i.Torneo)
                                                                           .Where(w => w.Usuario.Id == usuarioId).ToListAsync();
 
@@ -90,11 +89,11 @@ namespace Negocio
         {
             try
             {
-                Inscripcion inscripcion = await _db.Inscripciones.FindAsync(inscripcionId);
+                Inscripcion inscripcion = await _db.Inscripciones.SingleOrDefaultAsync(ins => ins.Id == inscripcionId);
                 if (inscripcion == null) throw new Exception("No existe la inscripcion");
 
                 inscripcion.MedioPago = Util.MedioPago.EFECTIVO.ToString();
-                inscripcion.Estado = estado;
+                inscripcion.Estado = estado;    
 
                 int actualizados = await _db.SaveChangesAsync();
                 return actualizados > 0;
@@ -110,7 +109,7 @@ namespace Negocio
         {
             try
             { //soalamente cuando fue aprobado el pago
-                Inscripcion inscripcion = await _db.Inscripciones.FindAsync(preferencia.InscripcionId);
+                Inscripcion inscripcion = await _db.Inscripciones.SingleOrDefaultAsync(ins => ins.Id == preferencia.InscripcionId);
                 if (inscripcion == null) throw new Exception("No existe la referencia de pago");
 
                 inscripcion.MedioPago = Util.MedioPago.MERCADOPAGO.ToString();

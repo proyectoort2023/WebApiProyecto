@@ -143,13 +143,12 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "EQUIPO")]
         [HttpPost("MedioPago/Efectivo")]
-        public async Task<IActionResult> ActualizarMedioPagoEfectivo([FromBody] (int inscripcionId,string estado) inscripcionTupla)
+        public async Task<IActionResult> ActualizarMedioPagoEfectivo([FromBody] MedioPagoEfectivoDTO inscripcionEf)
         {
             try
             {
-                (int inscripcionId, string estado) = inscripcionTupla;
 
-                bool actualizarDatosPago = await _inscripcionService.ActualizarPagoEfectivo(estado, inscripcionId);
+                bool actualizarDatosPago = await _inscripcionService.ActualizarPagoEfectivo(inscripcionEf.Estado, inscripcionEf.InscripcionId);
 
                 return Ok(actualizarDatosPago);
             }

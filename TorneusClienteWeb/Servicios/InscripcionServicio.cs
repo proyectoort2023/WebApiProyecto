@@ -27,7 +27,7 @@ namespace TorneusClienteWeb.Servicios
             _inscripcionServicio = inscripcionServicio;
         }
 
-        private async Task CargaInscripciones()
+        private async Task CargarInscripciones()
         {
             try
             {
@@ -43,7 +43,7 @@ namespace TorneusClienteWeb.Servicios
         {
           if (_inscripciones.Count == 0)
             {
-                await CargaInscripciones();
+                await CargarInscripciones();
             }
           return _inscripciones;
         }
@@ -98,8 +98,13 @@ namespace TorneusClienteWeb.Servicios
         {
             try
             {
-                var tupla = (_inscripcionSeleccionado.Id, estado);
-                bool resultado = await _inscripcionServicio.ActualizarDatosPagoEfetivo(tupla);
+                MedioPagoEfectivoDTO inscripcionEf = new()
+                {
+                    Estado = estado,
+                    InscripcionId = _inscripcionSeleccionado.Id
+                };
+
+                bool resultado = await _inscripcionServicio.ActualizarDatosPagoEfetivo(inscripcionEf);
                 return resultado;
             }
             catch (Exception ex)

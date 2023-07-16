@@ -70,6 +70,8 @@ namespace TorneusClienteWeb.Servicios
 
                 if (equipoId < 1) throw new Exception("No se puedo crear el equipo");
 
+                equipoDTO.Id = equipoId;
+
                 await AgregarEquipoNuevoAListado(equipoDTO);
 
             }

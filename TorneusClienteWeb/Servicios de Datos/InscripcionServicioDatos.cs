@@ -84,7 +84,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
-        public async Task<bool> ActualizarDatosPagoEfetivo((int inscripcionId, string estado) inscripcionTupla)
+        public async Task<bool> ActualizarDatosPagoEfetivo(MedioPagoEfectivoDTO inscripcionEf )
         {
 
             try
@@ -92,7 +92,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
                 string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                var response = await _httpClient.PostAsJsonAsync("api/Inscripcion/MedioPago/Efectivo", inscripcionTupla);
+                var response = await _httpClient.PostAsJsonAsync("api/Inscripcion/MedioPago/Efectivo", inscripcionEf);
 
                 if (response.IsSuccessStatusCode)
                 {

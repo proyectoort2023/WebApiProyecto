@@ -14,11 +14,11 @@
 
 
 <MudButton>
-    <img src="/imagenes/mercadopago-logo.png" alt="" class="card-general" />
+    <img src="/imagenes/mercadopago-logo.png" alt="" class="card-general" @onclick="LanzarCheckouMercadopago" />
 </MudButton>
 
 <MudButton>
-    <img src="/imagenes/pago-efectivo-logo5.png" alt="" class="card-general"/>
+    <img src="/imagenes/pago-efectivo-logo5.png" alt="" class="card-general" @onclick="ActualizarEstadoEfectivo"/>
 </MudButton>
 
 
@@ -35,8 +35,11 @@
         try
         {
             string estado = Util.EstadoPago.PENDIENTE.ToString();
-
             bool resultado = await _servicioInscripcion.ActualizarMedioPagoEfectivo(estado);
+            if (!resultado) throw new Exception("No se ha podido actualizar el estado de intención de pago en efectivo en local");
+
+            _snackbar.Add("Se ha actualizado correctamente. Recuerde que debe  abonar en efectivo en el local de encuentro", Severity.Success);
+            NavegarInicioURl();
         }
         catch (Exception ex)
         {
@@ -46,15 +49,22 @@
 
     private async Task LanzarCheckouMercadopago()
     {
-
+        string baseURL = "";
         try
         {
             var torneoActual = _servicioTorneo.ObtenerTorneoActual();
 
+            string tokenAccess = _configuration[Util.ACCESSKEY];
 
             MercadoPagoConfig.AccessToken = _configuration[Util.ACCESSKEY];
 
-            var request = new PreferenceRequest
+        #if DEBUG
+              baseURL = $"{_configuration["Url_Back_MercadoPago:LocalRedirect_MP"]}EQUIPO/NotificacionMercadoPago/?resultadoMp=";
+        #else
+               baseURL = $"{_configuration["Url_Back_MercadoPago:ProduccionRedirect_MP"]}EQUIPO/NotificacionMercadoPago/?resultadoMp=";
+        #endif
+
+             var request = new PreferenceRequest
                 {
                     Items = new List<PreferenceItemRequest>
                     {
@@ -69,9 +79,9 @@
                     },
                     BackUrls = new PreferenceBackUrlsRequest()
                     {
-                        Failure = $"https://torneus.azurewebsites.net/EQUIPO/NotifcaciónMercadoPago/?resultadoMp={Util.EstadoPago.RECHAZADO.ToString()}",
-                        Pending = $"https://torneus.azurewebsites.net/EQUIPO/NotifcaciónMercadoPago/?resultadoMp={Util.EstadoPago.PENDIENTE.ToString()}",
-                        Success = $"https://torneus.azurewebsites.net/EQUIPO/NotifcaciónMercadoPago/?resultadoMp={Util.EstadoPago.PAGADO.ToString()}"
+                        Failure = $"{baseURL}{Util.EstadoPago.RECHAZADO.ToString()}",
+                        Pending = $"{baseURL}{Util.EstadoPago.PENDIENTE.ToString()}",
+                        Success = $"{baseURL}{Util.EstadoPago.PAGADO.ToString()}"
                     },
                     AutoReturn = "approved"
                 };
@@ -84,17 +94,22 @@
             string idPreferencia = preference.Id;  //para identificar el pago en el backend
             string url = preference.InitPoint;
 
-            PreferenciaMercadopagoDTO prefMP = new(_servicioInscripcion.ObtenerInscripcionActual().Id, idPreferencia);
+            PreferenciaMercadopagoDTO prefMP = new(_servicioInscripcion.ObtenerInscripcionActual().Id, idPreferencia,"");
 
             await _localStorage.SetItemAsync(Utilidades.Util.MERCADOPAGO_CONST.ToString(), prefMP);  //se guarda para recuperar en la redirección de mercadopago
-            
+
             _nav.NavigateTo(url);
         }
         catch (Exception ex)
         {
             _snackbar.Add(ex.Message, Severity.Warning);
         }
-       
+
+    }
+
+    private void NavegarInicioURl()
+    {
+        _nav.NavigateTo("/");
     }
 
 

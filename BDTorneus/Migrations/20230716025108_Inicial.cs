@@ -142,20 +142,21 @@ namespace BDTorneus.Migrations
                         column: x => x.EquiposId,
                         principalTable: "Equipos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_EquipoJugador_Jugadores_JugadoresId",
                         column: x => x.JugadoresId,
                         principalTable: "Jugadores",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Inscripciones",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TorneoId = table.Column<int>(type: "int", nullable: false),
                     EquipoId = table.Column<int>(type: "int", nullable: false),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),

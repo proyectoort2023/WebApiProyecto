@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDTorneus.Migrations
 {
     [DbContext(typeof(TorneoContext))]
-    [Migration("20230714162734_Inicial")]
+    [Migration("20230716025108_Inicial")]
     partial class Inicial
     {
         /// <inheritdoc />
@@ -61,7 +61,10 @@ namespace BDTorneus.Migrations
             modelBuilder.Entity("BDTorneus.Inscripcion", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("TorneoId")
                         .HasColumnType("int");

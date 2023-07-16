@@ -10,11 +10,14 @@ namespace DTOs_Compartidos.DTOs
     {
         public int InscripcionId { get; set; }
         public string PreferenciaId { get; set; }
+        public string OrdenPagoId { get; set; }
 
-        public PreferenciaMercadopagoDTO(int inscripcionId, string preferenciaId)
+        public PreferenciaMercadopagoDTO(int inscripcionId, string preferenciaId, string ordenPagoId)
         {
-            this.InscripcionId = inscripcionId;
-            this.PreferenciaId = preferenciaId;
+            InscripcionId = inscripcionId;
+            PreferenciaId = preferenciaId;
+            OrdenPagoId = ordenPagoId;
+
         }
     }
 }
