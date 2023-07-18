@@ -72,6 +72,58 @@ namespace Negocio
         }
 
 
+        public async Task<Equipo> ModificarDatosEquipo(Equipo equipoNuevosJugadores)
+        {
+            try
+            {
+                if (equipoNuevosJugadores == null) throw new Exception("El equipo no tiene datos para modificar . W79");
+
+                //await BorradoJugadoresEquipo(equipo.Id);
+
+                Equipo EquipoBuscado = await _db.Equipos.Include(inc => inc.Jugadores)
+                                                         .SingleOrDefaultAsync(eq => eq.Id == equipoNuevosJugadores.Id);
+
+                if (EquipoBuscado == null) throw new Exception("No se encuentra el equipo para modificar. W82");
+
+
+                List<int> borradorJugadoresExcedentes = new();
+
+                foreach(var jugador in EquipoBuscado.Jugadores)
+                {
+                    if (!equipoNuevosJugadores.Jugadores.Any(jug => jug.Id == jugador.Id))
+                    {
+                        borradorJugadoresExcedentes.Add(jugador.Id);
+                    }
+                }
+
+                for (int i = 0; i < borradorJugadoresExcedentes.Count; i++)
+                {
+                    EquipoBuscado.Jugadores.RemoveAll(jug => jug.Id == borradorJugadoresExcedentes[i]);
+                }
+
+                foreach (var jugador in equipoNuevosJugadores.Jugadores)
+                {
+                    if (!EquipoBuscado.Jugadores.Any(jug => jug.Id == jugador.Id))
+                    {
+                        EquipoBuscado.Jugadores.Add(jugador);
+                    }
+                }
+
+                EquipoBuscado.Capitan = equipoNuevosJugadores.Capitan;
+
+                    await _db.SaveChangesAsync();
+
+                return EquipoBuscado;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
 
 
     }

@@ -242,3 +242,20 @@ table tr:nth-child(1) {
 .card-general h5{
     text-align:center;
 }
+
+.h2-panelpago {
+    color: white;
+    background-color: mediumpurple;
+    border-radius: 5px 60px 5px 60px;
+    padding: 20px;
+}
+
+.imagen-100{
+    width:100%;
+    height:auto;
+}
+
+.boxCenterPantalla {
+    height: 90vh;
+    width: 100vw
+}

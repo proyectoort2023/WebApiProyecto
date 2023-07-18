@@ -78,7 +78,7 @@
 
         public static Dictionary<string, string> ColorEstadoPAgo = new Dictionary<string, string>()
         {
-            {"NO_SELECCIONAD","grey" },
+            {"NO_SELECCIONADO","grey" },
             {"PENDIENTE","darkorange" },
             {"RECHAZADO","red" },
             {"PAGADO","forestgreen" }

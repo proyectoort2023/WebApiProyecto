@@ -94,5 +94,40 @@ namespace WebApiTorneus.Controllers
         }
 
 
+        /// <summary>
+        /// Permite la modificación de la lsita de jugadires de un equipo
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint permite modificar la lista de jugadores de un equipo por el administrador de equipos
+        /// </remarks>
+        /// <response code="200">OK.El equipo se ha modificado</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
+        [HttpPost("Modificar")]
+        public async Task<IActionResult> PostModificacion([FromBody] EquipoDTO equipoDTO)
+        {
+            try
+            {
+                if (equipoDTO == null) BadRequest("No hay datos de equipo para registrar. W51");
+
+                equipoDTO.Capitan = string.IsNullOrEmpty(equipoDTO.Capitan) ? "" : equipoDTO.Capitan;
+
+                Equipo equipo = _mapper.Map<Equipo>(equipoDTO);
+
+                EquipoDTO equipoModificado = _mapper.Map<Equipo,EquipoDTO>(await _equipoService.ModificarDatosEquipo(equipo));
+
+                return Ok(equipoModificado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
     }
 }

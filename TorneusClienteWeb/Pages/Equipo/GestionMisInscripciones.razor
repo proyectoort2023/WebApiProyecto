@@ -15,7 +15,7 @@
     {
         @foreach (var inscripcion in Inscripciones)
         {
-            <ItemInscripcion InscripcionDTO="inscripcion" />
+            <ItemInscripcion InscripcionDTO="inscripcion" ActualizarListado="ActualizarListado" />
         }
     }
 }
@@ -42,6 +42,11 @@ else
            StateHasChanged();
 
        });
+    }
+
+    private async Task ActualizarListado()
+    {
+        StateHasChanged();
     }
 
 }
