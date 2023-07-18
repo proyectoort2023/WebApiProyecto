@@ -142,7 +142,7 @@ namespace Negocio
                 if (inscripcionBuscada == null) throw new Exception("No existe la la isncripcion buscada. W91");
 
                
-                if (DateTime.Today.Date > inscripcionBuscada.Torneo.Fecha.Date.AddDays(-2)) throw new Exception("Puede dar de baja la inscripción hasta 2 dias antes");
+                if (DateTime.Today.Date > inscripcionBuscada.Torneo.Fecha.Date.AddDays(-2)) throw new Exception("Puede dar de baja la inscripción hasta 2 dias antes del comienzo del torneo");
 
                 _db.Inscripciones.Remove(inscripcionBuscada);
 
