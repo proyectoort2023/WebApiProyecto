@@ -1,5 +1,6 @@
-﻿
-
+﻿@inject InscripcionServicio _servicioInscripcion
+@inject IDialogService _dialogService
+@inject ISnackbar _snackBar
 
 
 <section class="card-general card-general-relativo">
@@ -15,6 +16,8 @@
     <article class="card-general-pie" style="background-color: @colorEstadoPago()">
         <span>@InscripcionDTO.Estado.ToUpper()</span>
     </article>
+
+    <button @onclick="BajaInscripcion"><span class="fas fa-trash-alt"></span></button>
 </section>
 
 
@@ -22,6 +25,10 @@
 @code {
     [Parameter]
     public InscripcionDTO InscripcionDTO { get; set; }
+
+    [Parameter]
+    public EventCallback ActualizarListado { get; set; }
+
 
     private string UrlMedioPago()
     {
@@ -31,5 +38,25 @@
     private string colorEstadoPago()
     {
         return Util.ColorEstadoPAgo[InscripcionDTO.Estado];
+    }
+
+    private async Task BajaInscripcion()
+    {
+        try
+        {
+            var result = await _dialogService.Show<DialogComponent>("Deseas dar de baja tu inscripción a este torneo?").Result;
+
+            if (result.Canceled) return;
+
+            bool resultado = await _servicioInscripcion.BajaInscripcion(InscripcionDTO.Id);
+
+            _snackBar.Add("Se ha dado de baja correctamente", Severity.Success);
+            await ActualizarListado.InvokeAsync();
+        }
+        catch (Exception ex)
+        {
+            _snackBar.Add(ex.Message, Severity.Warning);
+        }
+       
     }
 }

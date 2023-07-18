@@ -9,10 +9,10 @@
 
 
 
-<VistaLogoEquipo ModoEdicion="true" NombreImagenLogo="@Equipo.Logo" SubirImagen="ActualizarImagen" />
+<VistaLogoEquipo ModoEdicion="@DeshabilitarCargaImagenes()" NombreImagenLogo="@Equipo.Logo" SubirImagen="ActualizarImagen" />
 
 
- <EditForm Model="@Equipo" OnValidSubmit="Registrar">
+ <EditForm Model="@Equipo" OnValidSubmit="RegistrarModificar">
         <DataAnnotationsValidator />
 
     <div class="card-general">
@@ -20,7 +20,8 @@
                       Label="Nombre del equipo"
                       Variant="Variant.Outlined"
                       Margin="Margin.Dense"
-                      For="@(() => Equipo.Nombre)" />
+                      For="@(() => Equipo.Nombre)" 
+                      Disabled = "@ModoEdicion"/>
 
         <EspacioVertical Altura="@espaciado" />
 
@@ -29,7 +30,8 @@
                       Label="Abreviatura del equipo"
                       Variant="Variant.Outlined"
                       Margin="Margin.Dense"
-                      For="@(() => Equipo.Abreviatura)" />
+                      For="@(() => Equipo.Abreviatura)"
+                      Disabled="@ModoEdicion"  />
 
         <EspacioVertical Altura="@espaciado" />
     </div>
@@ -56,9 +58,9 @@
             <EspacioVertical Altura="15px" />
 
             <MudDatePicker Label="Fecha de Nacimiento"
-                           TitleDateFormat="dd/MM/yyyy"
-            @bind-Date="fechaNacimiento"
+                           @bind-Date="fechaNacimiento"
                            Validation="ValidarFecha"
+                           DateFormat="dd/MM/yyyy"
                            Disabled="@disableEdicioNuevoJugador" />
 
             <EspacioVertical Altura="10px" />
@@ -120,7 +122,7 @@
                     <MudButton Variant="Variant.Filled" 
                     Color="Color.Primary" 
                     ButtonType="ButtonType.Submit"
-                    Disabled="@disableBotonRegistrar">Crear equipo</MudButton>
+                   Disabled="@disableBotonRegistrar">@TituloBoton()</MudButton>
             </div>
 
         </EditForm>
@@ -128,6 +130,8 @@
 
 
 @code {
+
+    private bool ModoEdicion { get; set; }
 
     private EquipoCreacionDTO Equipo = new();
     private List<JugadorDTO> Jugadores = new();
@@ -148,6 +152,9 @@
         _servicioMenu.ActualizarTitulo("Registro de equipo");
 
         Jugadores = await _servicioJugador.ObtenerJugadoresTodos();
+        ModoEdicion = await _servicioEquipo.GetModoEdicion();
+
+        if (ModoEdicion) Equipo = _autoMapper.Map<EquipoDTO,EquipoCreacionDTO>(await _servicioEquipo.ObtenerEquipoSeleccionado());
     }
 
     private async Task ActualizarImagen(ImagenDTO tipoImagenUrl)
@@ -166,13 +173,29 @@
           NombreCompleto=""
         };
     }
-
+    private async Task RegistrarModificar()
+    {
+        if (!ModoEdicion)
+        {
+            await Registrar();
+        }
+        else
+        {
+            await Modificar();
+        }
+    }
+    private string TituloBoton()
+    {
+        return ModoEdicion ? "Modificar datos": "Crear equipo";
+    }
     private async Task Registrar()
     {
         try
         {
             EquipoDTO equipoDTO = _autoMapper.Map<EquipoCreacionDTO, EquipoDTO>(Equipo);
             await _servicioEquipo.RegistrarEquipo(equipoDTO);
+
+            _snackbar.Add("Equipo creado correctamente", Severity.Success);
 
             _nav.NavigateTo("/EQUIPO/AdminEquipos");
         }
@@ -182,6 +205,25 @@
         }
 
     }
+
+    private async Task Modificar()
+    {
+        try
+        {
+            EquipoDTO equipoDTO = _autoMapper.Map<EquipoCreacionDTO, EquipoDTO>(Equipo);
+            await _servicioEquipo.ModificarDatosEquipo(equipoDTO);
+
+            _snackbar.Add("Juadores del equipo modificados correctamente", Severity.Success);
+
+            _nav.NavigateTo("/EQUIPO/AdminEquipos");
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+
+    }
+
 
     private string ValidarFecha(DateTime? fecha)
     {
@@ -251,6 +293,7 @@
         JugadorNuevo.Cedula = jugadorBuscado.Cedula;
         JugadorNuevo.NombreCompleto = jugadorBuscado.NombreCompleto;
         JugadorNuevo.FechaNacimiento = jugadorBuscado.FechaNacimiento;
+        fechaNacimiento = JugadorNuevo.FechaNacimiento;
 
         DeshabilitarCamposRegistroJugador();
     }
@@ -276,7 +319,7 @@
         if (result.Canceled) return;
 
 
-       
+
         Equipo.Jugadores.RemoveAll(rem => rem.Id == idJugador);
         int cantidadJugadores = Equipo.Jugadores.Count;
 
@@ -294,7 +337,10 @@
     {
         disableEdicioNuevoJugador = true;
     }
-
+    private bool DeshabilitarCargaImagenes()
+    {
+        return !ModoEdicion;
+    }
 
 
 }

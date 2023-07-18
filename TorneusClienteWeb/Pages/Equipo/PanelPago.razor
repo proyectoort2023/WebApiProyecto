@@ -14,7 +14,8 @@
 
 
 
-<div class="d-flex justify-content-center align-items-center" >
+<div class="d-flex justify-content-center align-items-center flex-column" style="height:70vh">
+    <h2 class="h2-panelpago"> Monto a pagar $@_servicioInscripcion.ObtenerInscripcionActual().Monto</h2>
     <MudButton>
         <img src="/imagenes/mercadopago-logo.png" alt="" class="card-general" @onclick="LanzarCheckouMercadopago" />
     </MudButton>

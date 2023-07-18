@@ -1,4 +1,7 @@
 ﻿@inject IConfiguration _config
+@inject EquipoServicio _servicioEquipo
+@inject NavigationManager _nav
+@inject IDialogService _dialogService
 
 
 <div class="container-equipo">
@@ -26,7 +29,10 @@
                 }
             </ul>
         </div>
+
     </div>
+
+    <button class="displayEdit" @onclick="EditarEquipo"><span class="fas fa-edit"></span></button>
 
     <div class="avatar-equipo">
         <img src="@VerLogoURL()" alt="Logo de equipo">
@@ -54,5 +60,18 @@
         string rutaImagen = $"{baseUrlImagen}{Equipo.Logo}";
         return rutaImagen;
     }
-        
+
+    private async void EditarEquipo()
+    {
+
+        var result = await _dialogService.Show<DialogComponent>("Desea modificar los jugadores de este equipo?").Result;
+
+        if (result.Canceled) return;
+
+
+        await _servicioEquipo.SetModoEdicion(true);
+        await _servicioEquipo.SeleccionarEquipo(Equipo.Id);
+        _nav.NavigateTo("/EQUIPOS/Creacion");
+    }
+
 }

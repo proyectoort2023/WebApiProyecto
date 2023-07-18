@@ -1,6 +1,7 @@
 ﻿using BDTorneus;
 using DTOs_Compartidos.DTOs;
 using FluentValidation.Results;
+using MercadoPago.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Negocio.DTOs;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utilidades;
+using MercadoPago.Resource.Payment;
 
 namespace Negocio
 {
@@ -121,6 +123,58 @@ namespace Negocio
                 if  (actualizados == 0) throw new Exception("No se ha podido actualiza el pago. W81");
 
                 return actualizados > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public async Task<bool> BajaInscripcion(int inscripcionId, string accessTokenMercadopago)
+        {
+            try
+            { //soalamente cuando fue aprobado el pago
+                string ordenpagoId = "";
+                decimal montoReembolso = 0;
+                Inscripcion inscripcionBuscada = await _db.Inscripciones.Include(inc => inc.Torneo)
+                                                                        .SingleOrDefaultAsync(ins => ins.Id == inscripcionId);
+                if (inscripcionBuscada == null) throw new Exception("No existe la la isncripcion buscada. W91");
+
+               
+                if (DateTime.Today.Date > inscripcionBuscada.Torneo.Fecha.Date.AddDays(-2)) throw new Exception("Puede dar de baja la inscripción hasta 2 dias antes");
+
+                _db.Inscripciones.Remove(inscripcionBuscada);
+
+                int actualizados = await _db.SaveChangesAsync();
+
+                if (inscripcionBuscada.MedioPago == Util.MedioPago.MERCADOPAGO.ToString())
+                {
+                    ordenpagoId = inscripcionBuscada.OrdenPagoMP;
+                    montoReembolso = (decimal)inscripcionBuscada.Monto;
+                    await ReembolsoInscripción(ordenpagoId, montoReembolso, accessTokenMercadopago);
+                }
+
+                return actualizados > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+        public async Task ReembolsoInscripción(string ordenpagoId, decimal montoReembolso, string accessToken)
+        {
+            try
+            {
+                MercadoPagoConfig.AccessToken = accessToken;
+
+                long ordenId = long.Parse(ordenpagoId);
+
+                var client = new MercadoPago.Client.Payment.PaymentRefundClient();
+                PaymentRefund refund = await client.RefundAsync(ordenId, montoReembolso);
             }
             catch (Exception ex)
             {

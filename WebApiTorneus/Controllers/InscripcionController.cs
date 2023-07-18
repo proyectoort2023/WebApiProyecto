@@ -26,11 +26,15 @@ namespace WebApiTorneus.Controllers
         private readonly IMapper _mapper;
         private readonly InscripcionService _inscripcionService;
         private IHubContext<TorneusHub> _torneoHub;
-        public InscripcionController(IMapper mapper, UsuarioService usuarioService, InscripcionService inscripcionService, IHubContext<TorneusHub> torneoHub)
+        private readonly IConfiguration _config;
+
+
+        public InscripcionController(IMapper mapper, UsuarioService usuarioService, InscripcionService inscripcionService, IHubContext<TorneusHub> torneoHub, IConfiguration config)
         {
             _mapper = mapper;
             _inscripcionService = inscripcionService;
             _torneoHub = torneoHub;
+            _config = config;
         }
 
 
@@ -189,6 +193,36 @@ namespace WebApiTorneus.Controllers
         }
 
 
+        /// <summary>
+        /// Permite la baja de una inscripción 
+        /// </summary>
+        /// <returns> bool: verdadero si se eliminan la inscripción</returns>
+        /// <remarks>
+        /// Elimina una inscripción segun su Id
+        /// </remarks>
+        /// <response code="200">OK. Se eliminó la isncripción</response>
+        /// <response code="400">No encontrado</response>
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "EQUIPO")]
+        [HttpDelete("Baja/{inscripcionID}")]
+        public async Task<IActionResult> BajaInscripción(int inscripcionID)
+        {
+            try
+            {
+                if (inscripcionID < 1) throw new Exception("No hay inscripción disponible. W95");
+
+                string accessTokenMercadopago = _config["AccessToeknMercadopago"];
+
+                bool baja = await _inscripcionService.BajaInscripcion(inscripcionID,accessTokenMercadopago);
+
+                return Ok(baja);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }

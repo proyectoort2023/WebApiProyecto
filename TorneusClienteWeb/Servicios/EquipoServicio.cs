@@ -11,7 +11,8 @@ namespace TorneusClienteWeb.Servicios
     {
         private readonly EquipoServicioDatos _equipoServicioDatos;
         private List<EquipoDTO> Equipos = null;
-        private EquipoDTO Equipo;
+        private EquipoDTO EquipoSeleccionado;
+        private bool ModoEdicion = false;
 
         [Inject] private HubConnection _hubConnection { get; set; }
         [Inject] private UsuarioServicio _usuarioServicio { get; set; }
@@ -23,6 +24,15 @@ namespace TorneusClienteWeb.Servicios
             _usuarioServicio = usuarioServicio;
         }
 
+        public async Task SetModoEdicion(bool valor)
+        {
+            ModoEdicion = valor;
+        }
+
+        public async Task<bool> GetModoEdicion()
+        {
+            return ModoEdicion;
+        }
 
         public async Task<List<EquipoDTO>> ObtenerEquiposPorAdministrador()
         {
@@ -53,6 +63,16 @@ namespace TorneusClienteWeb.Servicios
             {
                 throw new Exception(ex.Message);
             }
+        }
+
+        public async Task<EquipoDTO> ObtenerEquipoSeleccionado()
+        {
+            return EquipoSeleccionado;
+        }
+
+        public async Task SeleccionarEquipo(int equipoId)
+        {
+            EquipoSeleccionado = Equipos.SingleOrDefault(eq => eq.Id == equipoId);
         }
 
 
@@ -86,12 +106,40 @@ namespace TorneusClienteWeb.Servicios
             Equipos.Add(equipoDTO);
         }
 
+        public async Task RemoverEquipoDelListado(int equipoId)
+        {
+            Equipos.RemoveAll(eq => eq.Id == equipoId);
+        }
+
         public int CantidadJugadoresEquipo(int equipoId)
         {
             int cantidad = 0;
             cantidad = Equipos.SingleOrDefault(w => w.Id == equipoId).Jugadores.Count();
             return cantidad;
         }
+
+
+        public async Task ModificarDatosEquipo(EquipoDTO equipoDTO)
+        {
+            try
+            {
+                if (equipoDTO == null) throw new Exception("No existe el equipo");
+
+               EquipoDTO equipoModificado = await _equipoServicioDatos.ModificarEquipo(equipoDTO);
+
+                if (equipoModificado == null ) throw new Exception("No se puedo modificar el equipo");
+
+                await RemoverEquipoDelListado(equipoModificado.Id);
+
+                await AgregarEquipoNuevoAListado(equipoDTO);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
 
     }

@@ -105,6 +105,7 @@ namespace TorneusClienteWeb.Servicios
                 };
 
                 bool resultado = await _inscripcionServicio.ActualizarDatosPagoEfetivo(inscripcionEf);
+                await CargarInscripciones();
                 return resultado;
             }
             catch (Exception ex)
@@ -118,6 +119,7 @@ namespace TorneusClienteWeb.Servicios
             try
             {
                 bool resultado = await _inscripcionServicio.ActualizarDatosPagoMercadopago(preferenciaMP);
+                await CargarInscripciones();
                 return resultado;
             }
             catch (Exception ex)
@@ -126,6 +128,23 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
+
+        public async Task<bool> BajaInscripcion(int inscripcionId)
+        {
+            try
+            {
+                bool resultado = await _inscripcionServicio.BajaInscripcion(inscripcionId);
+                if (resultado)
+                {
+                    _inscripciones.RemoveAll(rem => rem.Id == inscripcionId);
+                }
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
 

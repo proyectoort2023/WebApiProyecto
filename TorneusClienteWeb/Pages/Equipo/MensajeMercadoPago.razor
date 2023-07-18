@@ -1,4 +1,5 @@
 ﻿@page "/EQUIPO/NotificacionMercadoPago"
+@layout LayoutVacio
 @inject ILocalStorageService _localStorage
 @inject NavigationManager _nav
 @inject InscripcionServicio _servicioInscripcion
@@ -7,8 +8,9 @@
 @using System.Threading;
 
 
-<div>
-    <img src="@UrlResultado()" alt="" class="imagen-adaptada" />
+<div class="d-flex justify-content-center align-items-center flex-column boxCenterPantalla">
+    <img src="@UrlResultado()" alt="" class="imagen-100" />
+    <p>Volviendo a la pantalla principal...</p>
 </div>
 
 
@@ -70,7 +72,7 @@
         {
             _snackbar.Add(ex.Message, Severity.Warning);
 
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
 
             NavegarRaiz();
         }

@@ -40,6 +40,8 @@ namespace Negocio
 
                 if (jugadorDuplicado) throw new Exception("El jugador está duplicado");
 
+                jugador.NombreCompleto.ToUpper().Trim();
+
                 var nuevoJugador = await _db.Jugadores.AddAsync(jugador);
                 await _db.SaveChangesAsync();
                 return nuevoJugador.Entity.Id;

@@ -51,3 +51,9 @@
 .card-general-relativo span {
     padding: 5px;
 }
+
+card-general-relativo button {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}

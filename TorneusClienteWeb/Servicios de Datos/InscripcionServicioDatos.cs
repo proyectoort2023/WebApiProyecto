@@ -144,5 +144,37 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
+        public async Task<bool> BajaInscripcion(int inscripcionId)
+        {
+
+            try
+            {
+                if (inscripcionId < 1) throw new Exception("No usuario no existe");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.DeleteAsync($"api/Inscripcion/Baja/{inscripcionId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var inscripciones = JsonConvert.DeserializeObject<bool>(content);
+                    return inscripciones;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
     }
 }

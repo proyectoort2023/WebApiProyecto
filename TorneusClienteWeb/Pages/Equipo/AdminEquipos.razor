@@ -42,8 +42,9 @@ else
         EquiposDTO = await _servicioEquipo.ObtenerEquiposPorAdministrador();
     }
 
-    private void CrearEquipo()
+    private async void CrearEquipo()
     {
+        await _servicioEquipo.SetModoEdicion(false);
         _nav.NavigateTo("/EQUIPOS/Creacion");
     }
 }
