@@ -1,8 +1,33 @@
 ﻿@page "/ORGANIZADOR/Mercadopago"
+@inject IConfiguration _config
+@inject NavigationManager _nav
 
 
-<h3>ConfiguracionMercadoPago</h3>
+<h3>Configuracion Medios de pagos</h3>
+
+<p>Habilitado para cobro en efectivo en local</p>
+
+<button>Habilitar MercadoPago Marketplace</button>
+
 
 @code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string code { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(code))
+        {
+            //realizar la llamada a la web api para obtener el accesstoken del vendedor
+        
+        }
+    }
+
+    private void HabiliarMP()
+    {
+        _nav.NavigateTo($"https://auth.mercadopago.com.uy/authorization?client_id={_config[Util.CLIENTE_ID_MERCADOPAGO_INTERMEDIARIO]}&response_type=code&platform_id=mp&redirect_uri={_config[Util.REDIRECT_URL_OAUTH_VENDEDOR]}");
+    }
+
 
 }

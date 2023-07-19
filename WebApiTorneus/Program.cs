@@ -96,6 +96,7 @@ builder.Services.AddScoped<ImagenService>();
 builder.Services.AddScoped<InscripcionService>();
 builder.Services.AddScoped<EquipoService>();
 builder.Services.AddScoped<JugadorService>();
+builder.Services.AddScoped<MedioPagoService>();
 
 
 

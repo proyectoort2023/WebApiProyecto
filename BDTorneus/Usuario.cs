@@ -19,6 +19,9 @@ namespace BDTorneus
         public string Rol { get; set; }
         public string Tel { get; set; }
         public string Token { get; set; }
+        public string AccessTokenMercadopago { get; set; }
+        public string AccessTokenRefreshMercadopago { get; set; }
+        public DateTime FechaCaducidadTokenMercadopago { get; set; }
 
         public List<Equipo> Equipos { get; set; } =new List<Equipo>();
         public List<Torneo> Torneos { get; set; } = new List<Torneo>();

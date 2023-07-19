@@ -18,6 +18,9 @@
 
         public static string TIPO_PRECIO_POR_EQUIPO = "EQUIPO";
 
+        public static string CLIENTE_ID_MERCADOPAGO_INTERMEDIARIO = "ClientIdMercadoPago";
+        public static string REDIRECT_URL_OAUTH_VENDEDOR = "Redirect_Codigo_Vendedor";
+
         public enum  Roles
         {
                 EQUIPO,
