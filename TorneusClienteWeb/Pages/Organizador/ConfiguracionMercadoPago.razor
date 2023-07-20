@@ -5,6 +5,7 @@
 @inject MedioPagoServicio _servicioMedioPago
 @inject UsuarioServicio _servicioUsuario
 @inject ILocalStorageService _localStorage
+@using System.Threading;
 
 
 <h3>@mensaje</h3>
@@ -40,23 +41,26 @@
 
             if (tokenVendedorGuardado)
             {
-                mensaje = "guardado correctamente";
+                mensaje = "Guardado correctamente. Redireccionando...";
+                await _localStorage.RemoveItemAsync(Util.HABILITACION_MARKETPLACE);
             }
             else
             {
                 mensaje = "hubo un error";
             }
+            Thread.Sleep(3000);
+            NavegarPrincipal();
         }
         catch (Exception ex)
         {
 
             mensaje = ex.Message;
         }
-       
-        
+    }
 
-        }
-
+    private void NavegarPrincipal()
+    {
+        _nav.NavigateTo("/", true);
     }
 
 
