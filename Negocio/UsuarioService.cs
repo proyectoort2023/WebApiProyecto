@@ -17,7 +17,7 @@ namespace Negocio
     public class UsuarioService
     {
         private readonly TorneoContext _db;
-        
+
         public UsuarioService(TorneoContext db)
         {
             _db = db;
@@ -32,19 +32,19 @@ namespace Negocio
                     throw new Exception("Hay campos sin completar");
                 }
 
-                var usuarioBuscado = await _db.Usuarios.SingleOrDefaultAsync(us => us.Mail == login.Mail && 
+                var usuarioBuscado = await _db.Usuarios.SingleOrDefaultAsync(us => us.Mail == login.Mail &&
                                                                                     us.Pass == login.Pass);
-                if (usuarioBuscado == null)  throw new Exception("No existe el usuario o la contraseña es incorrecta");
+                if (usuarioBuscado == null) throw new Exception("No existe el usuario o la contraseña es incorrecta");
 
                 return usuarioBuscado;
             }
             catch (Exception ex)
             {
-                    throw new Exception(ex.Message);
+                throw new Exception(ex.Message);
             }
         }
 
-        public async Task<Usuario> LoginGoogleUsuario(LoginGoogleDTO loginGogole,string claveSecretaValidar)
+        public async Task<Usuario> LoginGoogleUsuario(LoginGoogleDTO loginGogole, string claveSecretaValidar)
         {
             try
             {
@@ -118,7 +118,7 @@ namespace Negocio
                     Id = 0,
                     Mail = Guid.NewGuid().ToString(),
                     Rol = "ESPECTADOR",
-                    Token =""
+                    Token = ""
                 };
 
 
@@ -129,6 +129,27 @@ namespace Negocio
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<bool> HabilitadoVendedorMercadoPago(int usuarioId)
+        {
+            try
+            {
+                var usuario = await _db.Usuarios.SingleOrDefaultAsync(us => us.Id == usuarioId);
+
+                if (usuario == null) throw new Exception("No se encuentra el usuario. W106");
+
+                bool usaMercadoPagoVendedor = !string.IsNullOrEmpty(usuario.AccessTokenMercadopago);
+
+                return usaMercadoPagoVendedor;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
 
     }
 }

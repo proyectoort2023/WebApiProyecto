@@ -62,7 +62,7 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-
+        
 
 
         public async Task<UsuarioLogueado> DecodificarUsuarioJWT(string token)
@@ -97,10 +97,23 @@ namespace TorneusClienteWeb.Servicios
         }
 
 
-      
 
 
 
+        public async Task<bool> ObtenerHabilitacionVendedorMarketplace(int usuarioId)
+        {
+            try
+            {
+                if (usuarioId < 0) throw new Exception("No hay datos para registrar");
+
+                bool habilitadoEnMarketPlace = await _usuarioServicioDatos.ObtenerHabilitacionVendedorMarketplace(usuarioId);
+                return habilitadoEnMarketPlace;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
 

@@ -1,9 +1,117 @@
 ﻿@page "/ORGANIZADOR/GestorInscripciones"
+@inject ServicioMenu _servicioMenu
+@inject UsuarioServicio _servicioUsuario
+@inject TorneoServicio _servicioTorneo
+@inject NavigationManager _nav
+@inject ISnackbar _snackbar
+@inject IConfiguration _config
+@inject ILocalStorageService _localStorage
+@inject IDialogService _dialogService
 
-<h3>GestorInscripciones</h3>
+@if (Torneos != null)
+{
+    <section>
+
+        <article class="card-genral">
+            @if (!habilitadoMercadoPago)
+            {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Integrar cobro por Mercadopago</MudButton>
+                
+            }
+
+            <EspacioVertical Altura="10px" />
+
+            <MudSelect T="int"
+                       Label="Elegir torneo"
+                       Variant="Variant.Outlined"
+                       AdornmentIcon="@Icons.Material.Filled.Search"
+                       ValueChanged="CambioValorSelect">
+
+                @foreach (var torneo in Torneos)
+                {
+                    <MudSelectItem Value="torneo.Id">
+                        <img src="@UrlImagenes(torneo.Logo)" height="25" class="mr-1" />
+                        @torneo.Nombre 
+                    </MudSelectItem>
+                    
+                }
+            </MudSelect>
+
+
+        </article>
+
+        <article>
+        </article>
+
+    </section>
+}
+else
+{
+    <p>Cargando</p>
+}
+
+
 
 <a href="/ORGANIZADOR/Mercadopago" >IR a configurar</a>
 
 @code {
+    private List<TorneoDTO> Torneos = new();
+    private string baseURLImagenes;
+
+    private int toneoIdSeleccionado = 1;
+    private bool habilitadoMercadoPago;
+
+    protected async override Task OnInitializedAsync()
+    {
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
+        _servicioMenu.ActualizarTitulo("Gestor de inscripciones");
+        baseURLImagenes = _config[Util.URL_BASE_CONFIG_IMAGENES];
+        await CargarTorneos();
+        await HabilitadoMercadoPago();
+    }
+
+    private async Task CargarTorneos()
+    {
+        Torneos = _servicioTorneo.ObtenerTorneos();
+    }
+
+    private string UrlImagenes(string nombreImagen)
+    {
+        string url = $"{baseURLImagenes}{nombreImagen}";
+        return url;
+    }
+
+    private async void CambioValorSelect(int torneoId)
+    {
+        await _servicioTorneo.SeleccionTorneo(torneoId);
+
+        //obtener el torneo actual seleccionado y cargar sus isncripciones.
+    }
+
+    private async Task HabilitadoMercadoPago()
+    {
+        var valor = await _localStorage.GetItemAsync<BoolModel>(Util.HABILITACION_MARKETPLACE);
+
+        if (valor == null)
+        {
+            //busco el valor y lo guardo
+            valor = new BoolModel(false);
+            valor.Bandera = await _servicioUsuario.ObtenerHabilitacionVendedorMarketplace(_servicioUsuario.ObtenerUsuarioLogueado().Id);
+            await _localStorage.SetItemAsync(Util.HABILITACION_MARKETPLACE, valor);
+        }
+        habilitadoMercadoPago = valor.Bandera;
+    }
+
+    private async void AutorizarCodigoMercadoPago()
+    {
+
+        var result = await _dialogService.Show<DialogComponent>("Desea habilitar el cobro por Mercadopago?. Recuerde que debe iniciar o haber iniciado sesión con su cuenta para recibir fondos").Result;
+
+        if (result.Canceled) return;
+
+        _nav.NavigateTo($"https://auth.mercadopago.com.uy/authorization?client_id={_config[Util.CLIENTE_ID_MERCADOPAGO_INTERMEDIARIO]}&response_type=code&platform_id=mp&redirect_uri={_config[Util.REDIRECT_URL_OAUTH_VENDEDOR]}");
+    }
+
+
 
 }

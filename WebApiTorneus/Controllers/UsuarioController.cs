@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BDTorneus;
 using DTOs_Compartidos.DTOs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Win32;
@@ -10,6 +11,7 @@ using Negocio.Models;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using WebApiTorneus.Services;
+using static Utilidades.Util;
 
 namespace WebApiTorneus.Controllers
 {
@@ -183,6 +185,31 @@ namespace WebApiTorneus.Controllers
         }
 
 
+
+        /// <summary>
+        /// Consulta si el vendedor está registrado en el marketplace de mercadopago
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint consulta si el vendedor está registrado en el marketplace de mercadopago
+        /// </remarks>
+        /// <response code="200">OK. Esta registrado en el marketplace</response>
+        /// <response code="400">Validaciones varias erroneas</response>
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
+        [HttpGet("HabilitadoVendedorMarketPlace/{usuarioId}")]
+        public async Task<IActionResult> GetHabilitadoMArketPlace(int usuarioId)
+        {
+            try
+            {
+                bool habilitadoMarketPlace = await _usuarioService.HabilitadoVendedorMercadoPago(usuarioId);
+                return Ok(habilitadoMarketPlace);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 

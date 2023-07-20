@@ -7,14 +7,6 @@
 @inject ILocalStorageService _localStorage
 
 
-<h3>Configuracion Medios de pagos</h3>
-
-<p>Habilitado para cobro en efectivo en local</p>
-
-<input @bind-value="code" style="color:blue;font-weight:bold;background-color:mintcream"/>
-
-<button @onclick="AutorizarCodigoMercadoPago">Habilitar MercadoPago Marketplace</button>
-
 <h3>@mensaje</h3>
 
 
@@ -33,10 +25,7 @@
         }
     }
 
-    private void AutorizarCodigoMercadoPago()
-    {
-        _nav.NavigateTo($"https://auth.mercadopago.com.uy/authorization?client_id={_config[Util.CLIENTE_ID_MERCADOPAGO_INTERMEDIARIO]}&response_type=code&platform_id=mp&redirect_uri={_config[Util.REDIRECT_URL_OAUTH_VENDEDOR]}");
-    }
+
 
     private async Task AsignarVendedorMakertPlace()
     {
