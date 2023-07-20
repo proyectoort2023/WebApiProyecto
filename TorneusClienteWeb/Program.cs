@@ -69,6 +69,7 @@ builder.Services.AddFileReaderService(options => options.UseWasmSharedBuffer = t
 
 
 builder.Services.AddScoped<ServicioMenu>();
+
 builder.Services.AddScoped<UsuarioServicio>();
 builder.Services.AddScoped<UsuarioServicioDatos>();
 

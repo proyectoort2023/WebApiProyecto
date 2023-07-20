@@ -1,13 +1,21 @@
 ﻿@page "/ORGANIZADOR/Mercadopago"
+@layout LayoutVacio
 @inject IConfiguration _config
 @inject NavigationManager _nav
+@inject MedioPagoServicio _servicioMedioPago
+@inject UsuarioServicio _servicioUsuario
+@inject ILocalStorageService _localStorage
 
 
 <h3>Configuracion Medios de pagos</h3>
 
 <p>Habilitado para cobro en efectivo en local</p>
 
-<button>Habilitar MercadoPago Marketplace</button>
+<input @bind-value="code" style="color:blue;font-weight:bold;background-color:mintcream"/>
+
+<button @onclick="AutorizarCodigoMercadoPago">Habilitar MercadoPago Marketplace</button>
+
+<h3>@mensaje</h3>
 
 
 @code {
@@ -15,18 +23,51 @@
     [SupplyParameterFromQuery]
     public string code { get; set; }
 
+    private string mensaje ="";
+
     protected async override Task OnInitializedAsync()
     {
         if (!string.IsNullOrEmpty(code))
         {
-            //realizar la llamada a la web api para obtener el accesstoken del vendedor
-        
+            await AsignarVendedorMakertPlace();
         }
     }
 
-    private void HabiliarMP()
+    private void AutorizarCodigoMercadoPago()
     {
         _nav.NavigateTo($"https://auth.mercadopago.com.uy/authorization?client_id={_config[Util.CLIENTE_ID_MERCADOPAGO_INTERMEDIARIO]}&response_type=code&platform_id=mp&redirect_uri={_config[Util.REDIRECT_URL_OAUTH_VENDEDOR]}");
+    }
+
+    private async Task AsignarVendedorMakertPlace()
+    {
+        try
+        {
+            var usuarioLogueado = await _localStorage.GetItemAsync<UsuarioLogueado>(Util.TOKEN_LOCAL);
+
+            mensaje = usuarioLogueado.Id.ToString();
+            _servicioUsuario.ActualizarUsuarioLogueado(usuarioLogueado);
+
+            bool tokenVendedorGuardado = await _servicioMedioPago.ImplementarMercadoPagoVendedor(code, usuarioLogueado.Id, usuarioLogueado.Token);
+
+            if (tokenVendedorGuardado)
+            {
+                mensaje = "guardado correctamente";
+            }
+            else
+            {
+                mensaje = "hubo un error";
+            }
+        }
+        catch (Exception ex)
+        {
+
+            mensaje = ex.Message;
+        }
+       
+        
+
+        }
+
     }
 
 

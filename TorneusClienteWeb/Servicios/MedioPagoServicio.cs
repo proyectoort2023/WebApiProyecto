@@ -9,19 +9,33 @@ namespace TorneusClienteWeb.Servicios
 
     	public MedioPagoServicio(MedioPagoServicioDatos servicioMedioPagoServicioDatos)
 		{
-			_servicioMedioPagoServicioDatos = servicioMedioPagoServicioDatos;
+            _servicioMedioPagoServicioDatos = servicioMedioPagoServicioDatos;
 		}
 
-        public async Task<AccessTokenMercadoPago> ObtennerAccessTokenVendedor(string codigo)
+        public async Task<bool> ImplementarMercadoPagoVendedor(string codigo, int usuarioId, string token)
         {
 			try
 			{
-				return await _servicioMedioPagoServicioDatos.ObtenerTokenMercadopago(codigo);
+				MpAuthVendedor mpAuthVendedor = new()
+				{
+					Codigo = codigo,
+					UsuarioId = usuarioId
+				};
+
+				bool tokenVendedorCreado = await _servicioMedioPagoServicioDatos.ImplementarMercadoPagoVendedorData(mpAuthVendedor, token);
+
+				return tokenVendedorCreado;
+
 			}
 			catch (Exception ex)
 			{
 				throw new Exception(ex.Message);
 			}
         }
+
+
+
+
+
     }
 }
