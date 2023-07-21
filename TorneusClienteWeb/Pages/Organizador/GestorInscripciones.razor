@@ -15,7 +15,7 @@
         <article class="card-genral">
             @if (!habilitadoMercadoPago)
             {
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" ButtonType="ButtonType.Submit">Integrar cobro por Mercadopago</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AutorizarCodigoMercadoPago">Integrar cobro por Mercadopago</MudButton>
                 
             }
 
@@ -90,14 +90,15 @@ else
 
     private async Task HabilitadoMercadoPago()
     {
-        var valor = await _localStorage.GetItemAsync<BoolModel>(Util.HABILITACION_MARKETPLACE);
+        int usuarioId = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+        var valor = await _localStorage.GetItemAsync<BoolModel>($"{Util.HABILITACION_MARKETPLACE}-{usuarioId}");
 
         if (valor == null)
         {
             //busco el valor y lo guardo
             valor = new BoolModel(false);
             valor.Bandera = await _servicioUsuario.ObtenerHabilitacionVendedorMarketplace(_servicioUsuario.ObtenerUsuarioLogueado().Id);
-            await _localStorage.SetItemAsync(Util.HABILITACION_MARKETPLACE, valor);
+            await _localStorage.SetItemAsync($"{Util.HABILITACION_MARKETPLACE}-{usuarioId}", valor);
         }
         habilitadoMercadoPago = valor.Bandera;
     }

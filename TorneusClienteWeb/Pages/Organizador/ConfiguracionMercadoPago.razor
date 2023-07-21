@@ -7,8 +7,9 @@
 @inject ILocalStorageService _localStorage
 @using System.Threading;
 
-
-<h3>@mensaje</h3>
+<div class="d-flex justify-content-center align-items-center" style="height:80vh;width:100%">
+        <h3 style="color:red">@mensaje</h3>
+</div>
 
 
 @code {
@@ -34,19 +35,18 @@
         {
             var usuarioLogueado = await _localStorage.GetItemAsync<UsuarioLogueado>(Util.TOKEN_LOCAL);
 
-            mensaje = usuarioLogueado.Id.ToString();
             _servicioUsuario.ActualizarUsuarioLogueado(usuarioLogueado);
 
             bool tokenVendedorGuardado = await _servicioMedioPago.ImplementarMercadoPagoVendedor(code, usuarioLogueado.Id, usuarioLogueado.Token);
 
             if (tokenVendedorGuardado)
             {
-                mensaje = "Guardado correctamente. Redireccionando...";
-                await _localStorage.RemoveItemAsync(Util.HABILITACION_MARKETPLACE);
+                mensaje = "Mercadopago integrado correctamente. Redireccionando...";
+                await _localStorage.RemoveItemAsync($"{Util.HABILITACION_MARKETPLACE}-{usuarioLogueado.Id}");
             }
             else
             {
-                mensaje = "hubo un error";
+                mensaje = "Hubo un error";
             }
             Thread.Sleep(3000);
             NavegarPrincipal();

@@ -180,7 +180,8 @@ namespace Negocio
 
         public async Task<List<Torneo>> ObtenerTorneosVigentes()
         {
-            var listaTorneos = await _db.Torneos.Where(w => w.Cerrrado == false)
+            var listaTorneos = await _db.Torneos.Include(inc => inc.Usuario)
+                                                .Where(w => w.Cerrrado == false)
                                                 .OrderByDescending(o => o.Fecha.Date)
                                                 .ToListAsync();
 

@@ -90,6 +90,10 @@ namespace Negocio
                     throw new Exception(mensajeError);
                 }
 
+                registro.AccessTokenMercadopago = "";
+                registro.AccessTokenRefreshMercadopago = "";
+                registro.Token = "";
+
                 var usuarioNuevo = await _db.Usuarios.AddAsync(registro);
                 await _db.SaveChangesAsync();
 

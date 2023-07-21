@@ -123,7 +123,8 @@ namespace Negocio
 
                 if (usuario == null) throw new Exception("No existe el usuario. W101");
 
-                return usuario.AccessTokenMercadopago;
+                var token = usuario.AccessTokenMercadopago == null ? "" : usuario.AccessTokenMercadopago;
+                return token;
             }
             catch (Exception ex)
             {

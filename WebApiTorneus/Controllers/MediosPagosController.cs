@@ -58,24 +58,22 @@ namespace WebApiTorneus.Controllers
         /// Permite la obtencion de los datos de accessToken del vendedor 
         /// </summary>
         /// <remarks>
-        /// Este endpoint obtiene los datos de accessToken del vendedor para vender las inscripciones en su nombre (como intermediario)
+        /// Este endpoint obtiene los datos de accessToken del vendedor para cobrar las inscripciones en su nombre (como intermediario)
         /// </remarks>
         /// <response code="200">OK.Devuelve AccessTokenMercadoPago</response>
         /// <response code="400">Validaciones varias no conformadas</response>
-        [ProducesResponseType(typeof(IdModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(StringModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "EQUIPO")]
-        [HttpGet("Mercadopago/AccessTokenVendedor/{usuarioId}")]
-        public async Task<IActionResult> GetTokenMercadopago(int usuarioId)
+        [HttpGet("Mercadopago/GetTokenVendedor/{usuarioVendedorId}")]
+        public async Task<IActionResult> GetTokenMercadopago(int usuarioVendedorId)
         {
             try
             {
-                //if (mpAuthVendedor == null) BadRequest("El codigo de mercadopago está vacio");
+                string tokenVendedorMercadoPago = await _medioPagoService.ObtenerAccesTokenVendedor(usuarioVendedorId);
 
-
-                string tokenVendedorMercadoPago = await _medioPagoService.ObtenerAccesTokenVendedor(usuarioId);
-
-                return Ok(tokenVendedorMercadoPago);
+                StringModel token = new(tokenVendedorMercadoPago);
+                return Ok(token);
             }
             catch (Exception ex)
             {

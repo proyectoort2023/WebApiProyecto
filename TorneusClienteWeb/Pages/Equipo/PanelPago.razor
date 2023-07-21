@@ -7,6 +7,7 @@
 @inject NavigationManager _nav
 @inject ServicioMenu _servicioMenu
 @inject InscripcionServicio _servicioInscripcion
+@inject MedioPagoServicio _servicioMedioPago
 @inject TorneoServicio _servicioTorneo
 @inject ISnackbar _snackbar
 @inject IConfiguration _configuration
@@ -16,9 +17,13 @@
 
 <div class="d-flex justify-content-center align-items-center flex-column" style="height:70vh">
     <h2 class="h2-panelpago"> Monto a pagar $@_servicioInscripcion.ObtenerInscripcionActual().Monto</h2>
-    <MudButton>
-        <img src="/imagenes/mercadopago-logo.png" alt="" class="card-general" @onclick="LanzarCheckouMercadopago" />
-    </MudButton>
+
+    @if (!string.IsNullOrEmpty(accTokenVendedor))
+    {
+        <MudButton>
+            <img src="/imagenes/mercadopago-logo.png" alt="" class="card-general" @onclick="LanzarCheckouMercadopago" />
+        </MudButton>
+    }
 
     <MudButton>
         <img src="/imagenes/pago-efectivo-logo5.png" alt="" class="card-general" @onclick="ActualizarEstadoEfectivo" />
@@ -29,10 +34,20 @@
 
 
 @code {
+
+    //[Parameter]
+    //[SupplyParameterFromQuery]
+    //public int usuarioVendedorId { get; set; }
+
+
+    private string accTokenVendedor = "";
+
     protected async override Task OnInitializedAsync()
     {
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/EQUIPO/Gestiones");
         _servicioMenu.ActualizarTitulo("Panel de pago");
+        int usuarioVendedorId = _servicioTorneo.ObtenerTorneoActual().Usuario.Id;
+        accTokenVendedor = await _servicioMedioPago.ObtenerAccessTokenMPVendedor(usuarioVendedorId);
     }
 
     private async Task ActualizarEstadoEfectivo()
@@ -59,9 +74,7 @@
         {
             var torneoActual = _servicioTorneo.ObtenerTorneoActual();
 
-            string tokenAccess = _configuration[Util.ACCESSKEY];
-
-            MercadoPagoConfig.AccessToken = _configuration[Util.ACCESSKEY];
+            MercadoPagoConfig.AccessToken = accTokenVendedor;
 
         #if DEBUG
               baseURL = $"{_configuration["Url_Back_MercadoPago:LocalRedirect_MP"]}EQUIPO/NotificacionMercadoPago/?resultadoMp=";
