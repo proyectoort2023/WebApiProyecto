@@ -9,6 +9,7 @@
 @inject InscripcionServicio _servicioInscripcion
 @inject MedioPagoServicio _servicioMedioPago
 @inject TorneoServicio _servicioTorneo
+@inject UsuarioServicio _servicioUsuario;
 @inject ISnackbar _snackbar
 @inject IConfiguration _configuration
 @inject ILocalStorageService _localStorage
@@ -47,7 +48,7 @@
         _servicioMenu.ActualizarNavegacionPOP(true, false, "/EQUIPO/Gestiones");
         _servicioMenu.ActualizarTitulo("Panel de pago");
         int usuarioVendedorId = _servicioTorneo.ObtenerTorneoActual().Usuario.Id;
-        accTokenVendedor = await _servicioMedioPago.ObtenerAccessTokenMPVendedor(usuarioVendedorId);
+        accTokenVendedor = await _servicioMedioPago.ObtenerAccessTokenMPVendedor(usuarioVendedorId, _servicioUsuario.ObtenerUsuarioLogueado().Token);
     }
 
     private async Task ActualizarEstadoEfectivo()
@@ -76,11 +77,7 @@
 
             MercadoPagoConfig.AccessToken = accTokenVendedor;
 
-        #if DEBUG
-              baseURL = $"{_configuration["Url_Back_MercadoPago:LocalRedirect_MP"]}EQUIPO/NotificacionMercadoPago/?resultadoMp=";
-        #else
-               baseURL = $"{_configuration["Url_Back_MercadoPago:ProduccionRedirect_MP"]}EQUIPO/NotificacionMercadoPago/?resultadoMp=";
-        #endif
+            baseURL = $"{_configuration["Url_Back_MercadoPago:ProduccionRedirect_MP"]}EQUIPO/NotificacionMercadoPago/?resultadoMp=";
 
              var request = new PreferenceRequest
                 {

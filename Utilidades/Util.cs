@@ -57,6 +57,7 @@
             {"HOMBRES","Equipo sólo de hombres" },
             {"MIXTO_5_1","Equipos mixtos mínimo 1 mujer" },
             {"MIXTO_5_2","Equipos mixtos mínimo 2 mujeres" },
+            {"MIXTO_5_3","Equipos mixtos minimo 3 mujeres" },
             {"MUJERES","Equipo solo de mujeres" },
         };
 
@@ -65,6 +66,7 @@
             {"HOMBRES","ce_hombres.png" },
             {"MIXTO_5_1","ce_mix51.png" },
             {"MIXTO_5_2","ce_mix52.png" },
+            {"MIXTO_5_3","ce_mix53.png" },
             {"MUJERES","ce_mujeres.png" },
         };
 

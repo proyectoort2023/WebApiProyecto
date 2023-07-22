@@ -60,13 +60,18 @@
        
     </div>
 
+    @if (cargado)
+    {
+        <Cargando />
+    }
+
 </div>
 
 
 
 @code{
     public LoginDTO UsuarioLogin { get; set; } = new();
-
+    private bool cargado = false;
 
     bool isShow;
     InputType PasswordInput = InputType.Password;
@@ -87,6 +92,7 @@
         try
 
         {
+            cargado = true;
             bool respuesta = await _usuarioServicio.Loguearme(UsuarioLogin);
             var usuario = _usuarioServicio.ObtenerUsuarioLogueado();
             await _localStorage.SetItemAsync(Utilidades.Util.TOKEN_LOCAL, usuario);
@@ -95,6 +101,7 @@
         }
         catch (Exception ex)
         {
+            cargado = false;
             _snackbar.Add(ex.Message, Severity.Warning);
         }
         

@@ -5,10 +5,11 @@
 @inject MedioPagoServicio _servicioMedioPago
 @inject UsuarioServicio _servicioUsuario
 @inject ILocalStorageService _localStorage
-@using System.Threading;
 
-<div class="d-flex justify-content-center align-items-center" style="height:80vh;width:100%">
-        <h3 style="color:red">@mensaje</h3>
+<div style="height:80vh;width:100vw;display:flex;justify-content:center;align-items:center;flex-direction:column">
+        <img src="/imagenes/@imagenPortada" style="width:80%;height:auto"/>
+        <h3 style="color:red;width:80%;font-size:2rem">@mensaje</h3>
+        <h4 style="color:red;width:80%;font-size:2rem">Redireccionando...</h4>
 </div>
 
 
@@ -18,6 +19,7 @@
     public string code { get; set; }
 
     private string mensaje ="";
+    private string imagenPortada = "";
 
     protected async override Task OnInitializedAsync()
     {
@@ -41,21 +43,27 @@
 
             if (tokenVendedorGuardado)
             {
-                mensaje = "Mercadopago integrado correctamente. Redireccionando...";
+                mensaje = "Mercadopago integrado correctamente.";
+                imagenPortada = "exitoso.png";
                 await _localStorage.RemoveItemAsync($"{Util.HABILITACION_MARKETPLACE}-{usuarioLogueado.Id}");
             }
             else
             {
-                mensaje = "Hubo un error";
+                mensaje = "Algo salió mal. No se pudo integrar mercadopago";
+                imagenPortada = "error_integracion.png";
             }
-            Thread.Sleep(3000);
-            NavegarPrincipal();
         }
         catch (Exception ex)
         {
 
             mensaje = ex.Message;
         }
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Task.Delay(5000);
+        NavegarPrincipal();
     }
 
     private void NavegarPrincipal()

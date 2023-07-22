@@ -2,6 +2,7 @@
 @inject ServicioMenu _servicioMenu
 @inject UsuarioServicio _servicioUsuario
 @inject TorneoServicio _servicioTorneo
+@inject InscripcionServicio _servicioInscripcion
 @inject NavigationManager _nav
 @inject ISnackbar _snackbar
 @inject IConfiguration _config
@@ -41,25 +42,38 @@
         </article>
 
         <article>
+
+            @if (Inscripciones.Count > 0)
+            {
+                @foreach (var inscripcion in Inscripciones)
+                {
+                    <ItemInscripcion InscripcionDTO="inscripcion" ActualizarListado="CobrarInscripcionEfectivo" />
+                    @if (cargando)
+                    {
+                        <Cargando />
+                    }
+                }
+            }
+           
         </article>
 
     </section>
 }
 else
 {
-    <p>Cargando</p>
+    <Cargando />
 }
 
 
-
-<a href="/ORGANIZADOR/Mercadopago" >IR a configurar</a>
-
 @code {
     private List<TorneoDTO> Torneos = new();
+    private List<InscripcionDTO> Inscripciones = new();
+
     private string baseURLImagenes;
 
     private int toneoIdSeleccionado = 1;
     private bool habilitadoMercadoPago;
+    private bool cargando = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -68,6 +82,10 @@ else
         baseURLImagenes = _config[Util.URL_BASE_CONFIG_IMAGENES];
         await CargarTorneos();
         await HabilitadoMercadoPago();
+    }
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        cargando = false;
     }
 
     private async Task CargarTorneos()
@@ -81,11 +99,12 @@ else
         return url;
     }
 
-    private async void CambioValorSelect(int torneoId)
+    private async Task CambioValorSelect(int torneoId)
     {
+        cargando = true;
         await _servicioTorneo.SeleccionTorneo(torneoId);
-
-        //obtener el torneo actual seleccionado y cargar sus isncripciones.
+        Inscripciones = await _servicioInscripcion.ObtenerInscripcionesOrganizador(_servicioTorneo.ObtenerTorneoActual().Id);
+        //cargando = false;
     }
 
     private async Task HabilitadoMercadoPago()
@@ -111,6 +130,11 @@ else
         if (result.Canceled) return;
 
         _nav.NavigateTo($"https://auth.mercadopago.com.uy/authorization?client_id={_config[Util.CLIENTE_ID_MERCADOPAGO_INTERMEDIARIO]}&response_type=code&platform_id=mp&redirect_uri={_config[Util.REDIRECT_URL_OAUTH_VENDEDOR]}");
+    }
+
+    private async Task CobrarInscripcionEfectivo()
+    {
+        
     }
 
 

@@ -34,11 +34,11 @@ namespace TorneusClienteWeb.Servicios
         }
 
 
-        public async Task<string> ObtenerAccessTokenMPVendedor(int usuarioId)
+        public async Task<string> ObtenerAccessTokenMPVendedor(int usuarioId, string token)
         {
             try
             {
-                string tokenVendedor = await _servicioMedioPagoServicioDatos.ObtenerAccessTokenVendedor(usuarioId);
+                string tokenVendedor = await _servicioMedioPagoServicioDatos.ObtenerAccessTokenVendedor(usuarioId, token);
 
                 return tokenVendedor;
 

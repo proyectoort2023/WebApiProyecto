@@ -50,6 +50,35 @@ namespace Negocio
             }
         }
 
+        public async Task<List<Inscripcion>> ObtenerInscripcionesSegunTorneo(int torneoId)
+        {
+            try
+            {
+                if (torneoId < 1) throw new Exception("El torneo no se encuentra para obtener las inscripciones");
+
+                List<Inscripcion> inscripciones = await _db.Inscripciones.Include(i => i.Equipo)
+                                                                          .Include(i => i.Torneo)
+                                                                          .Include(i => i.Usuario)
+                                                                          .Where(w => w.Torneo.Id == torneoId)
+                                                                          .ToListAsync();
+
+                inscripciones.ForEach(ins => {
+                    ins.Usuario.Pass = "";
+                    ins.Usuario.AccessTokenMercadopago = "";
+                    ins.Usuario.AccessTokenRefreshMercadopago = "";
+                });
+
+                if (inscripciones == null) throw new Exception("No hay inscricpiones válidas");
+
+                return inscripciones;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
         public async Task<Inscripcion> AgregarNuevaInscripcion(Inscripcion inscripcion)
         {
             try

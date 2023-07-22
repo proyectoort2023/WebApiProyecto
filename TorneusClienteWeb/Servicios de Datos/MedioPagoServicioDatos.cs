@@ -13,14 +13,9 @@ namespace TorneusClienteWeb.Servicios_de_Datos
     {
 
         private readonly HttpClient _httpClient;
-        [Inject] private UsuarioServicio _usuarioServicio { get; set; }
-
-        private string token;
-        public MedioPagoServicioDatos(HttpClient httpClient, UsuarioServicio usuarioServicio)
+        public MedioPagoServicioDatos(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _usuarioServicio = usuarioServicio;
-            token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
         }
 
 
@@ -50,7 +45,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
-        public async Task<string> ObtenerAccessTokenVendedor(int usuarioVendedorId)
+        public async Task<string> ObtenerAccessTokenVendedor(int usuarioVendedorId,string token)
         {
             try
             {

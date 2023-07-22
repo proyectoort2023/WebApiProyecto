@@ -77,7 +77,7 @@ namespace WebApiTorneus.Controllers
         /// </remarks>
         /// <response code="200">OK. Listado obtenido</response>
         /// <response code="400">Validaciones varias erroneas</response>
-        [ProducesResponseType(typeof(TokenModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<Inscripcion>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("Listado/{usuarioId}")]
         public async Task<IActionResult> GetInscripconesSegunUsuario(int usuarioId)
@@ -223,6 +223,36 @@ namespace WebApiTorneus.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
+
+
+        /// <summary>
+        /// Permite obtener las inscripciones de un torneo segun el rol organizador
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint permite obtener las inscripciones de un torneo segun el rol organizador
+        /// </remarks>
+        /// <response code="200">OK. Listado obtenido</response>
+        /// <response code="400">Validaciones varias erroneas</response>
+        [ProducesResponseType(typeof(List<Inscripcion>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("Listado/InscripcionTorneo/{torneoId}")]
+        public async Task<IActionResult> ObtenerInscripcionesSegunTorneo(int torneoId)
+        {
+            try
+            {
+                var inscripcionListado = await _inscripcionService.ObtenerInscripcionesSegunTorneo(torneoId);
+                List<InscripcionDTO> inscripcionesDTO = _mapper.Map<List<Inscripcion>, List<InscripcionDTO>>(inscripcionListado);
+
+                return Ok(inscripcionesDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
     }

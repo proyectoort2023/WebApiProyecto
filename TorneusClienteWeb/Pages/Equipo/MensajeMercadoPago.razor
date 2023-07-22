@@ -5,7 +5,6 @@
 @inject InscripcionServicio _servicioInscripcion
 @inject UsuarioServicio _servicioUsuario
 @inject ISnackbar _snackbar;
-@using System.Threading;
 
 
 <div class="d-flex justify-content-center align-items-center flex-column boxCenterPantalla">
@@ -65,18 +64,18 @@
             {
                 await _servicioInscripcion.ActualizarMercadoPago(preferenciaMP); 
             }
-            Thread.Sleep(3000);
-            NavegarRaiz();
         }
         catch (Exception ex)
         {
             _snackbar.Add(ex.Message, Severity.Warning);
-
-            Thread.Sleep(3000);
-
-            NavegarRaiz();
         }
-       
+
+    }
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await Task.Delay(5000);
+        NavegarRaiz();
     }
 
 

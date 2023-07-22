@@ -6,7 +6,7 @@
     width:90% !important;
     overflow:visible;
     color: white;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     background: linear-gradient(90deg, rgba(22,0,36,0.9276960784313726) 0%, rgba(97,9,121,0.8968837535014006) 35%, rgba(245,83,220,0.9080882352941176) 100%);
 }
 
@@ -39,7 +39,7 @@
     background-color: orange;
     width: 40%;
     text-align: center;
-    font-size:0.9rem;
+    font-size:0.8rem;
 }
 
 
@@ -52,7 +52,7 @@
     padding: 5px;
 }
 
-card-general-relativo button {
+.card-general-relativo button {
     position: absolute;
     bottom: 10px;
     left: 10px;
