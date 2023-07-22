@@ -7,6 +7,7 @@ using Negocio.DTOs;
 using Negocio.Validaciones;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -172,6 +173,7 @@ namespace Negocio
         public async Task<List<Torneo>> MisTorneosOrganizador(int idOrganizador)
         {
             var listaTorneos = await _db.Torneos.Where(w => w.Usuario.Id == idOrganizador)
+                                            .AsNoTracking()
                                             .OrderByDescending(o => o.Fecha)
                                             .ToListAsync();
 
@@ -180,9 +182,17 @@ namespace Negocio
 
         public async Task<List<Torneo>> ObtenerTorneosVigentes()
         {
-            var listaTorneos = await _db.Torneos.Where(w => w.Cerrrado == false)
+            var listaTorneos = await _db.Torneos.Include(inc => inc.Usuario)
+                                                .AsNoTracking()
+                                                .Where(w => w.Cerrrado == false)
                                                 .OrderByDescending(o => o.Fecha.Date)
                                                 .ToListAsync();
+
+            listaTorneos.ForEach(t => {
+                t.Usuario.Pass = "";
+                t.Usuario.AccessTokenMercadopago = "";
+                t.Usuario.AccessTokenRefreshMercadopago ="";
+            });
 
             return listaTorneos;
         }

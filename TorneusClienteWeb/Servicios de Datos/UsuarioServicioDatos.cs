@@ -68,6 +68,35 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 
         }
 
+
+
+        public async Task<bool> ObtenerHabilitacionVendedorMarketplace(int usuarioId)
+        {
+            try
+            {
+                if (usuarioId < 0) throw new Exception("No existe el modelo");
+
+                var response = await _httpClient.GetAsync($"api/Usuario/HabilitadoVendedorMarketPlace/{usuarioId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var resultado = JsonConvert.DeserializeObject<bool>(content);
+                    return resultado;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
         //public async Task<List<UsuarioDTO>> ObtenerTodos(bool filtro)
         //{
         //    var response = await _httpClient.GetAsync($"api/Usuario/{filtro}");

@@ -48,6 +48,13 @@ namespace TorneusClienteWeb.Servicios
           return _inscripciones;
         }
 
+        public async Task<List<InscripcionDTO>> ObtenerInscripcionesOrganizador(int torneoId)
+        {
+            _inscripciones = await _inscripcionServicio.ObtenerInscripcionesTorneo(torneoId);
+            return _inscripciones;
+        }
+
+
         public InscripcionDTO ObtenerInscripcionActual()
         {
             return _inscripcionSeleccionado;

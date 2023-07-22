@@ -48,16 +48,6 @@ else
 
     private async Task RecibidoresNotificacones()
     {
-        //_hubConnection.On<bool, int>("RecibidorNotficacionSuspension", async (suspendido, torneoId) =>
-        //{
-        //    if (suspendido)
-        //    {
-        //        await _servicioNotificacionesSignalR.SuspenderTorneoSignalR(torneoId);
-        //        StateHasChanged();
-        //    }
-
-        //});
-
         if (_hubConnection.State == HubConnectionState.Disconnected)
         {
             await _hubConnection.StartAsync();

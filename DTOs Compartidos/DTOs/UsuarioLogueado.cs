@@ -14,5 +14,6 @@ namespace Negocio.DTOs
         public string Rol { get; set; }
         public string Tel { get; set; }
         public string Token { get; set; }
+        public bool HabilitadoCobroMercadopago { get; set; }
     }
 }

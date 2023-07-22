@@ -18,6 +18,9 @@ namespace Negocio.DTOs
         public string Rol { get; set; }
         public string Tel { get; set; }
         public string Token { get; set; }
+        public string AccessTokenMercadopago { get; set; }
+        public string AccessTokenRefreshMercadopago { get; set; }
+        public DateTime FechaCaducidadTokenMercadopago { get; set; }
 
         public List<EquipoDTO> Equipos { get; set; } = new List<EquipoDTO>();
         public List<TorneoDTO> Torneos { get; set; } = new List<TorneoDTO>();

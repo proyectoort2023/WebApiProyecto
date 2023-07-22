@@ -1,11 +1,12 @@
 ﻿@inject InscripcionServicio _servicioInscripcion
+@inject UsuarioServicio _servicioUsuario
 @inject IDialogService _dialogService
 @inject ISnackbar _snackBar
 
 
 <section class="card-general card-general-relativo">
     <article class="d-flex justify-content-center align-items-center flex-column">
-        <span>@InscripcionDTO.Torneo.Nombre</span>
+        <span>@TituloSegunRol()</span>
         <span>$ @InscripcionDTO.Monto</span>
     </article>
 
@@ -17,7 +18,10 @@
         <span>@InscripcionDTO.Estado.ToUpper()</span>
     </article>
 
-    <button @onclick="BajaInscripcion"><span class="fas fa-trash-alt"></span></button>
+    @if (rolUsuario == Util.Roles.EQUIPO.ToString())
+    {
+        <button @onclick="BajaInscripcion"><span class="fas fa-trash-alt flotando-izquierda"></span></button>
+    }
 </section>
 
 
@@ -29,6 +33,7 @@
     [Parameter]
     public EventCallback ActualizarListado { get; set; }
 
+    private string rolUsuario = "";
 
     private string UrlMedioPago()
     {
@@ -57,6 +62,19 @@
         {
             _snackBar.Add(ex.Message, Severity.Warning);
         }
-       
+
     }
+
+    private string TituloSegunRol()
+    {
+        rolUsuario = _servicioUsuario.ObtenerUsuarioLogueado().Rol;
+
+        string titulo = rolUsuario == Util.Roles.ORGANIZADOR.ToString() ? InscripcionDTO.Equipo.Nombre : InscripcionDTO.Torneo.Nombre;
+
+        return titulo;
+    }
+
+
+
+
 }

@@ -1,6 +1,7 @@
 ﻿@inject UsuarioServicio _servicioUsuario
 @inject TorneoServicio _servicioTorneo
 @inject ServicioMenu _servicioMenu
+@inject NotificacionesSignalRService _servicioNotificacionesSignalR
 @inject ISnackbar _snackbar
 @inject IDialogService _dialogService
 @inject HubConnection _hubConnection
@@ -60,6 +61,20 @@
 
     protected async override Task OnInitializedAsync()
     {
+        await RecibidoresNotificacones();
+    }
+
+     private async Task RecibidoresNotificacones()
+    {
+        _hubConnection.On<int, bool>("RecibidorAperturaCierreTorneo", async (torneoId, apertura) =>
+        {
+            if (torneoId == TorneoSeleccionadoDTO.Id)
+            {
+                _servicioNotificacionesSignalR.AbrirCerrarInscripciones(torneoId, apertura);
+                StateHasChanged();
+            }
+
+        });
 
     }
 
