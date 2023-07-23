@@ -145,13 +145,12 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">No encontrado</response>
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "EQUIPO")]
+        [Authorize(Roles = "EQUIPO,ORGANIZADOR")]
         [HttpPost("MedioPago/Efectivo")]
         public async Task<IActionResult> ActualizarMedioPagoEfectivo([FromBody] MedioPagoEfectivoDTO inscripcionEf)
         {
             try
             {
-
                 bool actualizarDatosPago = await _inscripcionService.ActualizarPagoEfectivo(inscripcionEf.Estado, inscripcionEf.InscripcionId);
 
                 return Ok(actualizarDatosPago);

@@ -48,6 +48,11 @@ namespace TorneusClienteWeb.Servicios
           return _inscripciones;
         }
 
+        public void SetInscripcionSeleccionado(int inscripcionId)
+        {
+            _inscripcionSeleccionado = _inscripciones.SingleOrDefault(ins => ins.Id == inscripcionId);
+        }
+
         public async Task<List<InscripcionDTO>> ObtenerInscripcionesOrganizador(int torneoId)
         {
             _inscripciones = await _inscripcionServicio.ObtenerInscripcionesTorneo(torneoId);
@@ -112,7 +117,11 @@ namespace TorneusClienteWeb.Servicios
                 };
 
                 bool resultado = await _inscripcionServicio.ActualizarDatosPagoEfetivo(inscripcionEf);
-                await CargarInscripciones();
+                //await CargarInscripciones();
+                if (!resultado) throw new Exception("No se ha podido actualizar");
+
+                int posicion = BuscarIndexInscripcion(inscripcionEf.InscripcionId);
+                ActualizarEstadoInscripcionPorIndex(posicion, inscripcionEf.Estado);
                 return resultado;
             }
             catch (Exception ex)
@@ -135,6 +144,18 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
+     
+        private void ActualizarEstadoInscripcionPorIndex(int posicion, string estado)
+        {
+            InscripcionDTO inscripcionActualizar = _inscripciones[posicion];
+            inscripcionActualizar.MedioPago = Util.MedioPago.EFECTIVO.ToString();
+            inscripcionActualizar.Estado = estado;
+        }
+        private int BuscarIndexInscripcion(int inscripcionId)
+        {
+            int posicion = _inscripciones.FindIndex(find => find.Id == inscripcionId);
+            return posicion;
+        }
 
         public async Task<bool> BajaInscripcion(int inscripcionId)
         {

@@ -25,10 +25,10 @@ namespace WebApiTorneus.Controllers
 
 
         /// <summary>
-        /// Permite la obtencion de los datos de accessToken del vendedor 
+        /// Permite el guardado de los tokens del organizador que implementa mercadopago
         /// </summary>
         /// <remarks>
-        /// Este endpoint obtiene los datos de accessToken del vendedor para vender las inscripciones en su nombre (como intermediario)
+        /// Este endpoint permite el guardado de los tokens del organizador que implementa mercadopago enviados desde el frontend
         /// </remarks>
         /// <response code="200">OK.Devuelve AccessTokenMercadoPago</response>
         /// <response code="400">Validaciones varias no conformadas</response>
