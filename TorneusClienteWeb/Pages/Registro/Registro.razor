@@ -112,6 +112,7 @@
         {
             cargado = false;
             _snackbar.Add(ex.Message, Severity.Warning);
+            StateHasChanged();
         }
     }
 

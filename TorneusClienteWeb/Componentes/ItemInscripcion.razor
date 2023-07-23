@@ -23,7 +23,7 @@
         <button @onclick="BajaInscripcion"><span class="fas fa-trash-alt flotando-izquierda"></span></button>
     }
 
-    @if (rolUsuario == Util.Roles.ORGANIZADOR.ToString())
+    @if (rolUsuario == Util.Roles.ORGANIZADOR.ToString() && InscripcionDTO.Estado != Util.EstadoPago.PAGADO.ToString())
     {
         <button @onclick="ConfirmacionCobro"><span class="fas fa-hand-holding-usd flotando-izquierda"></span></button>
     }
@@ -79,9 +79,17 @@
         return titulo;
     }
 
-    private void ConfirmacionCobro()
+    private async Task ConfirmacionCobro()
     {
-        
+        var result = await _dialogService.Show<DialogComponent>("Lo cobra en efectivo?").Result;
+
+        if (result.Canceled) return;
+
+        _servicioInscripcion.SetInscripcionSeleccionado(InscripcionDTO.Id);
+        bool resultado = await _servicioInscripcion.ActualizarMedioPagoEfectivo(Util.EstadoPago.PAGADO.ToString());
+
+        _snackBar.Add("Se ha cambiado su estado correctamente", Severity.Success);
+        //StateHasChanged();
     }
 
 
