@@ -68,12 +68,8 @@
     {
         _hubConnection.On<int, bool>("RecibidorAperturaCierreTorneo", async (torneoId, apertura) =>
         {
-            if (torneoId == TorneoSeleccionadoDTO.Id)
-            {
                 _servicioNotificacionesSignalR.AbrirCerrarInscripciones(torneoId, apertura);
                 StateHasChanged();
-            }
-
         });
 
     }

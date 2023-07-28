@@ -193,6 +193,23 @@ namespace Negocio
 
         }
 
+        public async Task<bool> EstaEnLimiteInscriptos(int idTorneo)
+        {
+            try
+            {
+                Torneo torneo = await _db.Torneos.SingleOrDefaultAsync(w => w.Id == idTorneo);
+
+                int cantidadInscripciones = await _db.Inscripciones.CountAsync(co => co.Torneo.Id == idTorneo);
+
+                return cantidadInscripciones >= torneo.MaxEquiposInscriptos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
 
         public async Task ReembolsoInscripción(string ordenpagoId, decimal montoReembolso, string accessToken)
         {

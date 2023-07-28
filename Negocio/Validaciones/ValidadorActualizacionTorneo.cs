@@ -32,6 +32,7 @@ namespace Negocio.Validaciones
             RuleFor(t => t.MaxEquiposInscriptos).InclusiveBetween(4, 1000).WithMessage("Cantidad de inscriptos deben ser entre 4 y 1000. ");
             RuleFor(t => t.MaxJugadoresPorEquipo).InclusiveBetween(6, 12).WithMessage("La cantidad de jugadores por equipo deben ser entre 6 y 12. ");
             RuleFor(t => t.CantidadCanchas).GreaterThan(0).WithMessage("cantidad de canchas deben ser de una en adelante. ");
+            RuleFor(ins => ins).Must(ValidarSets).WithMessage("El puntaje de último set debe ser igual o mejor que el puntaje de set");
 
         }
 
@@ -65,6 +66,11 @@ namespace Negocio.Validaciones
         {
             bool valorEcontrado = Util.ConfigEquiposDiccionario.Any(value => value.Key == tipo);
             return valorEcontrado;
+        }
+
+        private bool ValidarSets(Torneo torneo)
+        {
+            return torneo.PuntajeMaxUltimoSet <= torneo.PuntajeMax;
         }
     }
 }

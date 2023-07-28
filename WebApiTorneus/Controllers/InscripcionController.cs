@@ -25,16 +25,19 @@ namespace WebApiTorneus.Controllers
     {
         private readonly IMapper _mapper;
         private readonly InscripcionService _inscripcionService;
+        private readonly TorneoService _torneoService;
         private IHubContext<TorneusHub> _torneoHub;
         private readonly IConfiguration _config;
 
 
-        public InscripcionController(IMapper mapper, UsuarioService usuarioService, InscripcionService inscripcionService, IHubContext<TorneusHub> torneoHub, IConfiguration config)
+        public InscripcionController(IMapper mapper, UsuarioService usuarioService, InscripcionService inscripcionService, 
+                                     IHubContext<TorneusHub> torneoHub, IConfiguration config, TorneoService torneoService)
         {
             _mapper = mapper;
             _inscripcionService = inscripcionService;
             _torneoHub = torneoHub;
             _config = config;
+            _torneoService = torneoService;
         }
 
 
@@ -55,11 +58,21 @@ namespace WebApiTorneus.Controllers
         {
             try
             {
-                Inscripcion inscripcion = _mapper.Map<InscripcionDTO,Inscripcion>(inscripcionDTO);
+                Inscripcion inscripcion = _mapper.Map<InscripcionDTO, Inscripcion>(inscripcionDTO);
+
+                int torneoId = inscripcionDTO.TorneoId;
 
                 Inscripcion inscripcionNueva = await _inscripcionService.AgregarNuevaInscripcion(inscripcion);
                 InscripcionDTO inscripcionNuevaDTO = _mapper.Map<Inscripcion, InscripcionDTO>(inscripcionNueva);
 
+                //necesito corroborar si se llegó al limite de inscriptos, actualizar el mensaje y enviar el cierre si es necesario
+                bool estaEnLimiteInscripcion = await _inscripcionService.EstaEnLimiteInscriptos(torneoId);
+
+                if (estaEnLimiteInscripcion)
+                {
+                   bool resultado = await _torneoService.CerrarInscripciones(torneoId);
+                    if (resultado) await _torneoHub.Clients.All.SendAsync("RecibidorAperturaCierreTorneo", torneoId, false);
+                }
                 return Ok(inscripcionNuevaDTO);
             }
             catch (Exception ex)

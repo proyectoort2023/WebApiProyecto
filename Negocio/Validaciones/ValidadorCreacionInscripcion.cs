@@ -29,5 +29,7 @@ namespace Negocio.Validaciones
                                                c.Torneo.Id == inscripcion.TorneoId);
         }
 
+      
+
     }
 }
