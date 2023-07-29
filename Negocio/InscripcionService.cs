@@ -93,6 +93,11 @@ namespace Negocio
                     throw new Exception(mensajeError);
                 }
 
+                ValidadorJugRepetidosTorneoMismoDia validarJugadoresRepetidos = new(_db);
+
+                bool estaRepetido = await validarJugadoresRepetidos.BuscarRepetidos(inscripcion);
+
+                if (estaRepetido) throw new Exception("Algun jugador se repite en otro equipo este dia");
 
                 inscripcion.Usuario = await _db.Usuarios.FindAsync(inscripcion.UsuarioId);
                 inscripcion.Torneo = await _db.Torneos.FindAsync(inscripcion.TorneoId);

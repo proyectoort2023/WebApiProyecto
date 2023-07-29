@@ -1,5 +1,6 @@
 ﻿using BDTorneus;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace Negocio.Validaciones
 
             RuleFor(ins => ins).Must(InscripcionNoExiste).WithMessage("Ya inscribiste al equipo al torneo!!");
         }
+
+       
 
         private bool InscripcionNoExiste(Inscripcion inscripcion)
         {

@@ -64,12 +64,12 @@
         await RecibidoresNotificacones();
     }
 
-     private async Task RecibidoresNotificacones()
+    private async Task RecibidoresNotificacones()
     {
         _hubConnection.On<int, bool>("RecibidorAperturaCierreTorneo", async (torneoId, apertura) =>
         {
-                _servicioNotificacionesSignalR.AbrirCerrarInscripciones(torneoId, apertura);
-                StateHasChanged();
+            _servicioNotificacionesSignalR.AbrirCerrarInscripciones(torneoId, apertura);
+            StateHasChanged();
         });
 
     }
@@ -212,6 +212,12 @@
             }
 
             int cantidadJugadores = _servicioEquipo.CantidadJugadoresEquipo(equipoId);
+
+            if (cantidadJugadores > TorneoSeleccionadoDTO.MaxJugadoresPorEquipo)
+            {
+                _snackbar.Add($"Debe tener como máximo {TorneoSeleccionadoDTO.MaxJugadoresPorEquipo} jugadores en el equipo seleccionado", Severity.Warning);
+                return;
+            }
 
             await _servicioInscripcion.AgregarInscripcionNueva(equipoId, precio, tipoPrecio, cantidadJugadores);
 
