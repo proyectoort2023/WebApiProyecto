@@ -29,8 +29,16 @@ namespace BDTorneus
         public DateTime Fin { get; set; }
         public string HistorialSet { get; set; }
         public int Ronda { get; set; }
-        public Guid GuidId { get; set; }
-        public Guid PartidoSiguienteGuidId { get; set; }
+
+
+
+        public Guid GuidPartido { get; set; }
+        public Guid RefLocal { get; set; }
+        public Guid RefVisitante { get; set; }
+
+        public string ResultadoRef { get; set; }
+        public string Grupo { get; set; }
+
 
     }
 }
