@@ -93,6 +93,11 @@ namespace Negocio
                     throw new Exception(mensajeError);
                 }
 
+                ValidadorJugRepetidosTorneoMismoDia validarJugadoresRepetidos = new(_db);
+
+                bool estaRepetido = await validarJugadoresRepetidos.BuscarRepetidos(inscripcion);
+
+                if (estaRepetido) throw new Exception("Algun jugador se repite en otro equipo este dia");
 
                 inscripcion.Usuario = await _db.Usuarios.FindAsync(inscripcion.UsuarioId);
                 inscripcion.Torneo = await _db.Torneos.FindAsync(inscripcion.TorneoId);
@@ -192,6 +197,23 @@ namespace Negocio
             }
 
         }
+
+        public async Task<bool> EstaEnLimiteInscriptos(int idTorneo)
+        {
+            try
+            {
+                Torneo torneo = await _db.Torneos.SingleOrDefaultAsync(w => w.Id == idTorneo);
+
+                int cantidadInscripciones = await _db.Inscripciones.CountAsync(co => co.Torneo.Id == idTorneo);
+
+                return cantidadInscripciones >= torneo.MaxEquiposInscriptos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
 
         public async Task ReembolsoInscripción(string ordenpagoId, decimal montoReembolso, string accessToken)

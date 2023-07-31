@@ -1,5 +1,6 @@
 ﻿using BDTorneus;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,12 +23,16 @@ namespace Negocio.Validaciones
             RuleFor(ins => ins).Must(InscripcionNoExiste).WithMessage("Ya inscribiste al equipo al torneo!!");
         }
 
+       
+
         private bool InscripcionNoExiste(Inscripcion inscripcion)
         {
             return !_db.Inscripciones.Any(c => c.Equipo.Id == inscripcion.EquipoId &&
                                                c.Usuario.Id == inscripcion.UsuarioId &&
                                                c.Torneo.Id == inscripcion.TorneoId);
         }
+
+      
 
     }
 }

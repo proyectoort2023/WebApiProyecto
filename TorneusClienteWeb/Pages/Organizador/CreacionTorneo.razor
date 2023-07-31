@@ -90,12 +90,15 @@
             <MudNumericField @bind-Value="TorneoParaCreacionDTO.PuntajeMax" 
                                 Label="Puntaje máximo" 
                                 Variant="Variant.Outlined"
-                             For="(() => TorneoParaCreacionDTO.PuntajeMax)"
-                                Style="width:95%" />
+                                 For="(() => TorneoParaCreacionDTO.PuntajeMax)"
+                                Style="width:95%"
+                                 TextChanged="ActualizarSetsUnico"/>
+
             <EspacioVertical Altura="@espaciado" />
             <MudNumericField @bind-Value="TorneoParaCreacionDTO.PuntajeMaxUltimoSet"
                              Label="Puntaje máximo último set"
                              Variant="Variant.Outlined"
+                             Disabled="@disableSetMaxUltimo"
                              For="(() => TorneoParaCreacionDTO.PuntajeMaxUltimoSet)" />
         </div>
         <EspacioVertical Altura="@espaciado" />
@@ -152,6 +155,7 @@
     DateTime? fechaTorneo = DateTime.Today.Date;
 
     private string espaciado = "10px";
+    private bool disableSetMaxUltimo = true;
 
 
     protected async override Task OnInitializedAsync()
@@ -213,6 +217,25 @@
     private async Task ActualizarSetsMax(int numeroSets)
     {
         TorneoParaCreacionDTO.SetsMax = numeroSets;
+        if (numeroSets == 1)
+        {
+            TorneoParaCreacionDTO.PuntajeMaxUltimoSet = TorneoParaCreacionDTO.PuntajeMax;
+            disableSetMaxUltimo = true;
+        }
+        else
+        {
+            disableSetMaxUltimo = false;
+        }
+    }
+
+    private async Task ActualizarSetsUnico(string numeroPuntaje)
+    {
+        int valor = int.Parse(numeroPuntaje);
+
+        if (TorneoParaCreacionDTO.SetsMax == 1)
+        {
+            TorneoParaCreacionDTO.PuntajeMaxUltimoSet = TorneoParaCreacionDTO.PuntajeMax;
+        }
     }
 
     private void CambioTextoAreaControl(string texto)

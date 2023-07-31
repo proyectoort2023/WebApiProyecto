@@ -35,6 +35,7 @@ namespace Negocio.Validaciones
             RuleFor(t => t.MaxJugadoresPorEquipo).InclusiveBetween(6, 12).WithMessage("La cantidad de jugadores por equipo deben ser entre 6 y 12. ");
             RuleFor(t => t.CantidadCanchas).GreaterThan(0).WithMessage("cantidad de canchas deben ser de uno en adelante. ");
             RuleFor(t => t.Otros).MaximumLength(300).WithMessage("otros comentarios debe tenermáximo 300 caracteres. ");
+            RuleFor(ins => ins).Must(ValidarSets).WithMessage("El puntaje de último set debe ser igual o mejor que el puntaje de set");
         }
        
         private bool ValidarFechaTorneo(DateTime date)
@@ -52,5 +53,10 @@ namespace Negocio.Validaciones
             bool valorEcontrado = Util.ConfigEquiposDiccionario.Any(value => value.Key == tipo);
             return valorEcontrado;
         }
+        private bool ValidarSets(Torneo torneo)
+        {
+            return torneo.PuntajeMaxUltimoSet <= torneo.PuntajeMax;
+        }
+
     }
 }

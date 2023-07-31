@@ -254,9 +254,15 @@ namespace Negocio
             {
                 throw new Exception(ex.Message);
             }
-           
-
         }
+
+
+      
+
+
+
+
+
 
 
     }
