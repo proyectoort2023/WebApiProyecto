@@ -16,11 +16,14 @@ namespace DTOs_Compartidos.Models
         public int SetsGanados { get; set; }
         public int TotalPuntos { get; set; }
         public int MejorTiempo { get; set; } //en minutos
+        public string Grupo { get; set; }
 
 
-        public TablaPosicion(EquipoDTO equipo)
+        public TablaPosicion() { }
+            public TablaPosicion(EquipoDTO equipo, string grupo)
         {
             Equipo = equipo;
+            Grupo = grupo;
             PartidosJugados = 0;
             PartidosGanados = 0;
             SetsGanados = 0;

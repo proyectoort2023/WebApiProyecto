@@ -9,7 +9,7 @@ namespace DTOs_Compartidos.Models
 {
     public class GrupoEquipos
     {
-        public string LetraEquipo { get; set; }
+        public string Grupo { get; set; }
         public List<EquipoDTO> Equipos { get; set; }
     }
 }
