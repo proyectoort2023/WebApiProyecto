@@ -287,6 +287,33 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+        /// <summary>
+        /// Devuelve las inscripciones de un determinado torneo
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve las inscripciones de un determinado torneo
+        /// </remarks>
+        /// <response code="200">OK.Listado de inscripciones obtenidos</response>
+        /// <response code="400">No se obtener el listado</response>
+        [ProducesResponseType(typeof(List<InscripcionDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
+        [HttpGet("Inscripciones/{torneoId}")]
+        public async Task<IActionResult> GetInscripcionesTorneo(int torneoId)
+        {
+            try
+            {
+                List<InscripcionDTO> inscripcionesTorneo = _mapper.Map<List<Inscripcion>, List<InscripcionDTO>>(await _torneoService.ObtenerInscripcionesTorneo(torneoId));
+
+                if (inscripcionesTorneo == null) return BadRequest("No existe inscripciones. Cod 99");
+                return Ok(inscripcionesTorneo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
 

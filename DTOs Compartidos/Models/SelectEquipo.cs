@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace DTOs_Compartidos.Models
 {
-    public class GrupoEquipos
+    public class SelectEquipo
     {
         public string Grupo { get; set; }
-        public List<EquipoDTO> Equipos { get; set; } = new();
+        public EquipoDTO Equipo { get; set; }
     }
 }

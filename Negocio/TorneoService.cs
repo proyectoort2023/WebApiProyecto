@@ -256,8 +256,16 @@ namespace Negocio
             }
         }
 
+        public async Task<List<Inscripcion>> ObtenerInscripcionesTorneo(int torneoId)
+        {
+            var listainscripciones = await _db.Inscripciones.Include(inc => inc.Equipo)
+                                                            .Include(inc => inc.Torneo)
+                                                            .AsNoTracking()
+                                                            .Where(w => w.Torneo.Id == torneoId)
+                                                            .ToListAsync();
+            return listainscripciones;
+        }
 
-      
 
 
 

@@ -1,0 +1,122 @@
+﻿@page "/ORGANIZADOR/ModalidadJuego"
+@inject TorneoServicio _servicioTorneo
+@inject ISnackbar _snackbar
+
+        <MudNumericField @bind-Value="cantidadGrupos"
+                 Label="Elige la cantidad de grupos"
+                 Variant="Variant.Outlined"
+                 TextChanged="OnCambioCantidadGrupos" 
+                 Min="1" Max="20"/>
+
+        <MudButton >Seleccionar Equipos</MudButton>
+
+        <EspacioVertical Altura="20px" />
+
+
+
+ @foreach(var grupo in letrasGrupo)
+    {
+    <div class="card-general">
+
+        <h3>Grupo @grupo</h3>
+        <MudDivider />
+
+        @foreach (var equipo in FiltrarEquiposPorGrupo(grupo))
+        {
+            <div class="row  d-flex justify-content-around align-items-center">
+                <div class="col-8">
+                    <span>@equipo.Equipo.Nombre</span>
+                </div>
+
+                <div class="col-4">
+                    <MudSelect @bind-Value="@equipo.Grupo"
+                               Label="Elige grupo"
+                               Variant="Variant.Outlined">
+                        @foreach (string letraGrupo in letrasGrupo)
+                        {
+                            <MudSelectItem Value="@letraGrupo">@letraGrupo</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                </div>
+            </div>
+        }
+     </div>
+    }
+
+
+
+@code {
+    List<string> letrasGrupo = new();
+
+    List<EquipoDTO> equiposInscriptos = new();
+    List<SelectEquipo> selectEquipos = new();
+
+    int cantidadGrupos = 1;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await CargaInicial();
+    }
+
+    private async Task CargaInicial()
+    {
+        try
+        {
+            //traigo todas las inscripciones del torneo especificado
+            equiposInscriptos = await _servicioTorneo.ObtenerEquiposInscripciones();
+            if (equiposInscriptos == null) 
+            {
+                _snackbar.Add("No hay equipos inscriptos", Severity.Warning);
+                return;
+            }
+            CargaInicialEquiposGrupo();
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+    }
+
+    private List<SelectEquipo> FiltrarEquiposPorGrupo(string grupo)
+    {
+        return selectEquipos.Where(w => w.Grupo == grupo).ToList();
+    }
+
+    private void CargaInicialEquiposGrupo()
+    {
+        selectEquipos = new();
+
+        int cantidadEquipos = equiposInscriptos.Count;
+
+        for (int i = 0; i < cantidadEquipos; i++)
+        {
+            SelectEquipo selectEquipo = new()
+            {
+               Equipo = equiposInscriptos[i],
+               Grupo ="A"
+            };
+            selectEquipos.Add(selectEquipo);
+        }
+
+
+    }
+
+    private void OnCambioCantidadGrupos(string cantidad)
+    {
+        cantidadGrupos = int.Parse(cantidad);
+
+        letrasGrupo = new();
+
+        for(int i = 0; i < cantidadGrupos; i++)
+        {
+            letrasGrupo.Add(Util.gruposLetra[i]);
+        }
+    }
+
+
+
+
+
+}

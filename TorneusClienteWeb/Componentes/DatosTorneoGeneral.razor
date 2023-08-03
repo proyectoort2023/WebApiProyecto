@@ -175,7 +175,19 @@
 
     private void VerFixture()
     {
-
+            try
+            {
+                if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+                {
+                _nav.NavigateTo("/ORGANIZADOR/EleccionModalidadJuego");
+                }
+               
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
     }
 
 

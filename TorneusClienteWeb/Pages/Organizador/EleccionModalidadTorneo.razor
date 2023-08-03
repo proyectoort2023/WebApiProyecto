@@ -1,0 +1,15 @@
+﻿@page "/ORGANIZADOR/EleccionModalidadJuego"
+@inject TorneoServicio _servicioTorneo
+@inject ISnackbar _snackbar
+@inject NavigationManager _nav
+
+
+<buton @onclick="NavegarGrupoEliminatoria">Elegir Grupo + eliminatoria</buton>
+
+@code {
+
+    private void NavegarGrupoEliminatoria()
+    {
+        _nav.NavigateTo("/ORGANIZADOR/ModalidadJuego");
+    }
+}

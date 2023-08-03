@@ -208,5 +208,24 @@ namespace TorneusClienteWeb.Servicios
         #endregion
 
 
+        public async Task<List<EquipoDTO>> ObtenerEquiposInscripciones()
+        {
+            try
+            {
+                int torneoId = TorneoSeleccionado.Id;
+
+                List<InscripcionDTO> inscripciones = await _torneoServicioDatos.ObtenerInscripcionesTorneo(torneoId);
+
+                List<EquipoDTO> equipos = inscripciones.Select(ins => ins.Equipo).ToList();
+                return equipos;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+           
+        }
+
     }
 }

@@ -277,6 +277,37 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 
         }
 
+        public async Task<List<InscripcionDTO>> ObtenerInscripcionesTorneo(int torneoId)
+        {
+            try
+            {
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.GetAsync($"api/Torneo/Inscripciones/{torneoId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var torneosInscripciones = JsonConvert.DeserializeObject<List<InscripcionDTO>>(content);
+                    return torneosInscripciones;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+
+
 
 
 

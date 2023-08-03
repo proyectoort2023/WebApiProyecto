@@ -39,5 +39,6 @@ namespace Negocio.DTOs
         public Guid PartidoSigPerdedor { get; set; }
         public string SeleccionEquipoDelGrupo { get; set; }
         public string Grupo { get; set; }
+        public bool DisparadorSiguienteFase { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace FixtureNegocio
             }
 
             List<PartidoDTO> partidosGrupoReordenadoPosicion = ReordenamientoPosicionesPartidos(fixtureAux);
+            partidosGrupoReordenadoPosicion.Last().DisparadorSiguienteFase = true; //cuando llega al ultimo partido del grupo dispara una alerta de siguiente fase en el torneo
 
             //falta etapa eleccion de mejores ganadores y mejores jugadores de cada grupo y de eliminacion directa
 

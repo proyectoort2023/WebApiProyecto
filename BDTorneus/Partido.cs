@@ -41,6 +41,7 @@ namespace BDTorneus
 
         public string SeleccionEquipoDelGrupo { get; set; }
         public string Grupo { get; set; }
+        public bool DisparadorSiguienteFase { get; set; }
 
 
     }

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs Compartidos", "DTOs Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TorneusClienteWeb", "TorneusClienteWeb\TorneusClienteWeb.csproj", "{3671F80D-F609-4BCF-A6DD-18B5F23E5414}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixtureNegocio", "FixtureNegocio\FixtureNegocio.csproj", "{116BCCCF-03D3-4737-9B59-CF9B29B7FF31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FixtureNegocio", "FixtureNegocio\FixtureNegocio.csproj", "{116BCCCF-03D3-4737-9B59-CF9B29B7FF31}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
