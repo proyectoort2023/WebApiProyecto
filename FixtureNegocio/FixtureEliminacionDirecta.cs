@@ -1,10 +1,12 @@
 ﻿using BDTorneus;
+using Microsoft.IdentityModel.Tokens;
 using Negocio.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilidades;
 
 namespace FixtureNegocio
 {
@@ -37,6 +39,7 @@ namespace FixtureNegocio
                                                         EquipoLocal = equipo,
                                                         Ronda = 0,
                                                         GuidPartido = new Guid(),
+                                                        EstadoPartido = Util.EstadoPartido.PENDIENTE.ToString()
                                                     }).ToList();
 
             fixture = CrearRecursivo(fixture, partidosPorRonda, ajusteEqNoJueganPrimeraRonda, cantRondas);
@@ -72,6 +75,7 @@ namespace FixtureNegocio
                     EquipoLocal = null,
                     Ronda = 0,
                     GuidPartido = new Guid(),
+                    EstadoPartido= Util.EstadoPartido.PENDIENTE.ToString()
                 });
             }
 
@@ -119,7 +123,8 @@ namespace FixtureNegocio
                             EquipoVisitante = partidosPorRonda[i].EquipoLocal,
                             GuidPartido = new Guid(),
                             Ronda = rondaActual,
-                            RondaDescanso = false
+                            RondaDescanso = false,
+                            EstadoPartido = Util.EstadoPartido.PENDIENTE.ToString()
                         };
                         auxFixturePorRonda.Add(partido);
                     }
@@ -145,7 +150,8 @@ namespace FixtureNegocio
                     EquipoVisitante = partidosPorRonda[i+1].RondaDescanso ? partidosPorRonda[i+1].EquipoLocal : null,
                     GuidPartido = new Guid(),
                     Ronda = rondaActual,
-                    RondaDescanso = false
+                    RondaDescanso = false,
+                    EstadoPartido = Util.EstadoPartido.PENDIENTE.ToString()
                 };
 
                 partidosPorRonda[i].PartidoSigGanador = partido.GuidPartido;

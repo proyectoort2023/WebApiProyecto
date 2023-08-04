@@ -31,7 +31,7 @@ namespace Negocio.DTOs
         public DateTime Fin { get; set; }
         public string HistorialSet { get; set; }
         public int Ronda { get; set; }
-        public bool Finalizado { get; set; }
+        public string EstadoPartido { get; set; }
 
         public bool RondaDescanso { get; set; }
         public Guid GuidPartido { get; set; }

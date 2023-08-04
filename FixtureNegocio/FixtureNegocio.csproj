@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DTOs Compartidos\DTOs Compartidos.csproj" />
+    <ProjectReference Include="..\Utilidades\Utilidades.csproj" />
   </ItemGroup>
 
 </Project>

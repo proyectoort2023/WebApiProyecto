@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilidades;
+using static Utilidades.Util;
 
 namespace FixtureNegocio
 {
@@ -28,7 +30,8 @@ namespace FixtureNegocio
                     EquipoLocal = equipos[0],
                     EquipoVisitante = equipos[1],
                     GuidPartido = new Guid(),
-                    Grupo = grupo
+                    Grupo = grupo,
+                    EstadoPartido = Util.EstadoPartido.PENDIENTE.ToString()
                 };
                 partidos.Add(partido);
                 return partidos;
@@ -43,7 +46,8 @@ namespace FixtureNegocio
                     EquipoLocal = equipoAactual,
                     EquipoVisitante = equipos[i],
                     GuidPartido = new Guid(),
-                    Grupo = grupo
+                    Grupo = grupo,
+                    EstadoPartido = Util.EstadoPartido.PENDIENTE.ToString()
                 };
                 partidos.Add(partido);
             }

@@ -108,7 +108,13 @@
         };
 
 
-
+        public enum EstadoPartido
+        {
+            PENDIENTE,
+            POR_COMENZAR,
+            EN_PROCESO,
+            FINALIZADO
+        }
 
 
 

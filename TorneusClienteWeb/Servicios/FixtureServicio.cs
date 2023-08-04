@@ -1,8 +1,10 @@
 ﻿using BDTorneus;
 using DTOs_Compartidos.Models;
 using FixtureNegocio;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Negocio.DTOs;
+using Utilidades;
 
 namespace TorneusClienteWeb.Servicios
 {
@@ -11,6 +13,12 @@ namespace TorneusClienteWeb.Servicios
 
         List<PartidoDTO> Partidos;
 
+        [Inject] private TorneoServicio _torneoServicio { get; set; }
+
+        public FixtureServicio(TorneoServicio torneoServicio)
+        {
+            _torneoServicio = torneoServicio;
+        }
         public List<PartidoDTO> ObtenerPartidos()
         {
             return Partidos;
@@ -41,6 +49,14 @@ namespace TorneusClienteWeb.Servicios
                 List<PartidoDTO> partidosUltimaFase = fixtureElimDirecta.CrearComoSegundaFase(cantidadEquiposUltimaFase);
 
                 Partidos.AddRange(partidosUltimaFase);
+
+                int cantidadCanchas = _torneoServicio.ObtenerTorneoActual().CantidadCanchas;
+
+                for (int i = 0; i < cantidadCanchas; i++)
+                {
+                    Partidos[i].EstadoPartido = Util.EstadoPartido.POR_COMENZAR.ToString(); //esto quiere decir que el siguiente partido si no tiene siguienteGuid, se tiene que iniciar en el siguiente partido pendiente
+                }
+              
 
                 return true;
             }

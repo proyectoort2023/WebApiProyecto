@@ -34,7 +34,7 @@ namespace BDTorneus
 
 
         public bool RondaDescanso { get; set; }
-        public bool Finalizado { get; set; }
+        public string EstadoPartido { get; set; }
         public Guid GuidPartido { get; set; }
         public Guid PartidoSigGanador { get; set; }
         public Guid PartidoSigPerdedor { get; set; }
