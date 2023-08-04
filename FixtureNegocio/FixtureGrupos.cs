@@ -18,14 +18,14 @@ namespace FixtureNegocio
             List<PartidoDTO> fixtureAux = new List<PartidoDTO>();
             FixtureTodosContraTodos todosContraTodosGrupo = new();
 
-            foreach (var grupo in grupoEquipos)
+            foreach (var grupoEquipo in grupoEquipos)
             {
-                List<PartidoDTO> partidosGrupo = todosContraTodosGrupo.Crear(grupo.Equipos);
+                List<PartidoDTO> partidosGrupo = todosContraTodosGrupo.Crear(grupoEquipo.Equipos, grupoEquipo.Grupo);
                 fixtureAux.AddRange(partidosGrupo);
             }
 
-            List<PartidoDTO> partidosGrupoReordenadoPosicion = ReordenamientoPosicionesPartidos(fixtureAux);
-            partidosGrupoReordenadoPosicion.Last().DisparadorSiguienteFase = true; //cuando llega al ultimo partido del grupo dispara una alerta de siguiente fase en el torneo
+            fixture = ReordenamientoPosicionesPartidos(fixtureAux);
+            fixture.Last().DisparadorSiguienteFase = true; //cuando llega al ultimo partido del grupo dispara una alerta de siguiente fase en el torneo
 
             //falta etapa eleccion de mejores ganadores y mejores jugadores de cada grupo y de eliminacion directa
 

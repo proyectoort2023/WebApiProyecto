@@ -10,16 +10,16 @@ namespace FixtureNegocio
     public class FixtureTodosContraTodos
     {
 
-       public List<PartidoDTO> Crear(List<EquipoDTO> equipos)
+       public List<PartidoDTO> Crear(List<EquipoDTO> equipos, string grupo)
         {
             List<PartidoDTO> partidos = new List<PartidoDTO>();
 
-            partidos = CrearRecursivo(partidos, equipos);
+            partidos = CrearRecursivo(partidos, equipos, grupo);
 
             return partidos;
         }
 
-        private List<PartidoDTO> CrearRecursivo(List<PartidoDTO> partidos, List<EquipoDTO> equipos)
+        private List<PartidoDTO> CrearRecursivo(List<PartidoDTO> partidos, List<EquipoDTO> equipos, string grupo)
         {
             if (equipos.Count == 2)
             {
@@ -27,7 +27,8 @@ namespace FixtureNegocio
                 {
                     EquipoLocal = equipos[0],
                     EquipoVisitante = equipos[1],
-                    GuidPartido = new Guid()
+                    GuidPartido = new Guid(),
+                    Grupo = grupo
                 };
                 partidos.Add(partido);
                 return partidos;
@@ -41,14 +42,15 @@ namespace FixtureNegocio
                 {
                     EquipoLocal = equipoAactual,
                     EquipoVisitante = equipos[i],
-                    GuidPartido = new Guid()
+                    GuidPartido = new Guid(),
+                    Grupo = grupo
                 };
                 partidos.Add(partido);
             }
 
             equipos.RemoveAt(0);
 
-            return CrearRecursivo(partidos, equipos);
+            return CrearRecursivo(partidos, equipos, grupo);
         }
 
 

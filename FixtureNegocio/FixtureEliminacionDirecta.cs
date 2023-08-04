@@ -12,7 +12,7 @@ namespace FixtureNegocio
     {
 
 
-        private List<PartidoDTO> Crear(List<EquipoDTO> equipos)
+        public List<PartidoDTO> Crear(List<EquipoDTO> equipos)
         {
             List<PartidoDTO> fixture = new();
             List<PartidoDTO> partidosPorRonda = new();
@@ -45,10 +45,46 @@ namespace FixtureNegocio
         }
 
 
+        public List<PartidoDTO> CrearComoSegundaFase(int cantidadEquipos)
+        {
+            List<PartidoDTO> fixture = new();
+            List<PartidoDTO> partidosPorRonda = new();
+
+            int cantEquipos = cantidadEquipos;
+            int cantPartidos = cantEquipos - 1;
+            int cantRondas = CantidadRondasRecursivo(cantEquipos);
+            int ajusteEqNoJueganPrimeraRonda = (int)Math.Pow(2, cantRondas) - cantEquipos;
+
+            //equipos.ForEach(equipo =>
+            //{
+            //    PartidoDTO partido = new()
+            //    {
+
+            //        RondaDescanso = true
+            //    };
+            //    partidosPorRonda.Add(partido);
+            //});
+
+            for(int i = 0; i < cantEquipos; i++)
+            {
+                partidosPorRonda.Add(new PartidoDTO()
+                {
+                    EquipoLocal = null,
+                    Ronda = 0,
+                    GuidPartido = new Guid(),
+                });
+            }
+
+            fixture = CrearRecursivo(fixture, partidosPorRonda, ajusteEqNoJueganPrimeraRonda, cantRondas);
+
+            return fixture;
+        }
+
+
 
         private int CantidadRondasRecursivo(int cantEq, int total = 0, int jornadas = 0)
         {
-            if (total > cantEq) return jornadas;
+            if (total >= cantEq) return jornadas;
 
             jornadas++;
             total = (int)Math.Pow(2, jornadas);

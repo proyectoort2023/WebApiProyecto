@@ -93,6 +93,7 @@ builder.Services.AddScoped<InscripcionServicioDatos>();
 builder.Services.AddScoped<MedioPagoServicio>();
 builder.Services.AddScoped<MedioPagoServicioDatos>();
 
+builder.Services.AddScoped<FixtureServicio>();
 
 
 await builder.Build().RunAsync();

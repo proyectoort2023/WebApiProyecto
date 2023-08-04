@@ -1,6 +1,8 @@
 ﻿@page "/ORGANIZADOR/ModalidadJuego"
 @inject TorneoServicio _servicioTorneo
 @inject ISnackbar _snackbar
+@inject FixtureServicio _servicioFixture
+
 
         <MudNumericField @bind-Value="cantidadGrupos"
                  Label="Elige la cantidad de grupos"
@@ -44,6 +46,8 @@
      </div>
     }
 
+
+    <MudButton @onclick="CrearFixture">Crear fixture</MudButton>
 
 
 @code {
@@ -116,7 +120,20 @@
     }
 
 
+    private async Task CrearFixture()
+    {
+        try
+        {
+            bool resultado = await _servicioFixture.CrearFixtureGrupoEliminacionDirecta(selectEquipos, cantidadGrupos);
+            if (resultado) _snackbar.Add("Felicidades, se ha creado el fixture", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
 
+    
 
 
 }
