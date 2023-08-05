@@ -13,7 +13,9 @@ namespace Negocio.DTOs
     {
         public int Id { get; set; }
         public int EquipoLocalId { get; set; }
+        public EquipoDTO EquipoLocal { get; set; }
         public int EquipoVisitanteId { get; set; }
+        public EquipoDTO EquipoVisitante { get; set; }
         public DateTime Fecha { get; set; }
         public int MarcadorLocal { get; set; }
         public int MarcadorVisitante { get; set; }
@@ -29,7 +31,14 @@ namespace Negocio.DTOs
         public DateTime Fin { get; set; }
         public string HistorialSet { get; set; }
         public int Ronda { get; set; }
-        public Guid GuidId { get; set; }
-        public Guid PartidoSiguienteGuidId { get; set; }
+        public string EstadoPartido { get; set; }
+
+        public bool RondaDescanso { get; set; }
+        public Guid GuidPartido { get; set; }
+        public Guid PartidoSigGanador { get; set; }
+        public Guid PartidoSigPerdedor { get; set; }
+        public string SeleccionEquipoDelGrupo { get; set; }
+        public string Grupo { get; set; }
+        public bool DisparadorSiguienteFase { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace BDTorneus
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
         public virtual List<Inscripcion> Inscripciones { get; set; } = new List<Inscripcion>();
-        public virtual List<Partido> Fixture { get; set; }
+        public virtual List<Partido> Fixture { get; set; } = new List<Partido>();
 
     }
 }

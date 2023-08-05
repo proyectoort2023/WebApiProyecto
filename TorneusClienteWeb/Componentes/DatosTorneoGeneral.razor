@@ -175,7 +175,23 @@
 
     private void VerFixture()
     {
+        try
+        {
+            if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+            {
+                if (_servicioTorneo.ObtenerTorneoActual().HabilitacionInscripcion == true)
+                {
+                    _snackbar.Add("Debe cerrar las inscripciones antes de realizar o ver el fixture", Severity.Warning);
+                    return;
+                }
+                _nav.NavigateTo("/ORGANIZADOR/EleccionModalidadJuego");
+            }
 
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
     }
 
 

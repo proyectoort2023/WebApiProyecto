@@ -1,4 +1,5 @@
 ﻿using BDTorneus;
+using BDTorneus.Migrations;
 using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -256,9 +257,16 @@ namespace Negocio
             }
         }
 
+        public async Task<List<Inscripcion>> ObtenerInscripcionesTorneo(int torneoId)
+        {
+            var listainscripciones = await _db.Inscripciones.Include(inc => inc.Equipo)
+                                                            .Include(inc => inc.Torneo)
+                                                            .Where(w => w.Torneo.Id == torneoId)
+                                                            .ToListAsync();
+            return listainscripciones;
+        }
 
       
-
 
 
 

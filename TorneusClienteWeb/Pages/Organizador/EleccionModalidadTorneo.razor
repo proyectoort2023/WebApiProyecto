@@ -1,0 +1,47 @@
+﻿@page "/ORGANIZADOR/EleccionModalidadJuego"
+@inject TorneoServicio _servicioTorneo
+@inject ISnackbar _snackbar
+@inject NavigationManager _nav
+
+
+<section class="d-flex flex-column justify-content-center align-items-center">
+
+    <h4 style="margin-bottom:15px">Elije la modalidad del torneo</h4>
+
+    <div class="contenedor-imagen-lista">
+        <button @onclick="NavegarGrupoEliminatoria">
+            <img src="/imagenes/grupos.png" alt="" class="imagen-100-lista" />
+        </button>
+    </div>
+
+    <EspacioVertical Altura="@altura" />
+
+    <div class="contenedor-imagen-lista">
+        <button>
+            <img src="/imagenes/todoscontratodos.png" alt="" class="imagen-100-lista" />
+        </button>
+    </div>
+
+    <EspacioVertical Altura="@altura" />
+
+    <div class="contenedor-imagen-lista">
+        <button>
+            <img src="/imagenes/eliminaciondirecta3.png" alt="" class="imagen-100-lista" />
+        </button>
+    </div>
+
+
+</section>
+
+
+
+
+@code {
+
+    string altura = "40px";
+
+    private void NavegarGrupoEliminatoria()
+    {
+        _nav.NavigateTo("/ORGANIZADOR/ModalidadJuego");
+    }
+}

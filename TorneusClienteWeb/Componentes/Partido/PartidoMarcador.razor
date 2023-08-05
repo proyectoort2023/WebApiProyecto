@@ -1,0 +1,295 @@
+﻿
+@*
+
+
+
+@if (Partido != null)
+{
+    <div class="gridContainer">
+        <div class="vis caja">
+            <p>@(Partido.Local != null ? Partido.Local.NombreEquipo : MensajeEsperandoContrincante())</p>
+            <img src="@(Partido.Local != null ? ActualizarLinkImagen(Partido.Local.Caratula) : EscudoVacio())" alt="">
+        </div>
+
+        <div class="puntV caja tamanioPuntaje">
+            <h3>@Partido.PuntajeLocal</h3>
+        </div>
+
+        <div class="medio caja">
+            <p class="gridContainerFecha">10/01/2023</p>
+            <p title="@Partido.HistorialPartido">VS</p>
+            <p>00:00</p>
+            <p>@Partido.NombreCancha</p>
+        </div>
+
+        <div class="puntL caja tamanioPuntaje">
+            <h3>@Partido.PuntajeVisitante</h3>
+        </div>
+
+        <div class="loc caja">
+            <p>@(Partido.Visitante != null ? Partido.Visitante.NombreEquipo : MensajeEsperandoContrincante())</p>
+            <img src="@(Partido.Visitante != null ? ActualizarLinkImagen(Partido.Visitante.Caratula) : EscudoVacio())" alt="">
+        </div>
+
+
+        @if (Partido.PartidaEnProceso)
+        {
+           <div class="sep caja">
+            <hr>
+        </div>
+
+        <div class="marcV caja">
+            <a href="#" @onclick="() => AumentarMarcador(Diccionarios.LOCAL)"
+                        @onclick:preventDefault>
+             <h2>@Partido.MarcadorLocal.ToString("00")</h2>
+            </a>
+            <MarcadorSetGanados CantidadSetGanados="Partido.SetsGanadosLocal" />
+        </div>
+
+        <div class="medioSet caja">
+            <h4>SET: @Partido.SetActual</h4>
+            <img src="/img/componentes/jugando.png" alt="jugando"/>
+        </div>
+
+        <div class="marcL caja">
+                <a href="#" @onclick="() => AumentarMarcador(Diccionarios.VISITANTE)"
+                            @onclick:preventDefault>
+                    <h2 >@Partido.MarcadorVisitante.ToString("00")</h2>
+                </a>
+                <MarcadorSetGanados CantidadSetGanados="Partido.SetsGanadosVisitante" />
+        </div>
+
+            <div class="pie">
+                <p>@Partido.HistorialPartido</p>
+            </div>
+            <EspacioHorizontal Altura="20px" />
+        }
+        @if (!EsconderIconoPlay && Partido.Local != null && Partido.Visitante != null)
+        {
+            <div class="playPartido">
+                <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
+                    <img src="/img/componentes/@ImagenPlay" alt="">
+                </a>
+            </div>
+        }
+       
+    </div>
+
+   <EspacioVertical Altura="15px" />
+
+}
+
+@code {
+    [Parameter]
+    public PartidoDTO Partido { get; set; }
+
+    [Parameter]
+    public int SetsMax { get; set; }
+
+    [Parameter]
+    public int PuntajeMax { get; set; }
+
+    [Parameter]
+    public int PuntajeMaxDefinitorio { get; set; }
+
+    [Parameter]
+    public int TorneoId { get; set; }
+
+    [Parameter]
+    public EventCallback<ViewModelEquipoGanador> SiguientePartidoParaEquipoGanador { get; set; }
+
+    private int setDiferencia = 0;
+    private int puntajeMaximoSegunSet = 0;
+
+    private bool EsconderIconoPlay = false;
+    private bool ModalidadTantosPorDiferencia = false;
+
+    private string ImagenPlay = "play.png";
+
+    private DateTime HorarioInicioPartido;
+
+    protected async override Task OnInitializedAsync()
+    {
+        decimal mitadSetTotales = Math.Round(Convert.ToDecimal(SetsMax) / 2, 2);
+        setDiferencia = (int)Math.Ceiling(mitadSetTotales);
+
+        puntajeMaximoSegunSet = PuntajeMax;
+        if (Partido.PuntajeLocal > 0 || Partido.PuntajeVisitante > 0) EsconderIconoPlay = true;
+        //await hubConnection.StartAsync();
+    }
+
+    private string ActualizarLinkImagen(string imagenRef)
+    {
+        return $"https://torneostorage.blob.core.windows.net/imagenesequipos/{imagenRef}";
+
+    }
+
+    private string EscudoVacio() => "/img/componentes/EscudoVacio.png";
+
+    private string MensajeEsperandoContrincante() => "Esperando...";
+
+    private async Task ComenzarPartido()
+    {
+        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
+        {
+            Partido.esta = false;
+            EsconderIconoPlay = true;
+            ImagenPlay = "pelota.png";
+            await EnviarPartidoActualizadoATodosHub();
+        }
+        else
+        {
+            toast.ShowWarning("Todavia no hay dos equipos para jugar");
+        }
+    }
+
+    private async Task AumentarMarcador(string tipoEquipo)
+    {
+        if (tipoEquipo == "LOCAL")
+        {
+            Partido.MarcadorLocal += 1;
+        }
+        else
+        {
+            Partido.MarcadorVisitante += 1;
+        }
+        await EnviarPartidoActualizadoATodosHub();
+        await VerificarFinalPorSet();
+    }
+
+    private async void ResetearMarcador()
+    {
+        Partido.HistorialPartido += $"[{Partido.MarcadorLocal}-{Partido.MarcadorVisitante}]  ";
+        Partido.MarcadorLocal = 0;
+        Partido.MarcadorVisitante = 0;
+        Partido.SetActual += 1;
+        puntajeMaximoSegunSet = Partido.SetActual == SetsMax ? PuntajeMaxDefinitorio : PuntajeMax;
+        ModalidadTantosPorDiferencia = false;
+        await EnviarPartidoActualizadoATodosHub();
+    }
+
+    private async Task VerificarFinalPorSet()
+    {
+
+        if (Partido.MarcadorLocal == puntajeMaximoSegunSet -1 && Partido.MarcadorVisitante == puntajeMaximoSegunSet - 1)
+        {
+            ModalidadTantosPorDiferencia = true;
+        }
+
+        if (ModalidadTantosPorDiferencia)
+        {
+            int diferenciaTantosLocal = Partido.MarcadorLocal - Partido.MarcadorVisitante;
+            int diferenciaTantosVisitante = Partido.MarcadorVisitante - Partido.MarcadorLocal;
+
+            Partido.SetsGanadosLocal = diferenciaTantosLocal == 2 ? Partido.SetsGanadosLocal + 1 : Partido.SetsGanadosLocal;
+            Partido.SetsGanadosVisitante = diferenciaTantosVisitante == 2 ? Partido.SetsGanadosVisitante + 1 : Partido.SetsGanadosVisitante;
+
+            if (diferenciaTantosLocal == 2 || diferenciaTantosVisitante == 2)
+            {
+                ResetearMarcador();
+                await EnviarPartidoActualizadoATodosHub();
+                await VerificarFinalPartido();
+            }
+            await EnviarPartidoActualizadoATodosHub();
+            return;
+        }
+
+        if (Partido.MarcadorLocal >= puntajeMaximoSegunSet)
+        {
+            Partido.SetsGanadosLocal += 1;
+            ResetearMarcador();
+        }
+        if (Partido.MarcadorVisitante >= puntajeMaximoSegunSet)
+        {
+            Partido.SetsGanadosVisitante += 1;
+            ResetearMarcador();
+        }
+        await VerificarFinalPartido();
+    }
+
+    private async Task VerificarFinalPartido()
+    {
+
+        if (Partido.SetsGanadosLocal == setDiferencia)
+        {
+            Partido.PuntajeLocal = 1;
+            TerminarPartido();
+            await SiguientePartidoDeEquipo(Partido.Local);
+
+            return;
+        }
+
+        if (Partido.SetsGanadosVisitante == setDiferencia)
+        {
+            Partido.PuntajeVisitante = 1;
+            TerminarPartido();
+            await EnviarPartidoActualizadoATodosHub();
+            await SiguientePartidoDeEquipo(Partido.Visitante);
+            return;
+        }
+
+        if (Partido.SetActual > SetsMax)
+        {
+            if (Partido.SetsGanadosLocal > Partido.SetsGanadosVisitante)
+            {
+                Partido.PuntajeLocal = 1;
+                await SiguientePartidoDeEquipo(Partido.Local);
+            }
+            else
+            {
+                Partido.PuntajeVisitante = 1;
+                await SiguientePartidoDeEquipo(Partido.Visitante);
+            }
+            await EnviarPartidoActualizadoATodosHub();
+            TerminarPartido();
+        }
+    }
+
+    private async void TerminarPartido()
+    {
+        Partido.PartidaEnProceso = false;
+        EsconderIconoPlay = true;
+        await EnviarPartidoActualizadoATodosHub();
+    }
+
+    private async Task DecrementarMarcador(string tipoEquipo)
+    {
+        if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
+        {
+            Partido.MarcadorLocal -= 1;
+        }
+        else if (Partido.MarcadorVisitante > 0)
+        {
+            Partido.MarcadorVisitante -= 1;
+        }
+        await EnviarPartidoActualizadoATodosHub();
+    }
+
+    async Task SiguientePartidoDeEquipo(EquipoVM equipoGanador)
+    {
+        try
+        {
+            ViewModelEquipoGanador viewModelEquipoGanador = new()
+                {
+                    GuidPartidoSiguiente = Partido.PartidoSiguienteGuid,
+                    EquipoGanador = equipoGanador
+                };
+            await dataServiceTorneo.ActualizarPartido(Partido);
+            toast.ShowSuccess("Partido fianzalizado guardado");
+            await SiguientePartidoParaEquipoGanador.InvokeAsync(viewModelEquipoGanador);
+        }
+        catch (Exception ex)
+        {
+            toast.ShowWarning(ex.Message);
+        }
+    }
+
+    private async Task EnviarPartidoActualizadoATodosHub()
+    {
+        await dataServiceHub.EnviarPartidoATodos(TorneoId, Partido);
+    }
+
+   
+
+}
+*@
