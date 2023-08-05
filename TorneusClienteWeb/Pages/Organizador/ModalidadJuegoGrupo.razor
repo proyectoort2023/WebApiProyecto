@@ -16,12 +16,11 @@
 
 
 
- @foreach(var grupo in letrasGrupo)
+ @foreach(var grupo in letrasGrupo) 
     {
     <div class="card-general">
 
-        <h3>Grupo @grupo</h3>
-        <MudDivider />
+        <h3 class="h2-panelpago">Grupo @grupo</h3>
 
         @foreach (var equipo in FiltrarEquiposPorGrupo(grupo))
         {
@@ -47,7 +46,9 @@
     }
 
 
-    <MudButton @onclick="CrearFixture">Crear fixture</MudButton>
+    <MudButton @onclick="CrearFixture">Simular Fixture</MudButton>
+
+    <MudButton @onclick="GuardarFixture">Crear Fixture</MudButton>
 
 
 @code {
@@ -125,7 +126,22 @@
         try
         {
             bool resultado = await _servicioFixture.CrearFixtureGrupoEliminacionDirecta(selectEquipos, cantidadGrupos);
-            if (resultado) _snackbar.Add("Felicidades, se ha creado el fixture", Severity.Success);
+            if (!resultado) throw new Exception("No se ha podido simular el fixture");
+            _snackbar.Add($"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}", Severity.Success);
+
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
+
+    private async Task GuardarFixture()
+    {
+        try
+        {
+          
+
         }
         catch (Exception ex)
         {

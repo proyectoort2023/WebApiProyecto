@@ -98,6 +98,17 @@ input[type="file"] {
     width:auto;
 }
 
+.contenedor-imagen-lista {
+    width: 50%;
+    box-shadow: 1px 1px 18px 4px #000000;
+    border-radius: 25px;
+}
+
+.imagen-100-lista {
+    width: 100%;
+    border-radius: 25px;
+}
+
 .color-lila > span {
     text-align: center;
     font-size: 1.5rem;
@@ -258,4 +269,8 @@ table tr:nth-child(1) {
 .boxCenterPantalla {
     height: 90vh;
     width: 100vw
+}
+
+.color-purpura-h3{
+
 }

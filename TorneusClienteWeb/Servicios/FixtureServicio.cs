@@ -11,7 +11,7 @@ namespace TorneusClienteWeb.Servicios
     public class FixtureServicio
     {
 
-        List<PartidoDTO> Partidos;
+        List<PartidoDTO> Partidos = new List<PartidoDTO>();
 
         [Inject] private TorneoServicio _torneoServicio { get; set; }
 
@@ -32,6 +32,8 @@ namespace TorneusClienteWeb.Servicios
 
 
                 FixtureGrupos fixture = new();
+                Partidos = new List<PartidoDTO>();
+
                 FixtureEliminacionDirecta fixtureElimDirecta = new();
 
                 List<GrupoEquipos> grupoequipos = selectEquipos.GroupBy(g => g.Grupo)
@@ -104,6 +106,26 @@ namespace TorneusClienteWeb.Servicios
             return (int)valor;
         }
 
+
+        public string ObtenerTiempoJornada()
+        {
+            var torneoActual = _torneoServicio.ObtenerTorneoActual();
+
+            int cantidadCanchas = torneoActual.CantidadCanchas;
+            int cantidadSetsPorPartido = torneoActual.SetsMax;
+            int puntajePorSet = torneoActual.PuntajeMax;
+            int cantidadPartidos = Partidos.Count();
+
+            double minutosPorSet = 20 * puntajePorSet / 25;
+            double minutosPorPartido = minutosPorSet * cantidadSetsPorPartido;
+            double jornada = minutosPorPartido * cantidadPartidos / cantidadCanchas; //minutos
+
+            // Calcular las horas y minutos
+            int horas = (int)(jornada / 60); 
+            int minutosRestantes = (int)(jornada % 60);
+
+            return $"{horas} hora/s y {minutosRestantes} minutos";
+        }
 
 
 
