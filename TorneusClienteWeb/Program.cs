@@ -94,6 +94,8 @@ builder.Services.AddScoped<MedioPagoServicio>();
 builder.Services.AddScoped<MedioPagoServicioDatos>();
 
 builder.Services.AddScoped<FixtureServicio>();
+builder.Services.AddScoped<FixtureServicioDatos>();
+
 
 
 await builder.Build().RunAsync();

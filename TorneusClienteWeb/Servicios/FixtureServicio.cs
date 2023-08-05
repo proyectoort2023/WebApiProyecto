@@ -12,14 +12,18 @@ namespace TorneusClienteWeb.Servicios
     public class FixtureServicio
     {
         private readonly TorneoServicioDatos _torneoServiceDatos;
+        private readonly FixtureServicioDatos _fixtureServicioDatos;
+
         List<PartidoDTO> Partidos = new List<PartidoDTO>();
 
         [Inject] private TorneoServicio _torneoServicio { get; set; }
 
-        public FixtureServicio(TorneoServicio torneoServicio, TorneoServicioDatos torneoServiceDatos)
+        public FixtureServicio(TorneoServicio torneoServicio, TorneoServicioDatos torneoServiceDatos, FixtureServicioDatos fixtureServicioDatos)
         {
             _torneoServicio = torneoServicio;
             _torneoServiceDatos = torneoServiceDatos;
+            _fixtureServicioDatos = fixtureServicioDatos;
+
         }
         public List<PartidoDTO> ObtenerPartidos()
         {
@@ -139,7 +143,7 @@ namespace TorneusClienteWeb.Servicios
                     TorneoId = _torneoServicio.ObtenerTorneoActual().Id,
                     Fixture = Partidos
                 };
-                List<PartidoDTO> partidosCreados = await _torneoServiceDatos.CrearFixtureTorneo( partidoTorneo);
+                List<PartidoDTO> partidosCreados = await _fixtureServicioDatos.CrearFixtureTorneo( partidoTorneo);
                 Partidos = partidosCreados;
                 return true;
             }
