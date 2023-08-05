@@ -4,27 +4,29 @@ using FixtureNegocio;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Negocio.DTOs;
+using TorneusClienteWeb.Servicios_de_Datos;
 using Utilidades;
 
 namespace TorneusClienteWeb.Servicios
 {
     public class FixtureServicio
     {
-
+        private readonly TorneoServicioDatos _torneoServiceDatos;
         List<PartidoDTO> Partidos = new List<PartidoDTO>();
 
         [Inject] private TorneoServicio _torneoServicio { get; set; }
 
-        public FixtureServicio(TorneoServicio torneoServicio)
+        public FixtureServicio(TorneoServicio torneoServicio, TorneoServicioDatos torneoServiceDatos)
         {
             _torneoServicio = torneoServicio;
+            _torneoServiceDatos = torneoServiceDatos;
         }
         public List<PartidoDTO> ObtenerPartidos()
         {
             return Partidos;
         }
 
-        public async Task<bool> CrearFixtureGrupoEliminacionDirecta(List<SelectEquipo> selectEquipos, int cantidadGrupos)
+        public async Task<bool> ArmarFixtureGrupoEliminacionDirecta(List<SelectEquipo> selectEquipos, int cantidadGrupos)
         {
             try
             {
@@ -128,8 +130,30 @@ namespace TorneusClienteWeb.Servicios
         }
 
 
+        public async Task<bool> CrearFixture()
+        {
+            try
+            {
+                PartidosTorneo partidoTorneo = new()
+                {
+                    TorneoId = _torneoServicio.ObtenerTorneoActual().Id,
+                    Fixture = Partidos
+                };
+                List<PartidoDTO> partidosCreados = await _torneoServiceDatos.CrearFixtureTorneo( partidoTorneo);
+                Partidos = partidosCreados;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
 
-    } 
+
+
+
+
+    }
 }

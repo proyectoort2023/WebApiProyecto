@@ -4,6 +4,7 @@ using BDTorneus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDTorneus.Migrations
 {
     [DbContext(typeof(TorneoContext))]
-    partial class TorneoContextModelSnapshot : ModelSnapshot
+    [Migration("20230805133328_PartidoNull")]
+    partial class PartidoNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,6 +219,7 @@ namespace BDTorneus.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EstadoPartido")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Fecha")
@@ -225,6 +229,7 @@ namespace BDTorneus.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Grupo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("GuidPartido")
@@ -264,6 +269,7 @@ namespace BDTorneus.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SeleccionEquipoDelGrupo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SetActual")

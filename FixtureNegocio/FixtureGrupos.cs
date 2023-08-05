@@ -47,7 +47,7 @@ namespace FixtureNegocio
             int repetidos = partidosAux.Select(p => p.Grupo).Distinct().Count();
             Random random = new Random();
 
-            int index = random.Next(0, partidosAux.Count - 1);
+            int index = random.Next(0, cantidad - 1);
 
             if (cantidad == 1 || repetidos == 1)
             {
@@ -60,7 +60,8 @@ namespace FixtureNegocio
                 partidos.Add(partidosAux.First());
                 partidosAux.RemoveAt(0);
                 faseInicial = false;
-                return PosicionPartidosAleatorios(partidos,partidosAux, cantidad--, faseInicial);
+                cantidad -= 1;
+                return PosicionPartidosAleatorios(partidos,partidosAux, cantidad, faseInicial);
             }
             string ultimoPartidoGrupo = partidos.Last().Grupo;
 
@@ -71,8 +72,9 @@ namespace FixtureNegocio
 
             partidos.Add(partidosAux[index]);
             partidosAux.RemoveAt(index);
+            cantidad -= 1;
 
-            return PosicionPartidosAleatorios(partidos, partidosAux, cantidad--, faseInicial);
+            return PosicionPartidosAleatorios(partidos, partidosAux, cantidad, faseInicial);
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using BDTorneus;
+using DTOs_Compartidos.Models;
 using Microsoft.AspNetCore.Components;
 using Negocio.DTOs;
 using Negocio.Models;
@@ -305,6 +306,38 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 
         }
 
+
+
+        public async Task<List<PartidoDTO>> CrearFixtureTorneo(PartidosTorneo partidoTorneo)
+        {
+
+            try
+            {
+                if (partidoTorneo == null) throw new Exception("No hay fixture para crear");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.PostAsJsonAsync($"api/Torneo/Fixture/Crear", partidoTorneo);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var partidos = JsonConvert.DeserializeObject<List<PartidoDTO>>(content);
+                    return partidos;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
 
 
 

@@ -4,6 +4,7 @@ using BDTorneus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDTorneus.Migrations
 {
     [DbContext(typeof(TorneoContext))]
-    partial class TorneoContextModelSnapshot : ModelSnapshot
+    [Migration("20230805131411_TorneoNull")]
+    partial class TorneoNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,6 +219,7 @@ namespace BDTorneus.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("EstadoPartido")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Fecha")
@@ -225,12 +229,14 @@ namespace BDTorneus.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Grupo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("GuidPartido")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("HistorialSet")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Inicio")
@@ -243,6 +249,7 @@ namespace BDTorneus.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("NombreCancha")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PartidoSigGanador")
@@ -264,6 +271,7 @@ namespace BDTorneus.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SeleccionEquipoDelGrupo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SetActual")

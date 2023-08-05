@@ -47,8 +47,11 @@
 
 
     <MudButton @onclick="CrearFixture">Simular Fixture</MudButton>
-
+@if (habilitarCreacion)
+{
     <MudButton @onclick="GuardarFixture">Crear Fixture</MudButton>
+}
+
 
 
 @code {
@@ -58,6 +61,8 @@
     List<SelectEquipo> selectEquipos = new();
 
     int cantidadGrupos = 1;
+
+    private bool habilitarCreacion = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -125,10 +130,10 @@
     {
         try
         {
-            bool resultado = await _servicioFixture.CrearFixtureGrupoEliminacionDirecta(selectEquipos, cantidadGrupos);
+            bool resultado = await _servicioFixture.ArmarFixtureGrupoEliminacionDirecta(selectEquipos, cantidadGrupos);
             if (!resultado) throw new Exception("No se ha podido simular el fixture");
             _snackbar.Add($"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}", Severity.Success);
-
+            habilitarCreacion = true;
         }
         catch (Exception ex)
         {
@@ -140,8 +145,10 @@
     {
         try
         {
-          
+            bool resultado = await _servicioFixture.CrearFixture();
 
+            if (resultado) _snackbar.Add("Cruzamiento de equipos creado", Severity.Success);
+            //redirecciono a la pantalla de jugabilidad de partidos.
         }
         catch (Exception ex)
         {
