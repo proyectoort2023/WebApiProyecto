@@ -8,6 +8,8 @@
 @inject NavigationManager _nav
 @inject EquipoServicio _servicioEquipo
 @inject InscripcionServicio _servicioInscripcion
+@inject FixtureServicio _servicioFixture
+
 
 @if (TorneoSeleccionadoDTO != null)
 {
@@ -173,7 +175,7 @@
         }
     }
 
-    private void VerFixture()
+    private async Task VerFixture()
     {
         try
         {
@@ -184,7 +186,20 @@
                     _snackbar.Add("Debe cerrar las inscripciones antes de realizar o ver el fixture", Severity.Warning);
                     return;
                 }
-                _nav.NavigateTo("/ORGANIZADOR/EleccionModalidadJuego");
+                bool resultado = await _servicioFixture.ObtenerFixtureTorneoDatos();
+
+                if (!resultado) throw new Exception("No se ha podido consultar el fixture");
+
+                if (_servicioFixture.ObtenerPartidos().Count > 0)
+                {
+                    _nav.NavigateTo("/PartidosTiempoReal");
+                }
+                else
+                {
+                    _nav.NavigateTo("/ORGANIZADOR/EleccionModalidadJuego");
+                }
+
+                
             }
 
         }

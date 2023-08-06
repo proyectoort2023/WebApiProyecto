@@ -24,6 +24,9 @@
 
         public static string HABILITACION_MARKETPLACE = "habMarketPlace";
 
+        public static string LOCAL = "LOCAL";
+        public static string VISITANTE = "VISITANTE";
+
         public enum  Roles
         {
                 EQUIPO,

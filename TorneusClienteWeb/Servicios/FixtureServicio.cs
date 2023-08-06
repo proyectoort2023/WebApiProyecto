@@ -153,10 +153,20 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-
-
-
-
+        public async Task<bool> ObtenerFixtureTorneoDatos()
+        {
+            try
+            {
+                int torneoId = _torneoServicio.ObtenerTorneoActual().Id;
+                List<PartidoDTO> partidosObtenidos = await _fixtureServicioDatos.ListadoPartidosTorneo(torneoId);
+                Partidos = partidosObtenidos;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
     }

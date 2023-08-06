@@ -1,0 +1,56 @@
+﻿@page "/PartidosTiempoReal"
+@inject ServicioMenu _servicioMenu
+@inject TorneoServicio _servicioTorneo
+@inject FixtureServicio _servicioFixture
+
+
+@if (Partidos == null)
+{
+    <Cargando />
+}
+else
+{
+    if (Partidos.Count > 0)
+    {
+        @foreach (var partido in Partidos)
+        {
+            <PartidoMarcador Partido="partido" SiguientePartido="SiguientePartido" />
+        }
+    }
+    else
+    {
+        <h3>No tiene ningun partido para puntuar</h3>
+    }
+}
+
+
+
+@code {
+    List<PartidoDTO> Partidos;
+
+    protected async override Task OnInitializedAsync()
+    {
+        bool resultado = await _servicioFixture.ObtenerFixtureTorneoDatos();
+        if (!resultado) throw new Exception("No se pudo obtener el fixture");
+
+        Partidos = _servicioFixture.ObtenerPartidos();
+    }
+
+    private async Task SiguientePartido(PartidoDTO partidoFinalizado)
+    {
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

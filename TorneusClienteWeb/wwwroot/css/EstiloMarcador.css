@@ -1,0 +1,179 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+img {
+    height: 60px;
+    width: auto;
+}
+
+.caja {
+    text-align: center;
+}
+
+.gridContainer {
+    position: relative;
+    display: grid;
+    box-shadow: 3px 3px 12px #3D1919;
+    font-family: 'Roboto', sans-serif;
+    padding: 5px;
+    border-radius: 40px;
+    width: 40vw;
+    grid-template-areas: "visitante puntosv medio puntosl local"
+        "separador separador separador separador separador"
+        "marcadorv sets sets sets marcadorl"
+        "pie pie pie pie pie";
+}
+
+    .gridContainer p {
+        margin: 0;
+        padding: 0;
+    }
+
+.vis {
+    grid-area: visitante;
+}
+
+.puntV {
+    grid-area: puntosv;
+}
+
+.medio {
+    grid-area: medio;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.puntL {
+    grid-area: puntosl;
+}
+
+.loc {
+    grid-area: local;
+}
+
+.sep {
+    grid-area: separador;
+    color: grey;
+}
+
+.marcV {
+    grid-area: marcadorv;
+}
+
+.medioSet {
+    grid-area: sets;
+}
+
+.marcL {
+    grid-area: marcadorl;
+}
+
+.pie {
+    grid-area: pie;
+    text-align: center;
+    color: orangered;
+}
+
+.tamanioPuntaje {
+    align-self: center;
+}
+
+    .tamanioPuntaje h3 {
+        margin: 0;
+        padding: 0;
+        font-size: 3em;
+        color: green;
+    }
+
+.gridContainer h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 6em;
+    color: blue;
+}
+
+.medio p {
+    color: #132A3D;
+}
+
+.medioSet h4 {
+    color: #132A3D;
+    font-size: 1.2rem;
+    margin: 10px;
+}
+
+.medioSet img {
+    height: 50px;
+    width: auto;
+}
+
+.marcL p, .marcV p {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin: -15px 0 5px 0px;
+}
+
+.vis p, .loc p {
+    font-weight: 700;
+    margin-bottom: 2px;
+}
+
+.sep {
+    margin: 0 2vw;
+}
+
+hr {
+    height: 1px;
+    /*background-color: red;*/
+    background-image: linear-gradient(90deg, rgba(54, 98, 138, 0.2),rgba(54, 98, 138, 1), rgba(54, 98, 138, 0.2));
+    border-radius: 50%;
+}
+
+.playPartido {
+    position: absolute;
+    left: 38vw;
+    bottom: 10%;
+}
+
+
+    .playPartido img {
+        height: 50px;
+        height: 50px;
+    }
+
+
+@media screen and (max-width: 1200px) {
+    .gridContainer {
+        width: 70vw;
+    }
+
+    .playPartido {
+        left: 67vw;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .gridContainer {
+        width: 80vw;
+    }
+
+    .playPartido {
+        left: 76vw;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .gridContainer {
+        width: 100%;
+    }
+
+    .playPartido {
+        left: 95%;
+    }
+
+        .playPartido img {
+            height: 40px;
+            height: 40px;
+        }
+}
