@@ -24,7 +24,7 @@ namespace WebApiTorneus.Controllers
 
 
         /// <summary>
-        /// Devuelve partidos por cruzamiento de equipos
+        /// Crea el fixture segun los partidos del cruzamiento de equipos enviados por el usuario organizador
         /// </summary>
         /// <remarks>
         /// Este endpoint devuelve partidos por cruzamiento de equipos
@@ -47,6 +47,35 @@ namespace WebApiTorneus.Controllers
                 if (partidosCreados == null) return BadRequest("No se pudo crear el fixture. Cod 151");
 
                 return Ok(partidosCreados);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        /// <summary>
+        /// Devuelve partidos por cruzamiento de equipos desde la base de datos
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint devuelve partidos por cruzamiento de equipos desde la base de datos
+        /// </remarks>
+        /// <response code="200">OK.Listado de partidos obtenidos</response>
+        /// <response code="400">No se obtener el listado</response>
+        [ProducesResponseType(typeof(List<PartidoDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
+        [HttpGet("ListadoPartidos/{torneoId}")]
+        public async Task<IActionResult> ListadoPartidos(int torneoId)
+        {
+            try
+            {
+               List<PartidoDTO> partidos = _mapper.Map<List<Partido>, List<PartidoDTO>>(await _fixtureService.ObtenerPartidosTorneo(torneoId));
+
+                if (partidos == null) return BadRequest("No se pudo obtener el fixture. Cod 159");
+
+                return Ok(partidos);
             }
             catch (Exception ex)
             {

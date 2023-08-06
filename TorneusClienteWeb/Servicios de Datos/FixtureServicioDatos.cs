@@ -55,5 +55,38 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 
 
 
+        public async Task<List<PartidoDTO>> ListadoPartidosTorneo(int torneoId)
+        {
+
+            try
+            {
+                if (torneoId < 1) throw new Exception("No hay fixture para ver");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.GetAsync($"api/Fixture/ListadoPartidos/{torneoId}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var partidos = JsonConvert.DeserializeObject<List<PartidoDTO>>(content);
+                    return partidos;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+
     }
 }

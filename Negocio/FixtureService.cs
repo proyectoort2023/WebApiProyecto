@@ -69,6 +69,24 @@ namespace Negocio
             }
         }
 
+        public async Task<List<Partido>> ObtenerPartidosTorneo(int torneoId)
+        {
+            try
+            {
+                var partidos = await _db.Partidos.Include(i => i.EquipoLocal)
+                                                 .Include(i => i.EquipoVisitante)
+                                                  .Where(w => w.Torneo.Id == torneoId).ToListAsync();
+
+                return partidos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
 
 
 

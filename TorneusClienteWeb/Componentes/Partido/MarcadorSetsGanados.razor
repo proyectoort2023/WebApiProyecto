@@ -1,0 +1,11 @@
+﻿
+<div>
+    @for (int i = 0; i < CantidadSetGanados; i++)
+    {
+        <i class="fa fa-circle" style="color:orangered;margin-right:3px"></i>
+    }
+</div>
+@code {
+    [Parameter]
+    public int CantidadSetGanados { get; set; }
+}
