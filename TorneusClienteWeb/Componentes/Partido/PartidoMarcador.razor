@@ -1,5 +1,7 @@
 ﻿@inject TorneoServicio _servicioTorneo
+@inject FixtureServicio _servicioFixture
 @inject IConfiguration _config
+@inject ISnackbar _snackBar
 
 
 
@@ -64,7 +66,7 @@
             </div>
             <EspacioVertical Altura="20px" />
         }
-        @if (EsconderIconoPlay && Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
+        @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
         {
             <div class="playPartido">
                 <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
@@ -78,6 +80,11 @@
    <EspacioVertical Altura="15px" />
 
 }
+
+
+
+
+
 
 @code {
     [Parameter]
@@ -129,22 +136,32 @@
         return $"{_config["UrlBaseParaImagenes"]}{imagenRef}";
     }
 
-    private string EscudoVacio() => "/img/componentes/EscudoVacio.png";
+    private string EscudoVacio() => "/imagenes/escudovacio.png";
 
     private string MensajeEsperandoContrincante() => "Esperando...";
 
     private async Task ComenzarPartido()
     {
-        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
+        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null &&
+            Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0)
         {
-            Partido.EstadoPartido = Util.EstadoPartido.EN_PROCESO.ToString();
-            EsconderIconoPlay = true;
-            ImagenPlay = "pelota.png";
-           // await EnviarPartidoActualizadoATodosHub();
+            if (_servicioFixture.HayCanchaLibre())
+            {
+                Partido.EstadoPartido = Util.EstadoPartido.EN_PROCESO.ToString();
+                EsconderIconoPlay = true;
+                ImagenPlay = "pelota.png";
+                Partido.Inicio = DateTime.Now;
+                // await EnviarPartidoActualizadoATodosHub();
+            }
+            else
+            {
+                _snackBar.Add("No hay canchas disopnibles aun");
+            }
         }
         else
         {
-            //toast.ShowWarning("Todavia no hay dos equipos para jugar");
+            //toast.ShowWarning("");
+            _snackBar.Add("Todavia no hay dos equipos confirmados");
         }
     }
 
@@ -162,6 +179,19 @@
         await VerificarFinalPorSet();
     }
 
+    private async Task DecrementarMarcador(string tipoEquipo)
+    {
+        if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
+        {
+            Partido.MarcadorLocal -= 1;
+        }
+        else if (Partido.MarcadorVisitante > 0)
+        {
+            Partido.MarcadorVisitante -= 1;
+        }
+        //await EnviarPartidoActualizadoATodosHub();
+    }
+
     private async void ResetearMarcador()
     {
         Partido.HistorialSet += $"[{Partido.MarcadorLocal}-{Partido.MarcadorVisitante}]  ";
@@ -170,7 +200,7 @@
         Partido.SetActual += 1;
         puntajeMaximoSegunSet = Partido.SetActual == SetsMax ? PuntajeMaxDefinitorio : PuntajeMax;
         ModalidadTantosPorDiferencia = false;
-       // await EnviarPartidoActualizadoATodosHub();
+        // await EnviarPartidoActualizadoATodosHub();
     }
 
     private async Task VerificarFinalPorSet()
@@ -192,7 +222,7 @@
             if (diferenciaTantosLocal == 2 || diferenciaTantosVisitante == 2)
             {
                 ResetearMarcador();
-               // await EnviarPartidoActualizadoATodosHub();
+                // await EnviarPartidoActualizadoATodosHub();
                 await VerificarFinalPartido();
             }
             //await EnviarPartidoActualizadoATodosHub();
@@ -217,7 +247,8 @@
 
         if (Partido.SetGanadosLocal == setDiferencia)
         {
-            Partido.PuntajeLocal = 1;
+            Partido.PuntajeLocal = 2;
+            Partido.PuntajeVisitante = 1;
             TerminarPartido();
             //await SiguientePartidoDeEquipo(Partido);
 
@@ -226,7 +257,8 @@
 
         if (Partido.SetGanadosVisitante == setDiferencia)
         {
-            Partido.PuntajeVisitante = 1;
+            Partido.PuntajeLocal = 1;
+            Partido.PuntajeVisitante = 2;
             TerminarPartido();
             //await EnviarPartidoActualizadoATodosHub();
             //await SiguientePartidoDeEquipo(Partido.Visitante);
@@ -237,63 +269,31 @@
         {
             if (Partido.SetGanadosLocal > Partido.SetGanadosVisitante)
             {
-                Partido.PuntajeLocal = 1;
-              //  await SiguientePartidoDeEquipo(Partido.Local);
+                Partido.PuntajeLocal = 2;
+                Partido.PuntajeVisitante = 1;
+                //  await SiguientePartidoDeEquipo(Partido.Local);
             }
             else
             {
                 Partido.PuntajeVisitante = 1;
-               // await SiguientePartidoDeEquipo(Partido.Visitante);
+                Partido.PuntajeVisitante = 2;
+                // await SiguientePartidoDeEquipo(Partido.Visitante);
             }
-           // await EnviarPartidoActualizadoATodosHub();
+            // await EnviarPartidoActualizadoATodosHub();
             TerminarPartido();
         }
     }
 
     private async void TerminarPartido()
     {
-       // Partido.PartidaEnProceso = false;
-        EsconderIconoPlay = true;
-       // await EnviarPartidoActualizadoATodosHub();
+        Partido.EstadoPartido = Util.EstadoPartido.FINALIZADO.ToString();
+        EsconderIconoPlay = false;
+        Partido.Fin = DateTime.Now;
+        await _servicioFixture.TerminoPartido(Partido);
+        // await EnviarPartidoActualizadoATodosHub();
     }
-
-    private async Task DecrementarMarcador(string tipoEquipo)
-    {
-        if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
-        {
-            Partido.MarcadorLocal -= 1;
-        }
-        else if (Partido.MarcadorVisitante > 0)
-        {
-            Partido.MarcadorVisitante -= 1;
-        }
-        //await EnviarPartidoActualizadoATodosHub();
-    }
-
-    //async Task SiguientePartidoDeEquipo(EquipoVM equipoGanador)
-    //{
-    //    try
-    //    {
-    //        ViewModelEquipoGanador viewModelEquipoGanador = new()
-    //            {
-    //                GuidPartidoSiguiente = Partido.PartidoSiguienteGuid,
-    //                EquipoGanador = equipoGanador
-    //            };
-    //        await dataServiceTorneo.ActualizarPartido(Partido);
-    //        toast.ShowSuccess("Partido fianzalizado guardado");
-    //        await SiguientePartidoParaEquipoGanador.InvokeAsync(viewModelEquipoGanador);
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        toast.ShowWarning(ex.Message);
-    //    }
-    //}
-
-    //private async Task EnviarPartidoActualizadoATodosHub()
-    //{
-    //    await dataServiceHub.EnviarPartidoATodos(TorneoId, Partido);
-    //}
 
    
+
 
 }

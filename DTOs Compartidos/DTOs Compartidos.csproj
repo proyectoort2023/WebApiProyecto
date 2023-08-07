@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BDTorneus\BDTorneus.csproj" />
+    <ProjectReference Include="..\Utilidades\Utilidades.csproj" />
   </ItemGroup>
 
 </Project>

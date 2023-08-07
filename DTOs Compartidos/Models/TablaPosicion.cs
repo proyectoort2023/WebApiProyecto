@@ -15,6 +15,7 @@ namespace DTOs_Compartidos.Models
         public int PartidosGanados { get; set; }
         public int SetsGanados { get; set; }
         public int TotalPuntos { get; set; }
+        public int TantosTotales { get; set; }
         public int MejorTiempo { get; set; } //en minutos
         public string Grupo { get; set; }
 
@@ -28,17 +29,36 @@ namespace DTOs_Compartidos.Models
             PartidosGanados = 0;
             SetsGanados = 0;
             TotalPuntos = 0;
+            TantosTotales= 0;
             MejorTiempo = 0;
         }
 
-        public void ActualizarTabla(int partidosJugados, int partidosGanados, int setsGanados, int totalPuntos, int mejorTiempo)
+        public void ActualizarTabla(int setsGanados, int puntosObtenidos, DateTime inicio, DateTime fin, int tantosRealizados)
         {
-            PartidosJugados += partidosJugados;
-            PartidosGanados += partidosGanados;
+            PartidosJugados += 1;
+            PartidosGanados += puntosObtenidos > 1 ? 1 : 0;
             SetsGanados += setsGanados;
-            TotalPuntos += totalPuntos;
-            MejorTiempo += mejorTiempo;
+            TotalPuntos += puntosObtenidos;
+            TantosTotales += tantosRealizados;
+
+            TimeSpan diferencia = fin - inicio;
+            double minutos = diferencia.TotalMinutes;
+
+            MejorTiempo += (int)minutos; //en minutos
         }
+
+        //public void AgregarNuevoEquipo( int setsGanados, int puntosObtenidos, DateTime inicio, DateTime fin)
+        //{
+        //    PartidosJugados += 1;
+        //    PartidosGanados += puntosObtenidos > 1 ? 1 : 0;
+        //    SetsGanados += setsGanados;
+        //    TotalPuntos += puntosObtenidos;
+
+        //    TimeSpan diferencia = fin - inicio;
+        //    double minutos = diferencia.TotalMinutes;
+
+        //    MejorTiempo += (int)minutos; //en minutos
+        //}
 
     }
 }
