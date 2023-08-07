@@ -2,7 +2,8 @@
 @inject TorneoServicio _servicioTorneo
 @inject ISnackbar _snackbar
 @inject NavigationManager _nav
-
+@inject IDialogService _dialogService
+@inject FixtureServicio _servicioFixture
 
 <section class="d-flex flex-column justify-content-center align-items-center">
 
@@ -17,7 +18,7 @@
     <EspacioVertical Altura="@altura" />
 
     <div class="contenedor-imagen-lista">
-        <button>
+        <button @onclick="EleccionTodosContraTodos">
             <img src="/imagenes/todoscontratodos.png" alt="" class="imagen-100-lista" />
         </button>
     </div>
@@ -25,7 +26,7 @@
     <EspacioVertical Altura="@altura" />
 
     <div class="contenedor-imagen-lista">
-        <button>
+        <button @onclick="EleccionEliminacionDirecta">
             <img src="/imagenes/eliminaciondirecta3.png" alt="" class="imagen-100-lista" />
         </button>
     </div>
@@ -38,10 +39,106 @@
 
 @code {
 
+    List<EquipoDTO> equiposInscriptos = new();
+    List<SelectEquipo> selectEquipos = new();
+
     string altura = "40px";
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await CargaInicial();
+    }
+
+    private async Task CargaInicial()
+    {
+        try
+        {
+            //traigo todas las inscripciones del torneo especificado
+            equiposInscriptos = await _servicioTorneo.ObtenerEquiposInscripciones();
+            if (equiposInscriptos == null)
+            {
+                _snackbar.Add("No hay equipos inscriptos", Severity.Warning);
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+    }
 
     private void NavegarGrupoEliminatoria()
     {
         _nav.NavigateTo("/ORGANIZADOR/ModalidadJuego");
     }
+
+    private async Task EleccionEliminacionDirecta()
+    {
+        try
+        {
+            bool resultado = await _servicioFixture.ArmarFixtureEliminacionDirecta(equiposInscriptos);
+
+            if (!resultado) throw new Exception("No se ha podido crear el fixture eliminación directa");
+
+            var parametros = new DialogParameters();
+            parametros.Add(nameof(DialogComponent.Mensaje), $"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}");
+
+            var result = await _dialogService.Show<DialogComponent>($"Confirma creación de fixture de eliminación directa", parametros).Result;
+
+            if (result.Canceled) return;
+
+            await GuardarFixture();
+
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
+
+    private async Task EleccionTodosContraTodos()
+    {
+        try
+        {
+            bool resultado = await _servicioFixture.ArmarFixtureTodosContraTodos(equiposInscriptos);
+
+            if (!resultado) throw new Exception("No se ha podido crear el fixture eliminación directa");
+
+            var parametros = new DialogParameters();
+            parametros.Add(nameof(DialogComponent.Mensaje), $"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}");
+
+            var result = await _dialogService.Show<DialogComponent>($"Confirma creación de fixture de eliminación directa", parametros).Result;
+
+            if (result.Canceled) return;
+
+            await GuardarFixture();
+
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
+
+
+    private async Task GuardarFixture()
+    {
+        try
+        {
+            bool creacion = await _servicioFixture.CrearFixture();
+
+            if (creacion) _snackbar.Add("Cruzamiento de equipos creado", Severity.Success);
+            //redirecciono a la pantalla de jugabilidad de partidos.
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+    }
+
+
+
+
 }
