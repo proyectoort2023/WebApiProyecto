@@ -34,13 +34,19 @@ else
         if (!resultado) throw new Exception("No se pudo obtener el fixture");
 
         Partidos = _servicioFixture.ObtenerPartidos();
+        await _servicioFixture.CrearTablaPosiciones();
+        _servicioFixture.OnActualizarPartidosEvent += Actualizar;
     }
 
     private async Task SiguientePartido(PartidoDTO partidoFinalizado)
     {
-        
+
     }
 
+    private void Actualizar()
+    {
+        StateHasChanged();
+    }
 
 
 

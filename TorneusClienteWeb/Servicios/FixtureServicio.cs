@@ -4,6 +4,7 @@ using FixtureNegocio;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Options;
 using Negocio.DTOs;
+using System.Text.RegularExpressions;
 using TorneusClienteWeb.Servicios_de_Datos;
 using Utilidades;
 
@@ -15,6 +16,9 @@ namespace TorneusClienteWeb.Servicios
         private readonly FixtureServicioDatos _fixtureServicioDatos;
 
         List<PartidoDTO> Partidos = new List<PartidoDTO>();
+        List<TablaPosicion> TablaPosiciones = new List<TablaPosicion>();
+
+        public event Action OnActualizarPartidosEvent;
 
         [Inject] private TorneoServicio _torneoServicio { get; set; }
 
@@ -153,6 +157,8 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
+
+        #region Conteo de Puntaje de marcador
         public async Task<bool> ObtenerFixtureTorneoDatos()
         {
             try
@@ -167,6 +173,206 @@ namespace TorneusClienteWeb.Servicios
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task CrearTablaPosiciones()
+        {
+           // var filtroGrupos = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo)).Select(s => s.EquipoLocal).ToList();
+
+            var filtroEquipos = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo))
+                                        .SelectMany(p => new[] {
+                                            
+                                            new {Equipo = p.EquipoLocal, Grupo = p.Grupo },
+                                            new {Equipo = p.EquipoVisitante, Grupo = p.Grupo } 
+                                        
+                                        })
+                                        .GroupBy(e => e.Equipo.Id)
+                                        .Select(g => g.First())
+                                        .ToList();
+
+
+            TablaPosiciones = filtroEquipos.Select(equipo => new TablaPosicion(equipo.Equipo, equipo.Grupo)).ToList();
+        }
+
+        public bool HayCanchaLibre()
+        {
+            int cantidadCanchas = _torneoServicio.ObtenerTorneoActual().CantidadCanchas;
+            int partidosEnProceso = Partidos.Where(w => w.EstadoPartido == Util.EstadoPartido.EN_PROCESO.ToString()).Count();
+
+            return !(partidosEnProceso == cantidadCanchas);
+        }
+
+        public async Task TerminoPartido(PartidoDTO partidoFinalizado)
+        {
+          if (!string.IsNullOrEmpty(partidoFinalizado.Grupo))
+            {
+                await ActualizarTablaPosiciones(partidoFinalizado);
+                bool etapaGruposFinalizada = EtapaGrupoEstaFinalizada();
+
+                if (etapaGruposFinalizada) await SiguienteEtapa();
+            }
+            else
+            {
+                await DesignarSiguientePartido(partidoFinalizado);
+            }
+
+        }
+
+        private async Task DesignarSiguientePartido(PartidoDTO partidoFinalizado)
+        {
+            EquipoDTO equipoGanador = partidoFinalizado.PuntajeLocal > partidoFinalizado.PuntajeVisitante ? partidoFinalizado.EquipoLocal : 
+                                                                                                            partidoFinalizado.EquipoVisitante;
+
+
+            if (partidoFinalizado.PartidoSigGanador != Guid.Empty)
+            {
+                int indiceSigPartido = ObtenerIndiceGuidartido(partidoFinalizado.PartidoSigGanador);
+
+                Partidos[indiceSigPartido].EquipoLocal = Partidos[indiceSigPartido].EquipoLocal == null ? equipoGanador : Partidos[indiceSigPartido].EquipoLocal;
+                Partidos[indiceSigPartido].EquipoVisitante = Partidos[indiceSigPartido].EquipoVisitante == null ? equipoGanador : Partidos[indiceSigPartido].EquipoVisitante;
+            }
+                //actualizar los partidos siguientes a donde hacen referencia y actualizar en un evento general 
+               if (partidoFinalizado.PartidoSigPerdedor != Guid.Empty)
+            {
+                //actualizo si es doble eliminacion
+            }
+        }
+
+        private int ObtenerIndiceGuidartido(Guid guid)
+        {
+            return Partidos.FindIndex(f => f.GuidPartido == guid);
+        }
+
+        private bool EtapaGrupoEstaFinalizada()
+        {
+            bool partidosGruposNOEstanFinalizados = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo))
+                                                                                        .Any(a => a.EstadoPartido != Util.EstadoPartido.FINALIZADO.ToString());
+            return !partidosGruposNOEstanFinalizados;
+        }
+
+        private async Task ActualizarTablaPosiciones(PartidoDTO partido)
+        {
+            EquipoDTO equipo1 = partido.EquipoLocal;
+            EquipoDTO equipo2 = partido.EquipoVisitante;
+
+            int indiceLocal = TablaPosiciones.FindIndex(f => f.Equipo.Id == equipo1.Id);
+            int indiceVisitante = TablaPosiciones.FindIndex(f => f.Equipo.Id == equipo2.Id);
+
+            var HistorialSetsLista = ConvertirStringALista(partido.HistorialSet);
+            int SumaPuntajeLocal = HistorialSetsLista.Sum(w => w.Local);
+            int SumaPuntajeVisitante = HistorialSetsLista.Sum(w => w.Visitante);
+
+            TablaPosiciones[indiceLocal].ActualizarTabla(partido.SetGanadosLocal, partido.PuntajeLocal, partido.Inicio, partido.Fin, SumaPuntajeLocal);
+            TablaPosiciones[indiceVisitante].ActualizarTabla(partido.SetGanadosVisitante, partido.PuntajeVisitante, partido.Inicio, partido.Fin, SumaPuntajeVisitante);
+
+        }
+
+        public List<ResultadoMatchesPuntaje> ConvertirStringALista(string convetir)
+        {
+            List<ResultadoMatchesPuntaje> lista = new();
+
+            var matches = Regex.Matches(convetir, @"\[(\d+)-(\d+)\]");
+
+            foreach (Match match in matches)
+            {
+                ResultadoMatchesPuntaje res = new()
+                {
+                    Local = int.Parse(match.Groups[1].Value),
+                    Visitante = int.Parse(match.Groups[2].Value)
+                };
+
+                lista.Add(res);
+            }
+            return lista;
+        }
+
+        private async Task SiguienteEtapa()
+        {
+            List<EquipoDTO> equiposSegundaFase = new List<EquipoDTO>();
+
+            int cantidadGrupos = TablaPosiciones.Select(s => s.Grupo).Distinct().Count();
+
+            int cantidadEquiposAJugar = CantidadEquiposUltimaFase(cantidadGrupos);
+
+            int cantidadEquiposSiguientesMejores = cantidadEquiposAJugar - cantidadGrupos;
+
+            var tablaPosicionesView = ObtenerTablaPosicionesView();
+
+            for (int i = 0; i< cantidadGrupos; i++)
+            {
+                equiposSegundaFase.Add(tablaPosicionesView[i].TablaPosiciones.First().Equipo); //primeros de cada grupo
+            }
+
+            if (cantidadEquiposSiguientesMejores > 0)
+            {
+                var equiposSegundosMejores = ObtenerEquiposSegundosMejoresView(tablaPosicionesView);
+
+                for (int i = 0; i < cantidadEquiposSiguientesMejores; i++)
+                {
+                    equiposSegundaFase.Add(equiposSegundosMejores[i]);
+                }
+
+            }
+            //Asignar equipos a partidos siguientes;
+
+            int cantidadPartidosJugarInicial = cantidadEquiposAJugar / 2;
+
+            List<PartidoDTO> partidosElimDirecta = Partidos.Where(w => w.EstadoPartido != Util.EstadoPartido.FINALIZADO.ToString()).ToList();
+
+            if (cantidadEquiposAJugar == equiposSegundaFase.Count)
+            {
+                for (int i = 0; i < cantidadPartidosJugarInicial; i+=2)
+                {
+                    int indicePartido = ObtenerIndicePartido(partidosElimDirecta[i].Id);
+                    Partidos[indicePartido].EquipoLocal = equiposSegundaFase[i];
+                    Partidos[indicePartido].EquipoVisitante = equiposSegundaFase[i+1];
+                }
+            }
+            ActualizarListadoPartidosFront();
+        }
+
+        private int ObtenerIndicePartido(int partidoId)
+        {
+            return Partidos.FindIndex(f => f.Id == partidoId);
+        }
+
+        public List<GrupoTablaPosicionesView> ObtenerTablaPosicionesView()
+        {
+
+
+            List<GrupoTablaPosicionesView> tablaOrdenadaView = TablaPosiciones.GroupBy(g => g.Grupo)
+                                                                                .Select(s => new GrupoTablaPosicionesView()
+                                                                                {
+                                                                                    Grupo = s.Key,
+                                                                                    TablaPosiciones = s.OrderByDescending(x => x.PartidosGanados)
+                                                                                                       .ThenByDescending(x => x.SetsGanados)
+                                                                                                       .ThenByDescending(x => x.TotalPuntos)
+                                                                                                       .ThenByDescending(x => x.MejorTiempo)
+                                                                                                       .ThenByDescending(x => x.PartidosJugados)
+                                                                                                       .ToList()
+                                                                                }).ToList();
+            return tablaOrdenadaView;
+        }
+        public List<EquipoDTO> ObtenerEquiposSegundosMejoresView(List<GrupoTablaPosicionesView> tablaOrdenadaView)
+        {
+            var equiposSegundosMejores = tablaOrdenadaView.Select(s => s.TablaPosiciones[1])
+                                                          .OrderByDescending(x => x.PartidosGanados)
+                                                           .ThenByDescending(x => x.SetsGanados)
+                                                           .ThenByDescending(x => x.TotalPuntos)
+                                                           .ThenByDescending(x => x.MejorTiempo)
+                                                           .ThenByDescending(x => x.PartidosJugados)
+                                                           .Select(s => s.Equipo)
+                                                           .ToList();
+
+
+            return equiposSegundosMejores;
+        }
+
+        private void ActualizarListadoPartidosFront()
+        {
+            OnActualizarPartidosEvent?.Invoke();
+        }
+
+        #endregion
 
 
     }
