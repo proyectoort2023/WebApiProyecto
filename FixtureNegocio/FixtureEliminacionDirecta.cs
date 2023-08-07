@@ -38,7 +38,7 @@ namespace FixtureNegocio
                                                     {
                                                         EquipoLocal = equipo,
                                                         Ronda = 0,
-                                                        GuidPartido = new Guid(),
+                                                        GuidPartido = Guid.NewGuid(),
                                                         EstadoPartido = Util.EstadoPartido.PENDIENTE.ToString()
                                                     }).ToList();
 
@@ -74,7 +74,7 @@ namespace FixtureNegocio
                 {
                     EquipoLocal = null,
                     Ronda = 0,
-                    GuidPartido = new Guid(),
+                    GuidPartido = Guid.NewGuid(),
                     EstadoPartido= Util.EstadoPartido.PENDIENTE.ToString()
                 });
             }
@@ -121,7 +121,7 @@ namespace FixtureNegocio
                         {
                             EquipoLocal = partidosPorRonda[i].EquipoLocal,
                             EquipoVisitante = partidosPorRonda[i].EquipoLocal,
-                            GuidPartido = new Guid(),
+                            GuidPartido = Guid.NewGuid(),
                             Ronda = rondaActual,
                             RondaDescanso = false,
                             EstadoPartido = Util.EstadoPartido.PENDIENTE.ToString()
@@ -148,7 +148,7 @@ namespace FixtureNegocio
                 {
                     EquipoLocal = partidosPorRonda[i].RondaDescanso ? partidosPorRonda[i].EquipoLocal : null,
                     EquipoVisitante = partidosPorRonda[i+1].RondaDescanso ? partidosPorRonda[i+1].EquipoLocal : null,
-                    GuidPartido = new Guid(),
+                    GuidPartido = Guid.NewGuid(),
                     Ronda = rondaActual,
                     RondaDescanso = false,
                     EstadoPartido = Util.EstadoPartido.PENDIENTE.ToString()
@@ -156,6 +156,7 @@ namespace FixtureNegocio
 
                 partidosPorRonda[i].PartidoSigGanador = partido.GuidPartido;
                 partidosPorRonda[i+1].PartidoSigGanador = partido.GuidPartido;
+
                 auxFixturePorRonda.Add(partido);
             }
 

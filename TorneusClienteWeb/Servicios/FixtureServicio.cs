@@ -226,15 +226,25 @@ namespace TorneusClienteWeb.Servicios
             if (partidoFinalizado.PartidoSigGanador != Guid.Empty)
             {
                 int indiceSigPartido = ObtenerIndiceGuidartido(partidoFinalizado.PartidoSigGanador);
-
-                Partidos[indiceSigPartido].EquipoLocal = Partidos[indiceSigPartido].EquipoLocal == null ? equipoGanador : Partidos[indiceSigPartido].EquipoLocal;
-                Partidos[indiceSigPartido].EquipoVisitante = Partidos[indiceSigPartido].EquipoVisitante == null ? equipoGanador : Partidos[indiceSigPartido].EquipoVisitante;
-            }
+                if (Partidos[indiceSigPartido] != null)
+                {
+                    if (Partidos[indiceSigPartido].EquipoLocal.Id == 0)
+                    {
+                        Partidos[indiceSigPartido].EquipoLocal = equipoGanador;
+                    }
+                    else if (Partidos[indiceSigPartido].EquipoVisitante.Id == 0)
+                    {
+                        Partidos[indiceSigPartido].EquipoVisitante = equipoGanador;
+                    }
+                }
+                   
+               }
                 //actualizar los partidos siguientes a donde hacen referencia y actualizar en un evento general 
                if (partidoFinalizado.PartidoSigPerdedor != Guid.Empty)
             {
                 //actualizo si es doble eliminacion
             }
+            ActualizarListadoPartidosFront();
         }
 
         private int ObtenerIndiceGuidartido(Guid guid)
@@ -320,9 +330,13 @@ namespace TorneusClienteWeb.Servicios
 
             if (cantidadEquiposAJugar == equiposSegundaFase.Count)
             {
-                for (int i = 0; i < cantidadPartidosJugarInicial; i+=2)
+                for (int i = 0; i < cantidadEquiposAJugar; i+=2)
                 {
-                    int indicePartido = ObtenerIndicePartido(partidosElimDirecta[i].Id);
+                    //int indicePartido = 0;
+                    //for (int j = 0; j < cantidadPartidosJugarInicial; j++)
+                    //{
+                       int indicePartido = ObtenerIndicePartido(partidosElimDirecta[i/2].Id);
+                    //}
                     Partidos[indicePartido].EquipoLocal = equiposSegundaFase[i];
                     Partidos[indicePartido].EquipoVisitante = equiposSegundaFase[i+1];
                 }
