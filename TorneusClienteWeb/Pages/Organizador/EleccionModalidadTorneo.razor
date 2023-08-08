@@ -102,6 +102,7 @@
     {
         try
         {
+            await CargaInicial();
             bool resultado = await _servicioFixture.ArmarFixtureTodosContraTodos(equiposInscriptos);
 
             if (!resultado) throw new Exception("No se ha podido crear el fixture eliminación directa");

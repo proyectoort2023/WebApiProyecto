@@ -1,10 +1,15 @@
 ﻿@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
 
-.gridContainer img {
-    height: 60px;
-    width: auto;
+.imgLogosEquipos {
+    height: 58px;
+    width: 58px;
     border-radius: 50%;
     box-shadow: 0px 3px 8px -3px purple;
+}
+
+.imgPlay {
+    height: 60px;
+    width: auto;
 }
 
 .caja {
@@ -91,6 +96,10 @@
     margin: 0;
     padding: 0;
     font-size: 6em;
+    background: -webkit-linear-gradient(90deg, #5161f0, purple);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: tomato;
     color: blue;
 }
 
@@ -99,7 +108,7 @@
 }
 
 .medioSet h4 {
-    color: #132A3D;
+    color: blue;
     font-size: 1.2rem;
     margin: 10px;
 }

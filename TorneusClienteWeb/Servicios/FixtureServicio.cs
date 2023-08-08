@@ -171,6 +171,10 @@ namespace TorneusClienteWeb.Servicios
                 incrementador++;
                 valor = Math.Pow(2, incrementador);
             }
+            if (cantidad == 1)
+            {
+                valor = 2;
+            }
 
             return (int)valor;
         }
