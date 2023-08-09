@@ -16,13 +16,16 @@ namespace WebApiTorneus.Controllers
     {
         private readonly IMapper _mapper;
         private readonly FixtureService _fixtureService;
+        private readonly TorneoService _torneoService;
+
         private readonly FixtureTiempoReal _fixtureTiempoReal;
 
-        public FixtureController(IMapper mapper, FixtureService fixtureService, FixtureTiempoReal fixtureTiempoReal)
+        public FixtureController(IMapper mapper, FixtureService fixtureService, FixtureTiempoReal fixtureTiempoReal, TorneoService torneoService)
         {
             _mapper = mapper;
             _fixtureService = fixtureService;
             _fixtureTiempoReal = fixtureTiempoReal;
+            _torneoService = torneoService;
         }
 
 
@@ -77,10 +80,15 @@ namespace WebApiTorneus.Controllers
                 List<PartidoDTO> partidos = new();
 
                 partidos = _fixtureTiempoReal.ObtenerFixtureTorneo(torneoId);
+
                 if (partidos.Count == 0)
                 {
                     partidos = _mapper.Map<List<Partido>, List<PartidoDTO>>(await _fixtureService.ObtenerPartidosTorneo(torneoId));
-                    await _fixtureTiempoReal.CargarFixture(partidos);
+                    bool torneoCerrado = await _torneoService.TorneoEstaCerrado(torneoId);
+                    if (!torneoCerrado)
+                    {
+                        await _fixtureTiempoReal.CargarFixture(partidos);
+                    }
                 }
 
                 if (partidos == null) return BadRequest("No se pudo obtener el fixture. Cod 159");

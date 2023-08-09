@@ -266,8 +266,14 @@ namespace Negocio
             return listainscripciones;
         }
 
-      
 
+
+        public async Task<bool> TorneoEstaCerrado(int torneoId)
+        {
+            var torneo = await _db.Torneos.SingleOrDefaultAsync(w => w.Id == torneoId);
+
+            return torneo.Cerrrado;
+        }
 
 
 
