@@ -1,17 +1,19 @@
-﻿using BDTorneus;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using Negocio.DTOs;
-using TorneusClienteWeb.Servicios_de_Datos;
 
 namespace TorneusClienteWeb.Servicios
 {
     public class NotificacionesSignalRService
     {
         [Inject] private TorneoServicio _torneoServicio { get; set; }
+        [Inject] private FixtureServicio _fixtureServicio { get; set; }
 
-        public NotificacionesSignalRService(TorneoServicio torneoServicio)
+
+        public NotificacionesSignalRService(TorneoServicio torneoServicio, FixtureServicio fixtureServicio)
         {
             _torneoServicio = torneoServicio;
+            _fixtureServicio = fixtureServicio;
         }
 
         public async Task SuspenderTorneoSignalR(int torneoId)
@@ -21,6 +23,7 @@ namespace TorneusClienteWeb.Servicios
             {
                 cambioSuspendido.Suspendido = true;
             }
+
         }
 
         public async Task EliminarTorneoSignalR(int torneoId)
@@ -53,7 +56,17 @@ namespace TorneusClienteWeb.Servicios
             _torneoServicio.ObtenerTorneos()[posicion].HabilitacionInscripcion = habilitacionTorneo;
         }
 
-
+        #region Fixture
+        public void ActualizarPartidosSignalR(List<PartidoDTO> partidos)
+        {
+            foreach (var partido in partidos)
+            {
+                _fixtureServicio.SetPartidos(partido);
+            }
+            _fixtureServicio.ActualizarListadoPartidosFront();  
+        }
+     
+        #endregion
 
 
 

@@ -198,8 +198,12 @@
                 {
                     _nav.NavigateTo("/ORGANIZADOR/EleccionModalidadJuego");
                 }
-
                 
+            }
+
+            if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.EQUIPO.ToString())
+            {
+                _nav.NavigateTo("/PartidosTiempoReal");
             }
 
         }
@@ -219,7 +223,6 @@
 
     private async Task Inscribirme()
     {
-
         try
         {
             int equipoId = 0;

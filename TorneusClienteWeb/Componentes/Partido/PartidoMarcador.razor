@@ -1,8 +1,10 @@
 ﻿@inject TorneoServicio _servicioTorneo
 @inject FixtureServicio _servicioFixture
+@inject UsuarioServicio _servicioUsuario
 @inject IConfiguration _config
 @inject ISnackbar _snackBar
-
+@inject HubConnection _hubConnection
+@inject NotificacionesSignalRService _servicioNotificacionesSignalR
 
 
 @if (Partido != null)
@@ -18,7 +20,7 @@
         </div>
 
         <div class="medio caja">
-            <p class="gridContainerFecha">10/01/2023</p>
+            <p class="gridContwainerFecha">10/01/2023</p>
             <p title="@Partido.HistorialSet">VS</p>
             <p>00:00</p>
             <p>@Partido.NombreCancha</p>
@@ -66,13 +68,17 @@
             </div>
             <EspacioVertical Altura="20px" />
         }
-        @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
+
+        @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
         {
-            <div class="playPartido">
-                <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
-                    <img src="/imagenes/@ImagenPlay" alt="" class="imgPlay">
-                </a>
-            </div>
+            @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
+            {
+                <div class="playPartido">
+                    <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
+                        <img src="/imagenes/@ImagenPlay" alt="" class="imgPlay">
+                    </a>
+                </div>
+            }
         }
        
     </div>
@@ -127,6 +133,11 @@
 
         puntajeMaximoSegunSet = PuntajeMax;
         if (Partido.PuntajeLocal > 0 || Partido.PuntajeVisitante > 0) EsconderIconoPlay = true;
+
+        _hubConnection.On<List<PartidoDTO>>("RecibirActualizarPartidos", async (partidos) =>
+      {
+          _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
+      });
     }
 
     private string ActualizarLinkImagen(string imagenRef)
@@ -159,19 +170,24 @@
         {
             _snackBar.Add("Todavia no hay dos equipos confirmados", Severity.Info);
         }
+        await ActualizarPartidosTiempoReal();
     }
 
     private async Task AumentarMarcador(string tipoEquipo)
     {
-        if (tipoEquipo == "LOCAL")
+        if(_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
         {
-            Partido.MarcadorLocal += 1;
+            if (tipoEquipo == "LOCAL")
+            {
+                Partido.MarcadorLocal += 1;
+            }
+            else
+            {
+                Partido.MarcadorVisitante += 1;
+            }
+
+            await VerificarFinalPorSet();
         }
-        else
-        {
-            Partido.MarcadorVisitante += 1;
-        }
-        await VerificarFinalPorSet();
     }
 
     private async Task DecrementarMarcador(string tipoEquipo)
@@ -198,7 +214,6 @@
 
     private async Task VerificarFinalPorSet()
     {
-
         if (Partido.MarcadorLocal == puntajeMaximoSegunSet -1 && Partido.MarcadorVisitante == puntajeMaximoSegunSet - 1)
         {
             ModalidadTantosPorDiferencia = true;
@@ -217,6 +232,7 @@
                 ResetearMarcador();
                 await VerificarFinalPartido();
             }
+            await ActualizarPartidosTiempoReal();
             return;
         }
 
@@ -230,6 +246,7 @@
             Partido.SetGanadosVisitante += 1;
             ResetearMarcador();
         }
+       await ActualizarPartidosTiempoReal();
         await VerificarFinalPartido();
     }
 
@@ -276,7 +293,10 @@
         await _servicioFixture.TerminoPartido(Partido);
     }
 
-   
+    private async Task ActualizarPartidosTiempoReal()
+    {
+        await _servicioFixture.ActualizacionPartidosTiempoReal(new List<PartidoDTO>(){Partido});
+    }
 
 
 }

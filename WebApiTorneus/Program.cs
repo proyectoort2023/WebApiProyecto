@@ -11,6 +11,7 @@ using System.Text.Json.Serialization;
 using WebApiTorneus.AMProfile;
 using WebApiTorneus.BackgroundServices;
 using WebApiTorneus.HubSignalR;
+using WebApiTorneus.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -97,6 +98,8 @@ builder.Services.AddScoped<EquipoService>();
 builder.Services.AddScoped<JugadorService>();
 builder.Services.AddScoped<MedioPagoService>();
 builder.Services.AddScoped<FixtureService>();
+
+builder.Services.AddSingleton<FixtureTiempoReal>();
 
 
 var app = builder.Build();
