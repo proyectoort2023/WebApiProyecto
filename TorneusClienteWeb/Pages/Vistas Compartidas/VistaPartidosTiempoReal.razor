@@ -2,6 +2,8 @@
 @inject ServicioMenu _servicioMenu
 @inject TorneoServicio _servicioTorneo
 @inject FixtureServicio _servicioFixture
+@inject HubConnection _hubConnection;
+@inject UsuarioServicio _servicioUsuario
 
 
 @if (Partidos == null)
@@ -30,17 +32,52 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        bool resultado = await _servicioFixture.ObtenerFixtureTorneoDatos();
-        if (!resultado) throw new Exception("No se pudo obtener el fixture");
 
-        Partidos = _servicioFixture.ObtenerPartidos();
+        if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.EQUIPO.ToString())
+        {
+            await PeticionPartidosTiempoReal();
+        }
+        else
+        {
+            Partidos = _servicioFixture.ObtenerPartidos();
+            await CargaInicial();
+        }
+
+    }
+
+    private async Task PeticionPartidosTiempoReal()
+    {
+
+        _hubConnection.On<int>("RecibidorPeticionPartidosTorneo", async (torneoId) =>
+             {
+                 if (_servicioTorneo.ObtenerTorneoActual().Id == torneoId && _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+                 {
+                     await _hubConnection.SendAsync("EnviarTodosLosPartidosDeTorneo", Partidos);
+                 }
+             });
+
+        _hubConnection.On<List<PartidoDTO>>("RecibidorTodosLosPartidosDeTorneo", async (partidos) =>
+                {
+                    if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.EQUIPO.ToString() && partidos[0].Torneo.Id == _servicioTorneo.ObtenerTorneoActual().Id)
+                    {
+                        _servicioFixture.SetPartidossTodos(partidos);
+                        Actualizar();
+                    }
+            });
+
+        await _hubConnection.SendAsync("EnviarPeticionPartidosTorneo", _servicioTorneo.ObtenerTorneoActual().Id);
+  
+    }
+
+    private async Task CargaInicial()
+    {
         await _servicioFixture.CrearTablaPosiciones();
         _servicioFixture.OnActualizarPartidosEvent += Actualizar;
     }
 
-    private async Task SiguientePartido(PartidoDTO partidoFinalizado)
+    private void SiguientePartido()
     {
-
+        
     }
 
     private void Actualizar()

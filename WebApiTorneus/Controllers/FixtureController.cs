@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Negocio;
 using Negocio.DTOs;
+using WebApiTorneus.Services;
 using static Utilidades.Util;
 
 namespace WebApiTorneus.Controllers
@@ -15,11 +16,13 @@ namespace WebApiTorneus.Controllers
     {
         private readonly IMapper _mapper;
         private readonly FixtureService _fixtureService;
+        private readonly FixtureTiempoReal _fixtureTiempoReal;
 
-        public FixtureController(IMapper mapper, FixtureService fixtureService)
+        public FixtureController(IMapper mapper, FixtureService fixtureService, FixtureTiempoReal fixtureTiempoReal)
         {
             _mapper = mapper;
             _fixtureService = fixtureService;
+            _fixtureTiempoReal = fixtureTiempoReal;
         }
 
 
@@ -71,7 +74,14 @@ namespace WebApiTorneus.Controllers
         {
             try
             {
-               List<PartidoDTO> partidos = _mapper.Map<List<Partido>, List<PartidoDTO>>(await _fixtureService.ObtenerPartidosTorneo(torneoId));
+                List<PartidoDTO> partidos = new();
+
+                partidos = _fixtureTiempoReal.ObtenerFixtureTorneo(torneoId);
+                if (partidos.Count == 0)
+                {
+                    partidos = _mapper.Map<List<Partido>, List<PartidoDTO>>(await _fixtureService.ObtenerPartidosTorneo(torneoId));
+                    await _fixtureTiempoReal.CargarFixture(partidos);
+                }
 
                 if (partidos == null) return BadRequest("No se pudo obtener el fixture. Cod 159");
 

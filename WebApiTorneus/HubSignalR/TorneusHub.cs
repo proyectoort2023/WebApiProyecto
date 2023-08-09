@@ -1,11 +1,18 @@
 ﻿using DTOs_Compartidos.Models;
 using Microsoft.AspNetCore.SignalR;
 using Negocio.DTOs;
+using WebApiTorneus.Services;
 
 namespace WebApiTorneus.HubSignalR
 {
     public class TorneusHub : Hub
     {
+        private readonly FixtureTiempoReal _fixtureTiempoReal;
+
+        public TorneusHub(FixtureTiempoReal fixtureTiempoReal)
+        {
+            _fixtureTiempoReal = fixtureTiempoReal;
+        }
 
         public async Task EnviarMensajeCierreInscripciones(string torneoId)
         {
@@ -74,6 +81,13 @@ namespace WebApiTorneus.HubSignalR
         {
             await Clients.All.SendAsync("RecibidorNotificacionMercadoPago", webHook);
         }
+
+        public async Task EnviarActualizarPartidos(List<PartidoDTO> partidos)
+        {
+            await _fixtureTiempoReal.ActualizarPartidos(partidos);
+            await Clients.All.SendAsync("RecibirActualizarPartidos", partidos);
+        }
+
 
     }
 }

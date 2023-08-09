@@ -2,8 +2,10 @@
 using DTOs_Compartidos.Models;
 using FixtureNegocio;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Options;
 using Negocio.DTOs;
+using System.Drawing.Text;
 using System.Text.RegularExpressions;
 using TorneusClienteWeb.Servicios_de_Datos;
 using Utilidades;
@@ -21,20 +23,41 @@ namespace TorneusClienteWeb.Servicios
         public event Action OnActualizarPartidosEvent;
 
         [Inject] private TorneoServicio _torneoServicio { get; set; }
+        [Inject] private HubConnection _hubConnection { get; set; }
 
-        public FixtureServicio(TorneoServicio torneoServicio, TorneoServicioDatos torneoServiceDatos, FixtureServicioDatos fixtureServicioDatos)
+
+        public FixtureServicio(TorneoServicio torneoServicio, TorneoServicioDatos torneoServiceDatos, FixtureServicioDatos fixtureServicioDatos, HubConnection hubConnection)
         {
             _torneoServicio = torneoServicio;
             _torneoServiceDatos = torneoServiceDatos;
             _fixtureServicioDatos = fixtureServicioDatos;
-
+            _hubConnection = hubConnection;
         }
+
         public List<PartidoDTO> ObtenerPartidos()
         {
             return Partidos;
         }
 
-        public async Task<bool> ArmarFixtureGrupoEliminacionDirecta(List<SelectEquipo> selectEquipos, int cantidadGrupos)
+        public void SetPartidos(PartidoDTO partido)
+        {
+            int indiceBuscado = BuscarIndicePartido(partido.Id);
+            Partidos[indiceBuscado] = partido;
+            //  ver si es necesatio un statehaschanged
+        }
+
+        public void SetPartidossTodos(List<PartidoDTO> partidos)
+        {
+            Partidos = partidos;
+        }
+
+        private int BuscarIndicePartido(int partidoId)
+        {
+            return Partidos.FindIndex(f => f.Id == partidoId);
+        }
+
+
+            public async Task<bool> ArmarFixtureGrupoEliminacionDirecta(List<SelectEquipo> selectEquipos, int cantidadGrupos)
         {
             try
             {
@@ -62,13 +85,12 @@ namespace TorneusClienteWeb.Servicios
 
                 Partidos.AddRange(partidosUltimaFase);
 
-                int cantidadCanchas = _torneoServicio.ObtenerTorneoActual().CantidadCanchas;
+                //int cantidadCanchas = _torneoServicio.ObtenerTorneoActual().CantidadCanchas;
 
-                for (int i = 0; i < cantidadCanchas; i++)
-                {
-                    Partidos[i].EstadoPartido = Util.EstadoPartido.POR_COMENZAR.ToString(); //esto quiere decir que el siguiente partido si no tiene siguienteGuid, se tiene que iniciar en el siguiente partido pendiente
-                }
-              
+                //for (int i = 0; i < cantidadCanchas; i++)
+                //{
+                //    Partidos[i].EstadoPartido = Util.EstadoPartido.POR_COMENZAR.ToString(); //esto quiere decir que el siguiente partido si no tiene siguienteGuid, se tiene que iniciar en el siguiente partido pendiente
+                //}
 
                 return true;
             }
@@ -77,6 +99,66 @@ namespace TorneusClienteWeb.Servicios
                 throw new Exception(ex.Message);
             }
            
+        }
+
+        public async Task<bool> ArmarFixtureTodosContraTodos(List<EquipoDTO> equipos)
+        {
+            try
+            {
+                if (equipos.Count < 3) throw new Exception("Debe tener un minimo de 3 equipos");
+
+                Partidos = new List<PartidoDTO>();
+
+                FixtureGrupos fixture = new();
+
+                FixtureEliminacionDirecta fixtureElimDirecta = new();
+
+                List<GrupoEquipos> grupoequipos = new();
+
+                GrupoEquipos grupoEquipos = new()
+                {
+                    Grupo = "A",
+                    Equipos = equipos
+                };
+
+                grupoequipos.Add(grupoEquipos);
+
+                Partidos = fixture.Crear(grupoequipos);
+
+                int cantidadEquiposUltimaFase = CantidadEquiposUltimaFase(1);
+
+
+                List<PartidoDTO> partidosUltimaFase = fixtureElimDirecta.CrearComoSegundaFase(cantidadEquiposUltimaFase);
+
+                Partidos.AddRange(partidosUltimaFase);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        public async Task<bool> ArmarFixtureEliminacionDirecta(List<EquipoDTO> equipos)
+        {
+            try
+            {
+                if (equipos.Count < 2) throw new Exception("Debe tener un minimo de 2 equipos");
+
+                Partidos = new List<PartidoDTO>();
+
+                FixtureEliminacionDirecta fixtureElimDirecta = new();
+
+                Partidos = fixtureElimDirecta.Crear(equipos);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
 
         private bool VerificarMinimoPorGrupo(List<SelectEquipo> selectEquipos)
@@ -111,6 +193,10 @@ namespace TorneusClienteWeb.Servicios
             {
                 incrementador++;
                 valor = Math.Pow(2, incrementador);
+            }
+            if (cantidad == 1)
+            {
+                valor = 2;
             }
 
             return (int)valor;
@@ -147,7 +233,7 @@ namespace TorneusClienteWeb.Servicios
                     TorneoId = _torneoServicio.ObtenerTorneoActual().Id,
                     Fixture = Partidos
                 };
-                List<PartidoDTO> partidosCreados = await _fixtureServicioDatos.CrearFixtureTorneo( partidoTorneo);
+                List<PartidoDTO> partidosCreados = await _fixtureServicioDatos.CrearFixtureTorneo(partidoTorneo);
                 Partidos = partidosCreados;
                 return true;
             }
@@ -209,12 +295,16 @@ namespace TorneusClienteWeb.Servicios
                 bool etapaGruposFinalizada = EtapaGrupoEstaFinalizada();
 
                 if (etapaGruposFinalizada) await SiguienteEtapa();
+
+                await ActualizacionPartidosTiempoReal(new List<PartidoDTO>() { partidoFinalizado });
+
             }
             else
             {
                 await DesignarSiguientePartido(partidoFinalizado);
             }
 
+           
         }
 
         private async Task DesignarSiguientePartido(PartidoDTO partidoFinalizado)
@@ -237,14 +327,14 @@ namespace TorneusClienteWeb.Servicios
                         Partidos[indiceSigPartido].EquipoVisitante = equipoGanador;
                     }
                 }
-                   
-               }
+                await ActualizacionPartidosTiempoReal(new List<PartidoDTO>() { partidoFinalizado, Partidos[indiceSigPartido] });
+            }
                 //actualizar los partidos siguientes a donde hacen referencia y actualizar en un evento general 
                if (partidoFinalizado.PartidoSigPerdedor != Guid.Empty)
             {
                 //actualizo si es doble eliminacion
             }
-            ActualizarListadoPartidosFront();
+           // ActualizarListadoPartidosFront();
         }
 
         private int ObtenerIndiceGuidartido(Guid guid)
@@ -381,12 +471,17 @@ namespace TorneusClienteWeb.Servicios
             return equiposSegundosMejores;
         }
 
-        private void ActualizarListadoPartidosFront()
+        public void ActualizarListadoPartidosFront()
         {
             OnActualizarPartidosEvent?.Invoke();
         }
 
         #endregion
+
+        public async Task ActualizacionPartidosTiempoReal(List<PartidoDTO> partidos)
+        {
+            await _hubConnection.SendAsync("EnviarActualizarPartidos", partidos);
+        }
 
 
     }
