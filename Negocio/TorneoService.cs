@@ -53,6 +53,8 @@ namespace Negocio
                 if (usuarioBuscado == null) throw new Exception("El usuario organizador no existe");
 
                 torneo.Usuario = usuarioBuscado;
+                torneo.Otros = string.IsNullOrEmpty(torneo.Otros) ? "" : torneo.Otros;
+                torneo.UbicacionGPS = string.IsNullOrEmpty(torneo.UbicacionGPS) ? "" : torneo.UbicacionGPS;
                 _db.Entry(torneo.Usuario).State = EntityState.Unchanged;
 
                 var torneoNuevo = await _db.Torneos.AddAsync(torneo);
