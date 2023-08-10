@@ -59,11 +59,15 @@ namespace TorneusClienteWeb.Servicios
         #region Fixture
         public void ActualizarPartidosSignalR(List<PartidoDTO> partidos)
         {
-            foreach (var partido in partidos)
+            if (_torneoServicio.ObtenerTorneoActual().Id == partidos[0].Torneo.Id)
             {
-                _fixtureServicio.SetPartidos(partido);
+                foreach (var partido in partidos)
+                {
+                    _fixtureServicio.SetPartidos(partido);
+                }
+                _fixtureServicio.ActualizarListadoPartidosFront();
             }
-            _fixtureServicio.ActualizarListadoPartidosFront();  
+          
         }
      
         #endregion
