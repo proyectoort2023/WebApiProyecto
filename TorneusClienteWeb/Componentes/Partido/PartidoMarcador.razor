@@ -7,6 +7,7 @@
 @inject NotificacionesSignalRService _servicioNotificacionesSignalR
 
 
+
 @if (Partido != null)
 {
     <div class="gridContainer">
@@ -31,7 +32,7 @@
         </div>
 
         <div class="loc caja">
-            <p>@((Partido.EquipoVisitante == null || Partido.EquipoVisitante.Id == 0) ? MensajeEsperandoContrincante() : Partido.EquipoVisitante.Abreviatura))</p>
+            <p>@((Partido.EquipoVisitante == null || Partido.EquipoVisitante.Id == 0) ? MensajeEsperandoContrincante() : Partido.EquipoVisitante.Abreviatura)</p>
             <img src="@((Partido.EquipoVisitante == null || Partido.EquipoVisitante.Id == 0) ?  EscudoVacio() : ActualizarLinkImagen(Partido.EquipoVisitante.Logo))" alt="" class="imgLogosEquipos">
         </div>
 
@@ -108,7 +109,6 @@
     private int puntajeMaximoSegunSet = 0;
 
     private bool EsconderIconoPlay = true;
-    private bool ModalidadTantosPorDiferencia = false;
 
     private string ImagenPlay = "play.png";
 
@@ -135,9 +135,10 @@
         if (Partido.PuntajeLocal > 0 || Partido.PuntajeVisitante > 0) EsconderIconoPlay = true;
 
         _hubConnection.On<List<PartidoDTO>>("RecibirActualizarPartidos", async (partidos) =>
-      {
-          _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
-      });
+        {
+            _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
+        });
+
     }
 
     private string ActualizarLinkImagen(string imagenRef)
@@ -185,8 +186,8 @@
             {
                 Partido.MarcadorVisitante += 1;
             }
-
             await VerificarFinalPorSet();
+            //await ActualizarPartidosTiempoReal();
         }
     }
 
@@ -209,17 +210,11 @@
         Partido.MarcadorVisitante = 0;
         Partido.SetActual += 1;
         puntajeMaximoSegunSet = Partido.SetActual == SetsMax ? PuntajeMaxDefinitorio : PuntajeMax;
-        ModalidadTantosPorDiferencia = false;
     }
 
     private async Task VerificarFinalPorSet()
     {
-        if (Partido.MarcadorLocal == puntajeMaximoSegunSet -1 && Partido.MarcadorVisitante == puntajeMaximoSegunSet - 1)
-        {
-            ModalidadTantosPorDiferencia = true;
-        }
-
-        if (ModalidadTantosPorDiferencia)
+        if (Partido.MarcadorLocal >= puntajeMaximoSegunSet -1 && Partido.MarcadorVisitante >= puntajeMaximoSegunSet - 1)
         {
             int diferenciaTantosLocal = Partido.MarcadorLocal - Partido.MarcadorVisitante;
             int diferenciaTantosVisitante = Partido.MarcadorVisitante - Partido.MarcadorLocal;
@@ -232,7 +227,7 @@
                 ResetearMarcador();
                 await VerificarFinalPartido();
             }
-            await ActualizarPartidosTiempoReal();
+             await ActualizarPartidosTiempoReal();
             return;
         }
 
@@ -246,8 +241,8 @@
             Partido.SetGanadosVisitante += 1;
             ResetearMarcador();
         }
-       await ActualizarPartidosTiempoReal();
-        await VerificarFinalPartido();
+      // await ActualizarPartidosTiempoReal();
+       await VerificarFinalPartido();
     }
 
     private async Task VerificarFinalPartido()

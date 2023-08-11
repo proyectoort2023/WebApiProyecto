@@ -2,6 +2,7 @@
 @inject ServicioMenu _servicioMenu
 @inject TorneoServicio _servicioTorneo
 @inject FixtureServicio _servicioFixture
+@inject NotificacionesSignalRService _servicioNotificacionesSignalR
 @inject HubConnection _hubConnection;
 @inject UsuarioServicio _servicioUsuario
 
@@ -40,6 +41,9 @@ else
          Partidos = _servicioFixture.ObtenerPartidos();
         await _servicioFixture.CrearTablaPosiciones();
         _servicioFixture.OnActualizarPartidosEvent += Actualizar;
+
+
+      
     }
 
     private void SiguientePartido()
@@ -49,6 +53,7 @@ else
 
     private void Actualizar()
     {
+        Partidos = _servicioFixture.ObtenerPartidos();
         StateHasChanged();
     }
 

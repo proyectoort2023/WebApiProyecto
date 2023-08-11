@@ -289,33 +289,39 @@ namespace TorneusClienteWeb.Servicios
 
         public async Task TerminoPartido(PartidoDTO partidoFinalizado)
         {
+            List<PartidoDTO> partidosActualizar = new();
+            
+
           if (!string.IsNullOrEmpty(partidoFinalizado.Grupo))
             {
                 await ActualizarTablaPosiciones(partidoFinalizado);
                 bool etapaGruposFinalizada = EtapaGrupoEstaFinalizada();
 
-                if (etapaGruposFinalizada) await SiguienteEtapa();
-
-                await ActualizacionPartidosTiempoReal(new List<PartidoDTO>() { partidoFinalizado });
-
+                if (etapaGruposFinalizada)
+                {
+                    partidosActualizar = await SiguienteEtapa();
+                }
             }
             else
             {
-                await DesignarSiguientePartido(partidoFinalizado);
+                partidosActualizar = await DesignarEquipoASiguientePartido(partidoFinalizado);
             }
-
-           
+            partidosActualizar.Add(partidoFinalizado);
+            await ActualizacionPartidosTiempoReal(partidosActualizar);
         }
 
-        private async Task DesignarSiguientePartido(PartidoDTO partidoFinalizado)
+        private async Task<List<PartidoDTO>> DesignarEquipoASiguientePartido(PartidoDTO partidoFinalizado)
         {
+
+            List<PartidoDTO> partidosActualizar = new();
+
             EquipoDTO equipoGanador = partidoFinalizado.PuntajeLocal > partidoFinalizado.PuntajeVisitante ? partidoFinalizado.EquipoLocal : 
                                                                                                             partidoFinalizado.EquipoVisitante;
 
 
             if (partidoFinalizado.PartidoSigGanador != Guid.Empty)
             {
-                int indiceSigPartido = ObtenerIndiceGuidartido(partidoFinalizado.PartidoSigGanador);
+                int indiceSigPartido = ObtenerIndiceGuidPartido(partidoFinalizado.PartidoSigGanador);
                 if (Partidos[indiceSigPartido] != null)
                 {
                     if (Partidos[indiceSigPartido].EquipoLocal.Id == 0)
@@ -327,17 +333,18 @@ namespace TorneusClienteWeb.Servicios
                         Partidos[indiceSigPartido].EquipoVisitante = equipoGanador;
                     }
                 }
-                await ActualizacionPartidosTiempoReal(new List<PartidoDTO>() { partidoFinalizado, Partidos[indiceSigPartido] });
+                partidosActualizar.Add(Partidos[indiceSigPartido]);
             }
-                //actualizar los partidos siguientes a donde hacen referencia y actualizar en un evento general 
-               if (partidoFinalizado.PartidoSigPerdedor != Guid.Empty)
-            {
-                //actualizo si es doble eliminacion
-            }
-           // ActualizarListadoPartidosFront();
+
+            return partidosActualizar;
+            //actualizar los partidos siguientes a donde hacen referencia y actualizar en un evento general 
+            //   if (partidoFinalizado.PartidoSigPerdedor != Guid.Empty)
+            //{
+            //    //actualizo si es doble eliminacion
+            //}
         }
 
-        private int ObtenerIndiceGuidartido(Guid guid)
+        private int ObtenerIndiceGuidPartido(Guid guid)
         {
             return Partidos.FindIndex(f => f.GuidPartido == guid);
         }
@@ -385,9 +392,10 @@ namespace TorneusClienteWeb.Servicios
             return lista;
         }
 
-        private async Task SiguienteEtapa()
+        private async Task<List<PartidoDTO>> SiguienteEtapa()
         {
             List<EquipoDTO> equiposSegundaFase = new List<EquipoDTO>();
+            List<PartidoDTO> partidosActualizar = new List<PartidoDTO>();
 
             int cantidadGrupos = TablaPosiciones.Select(s => s.Grupo).Distinct().Count();
 
@@ -429,9 +437,10 @@ namespace TorneusClienteWeb.Servicios
                     //}
                     Partidos[indicePartido].EquipoLocal = equiposSegundaFase[i];
                     Partidos[indicePartido].EquipoVisitante = equiposSegundaFase[i+1];
+                    partidosActualizar.Add(Partidos[indicePartido]);
                 }
             }
-            ActualizarListadoPartidosFront();
+            return partidosActualizar;
         }
 
         private int ObtenerIndicePartido(int partidoId)
