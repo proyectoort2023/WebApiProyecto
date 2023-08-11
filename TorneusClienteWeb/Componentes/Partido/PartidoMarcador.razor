@@ -186,9 +186,39 @@
             {
                 Partido.MarcadorVisitante += 1;
             }
-            await VerificarFinalPorSet();
-            //await ActualizarPartidosTiempoReal();
+            bool finalSet = await VerificarFinalSet();
+
+
+            if (finalSet)
+            {
+                Partido.SetGanadosLocal = Partido.MarcadorLocal > Partido.MarcadorVisitante ? Partido.SetGanadosLocal + 1 : Partido.SetGanadosLocal;
+                Partido.SetGanadosVisitante = Partido.MarcadorVisitante > Partido.MarcadorLocal ? Partido.SetGanadosVisitante + 1 : Partido.SetGanadosVisitante;
+                await ResetearMarcador();
+            }
+
+            bool finalPartido = await VerificarFinalPartido();
+            if (finalPartido)
+            {
+                await TerminarPartido();
+            }
+            else
+            {
+               await ActualizarPartidosTiempoReal();
+            }
         }
+    }
+
+    private async Task<bool> VerificarFinalSet()
+    {
+        if (Partido.MarcadorLocal >= puntajeMaximoSegunSet - 1 && Partido.MarcadorVisitante >= puntajeMaximoSegunSet - 1)
+        {
+            if (Math.Abs(Partido.MarcadorLocal - Partido.MarcadorVisitante) == 2) return true;
+        }
+        else
+        {
+            if (Partido.MarcadorLocal >= puntajeMaximoSegunSet || Partido.MarcadorVisitante >= puntajeMaximoSegunSet) return true;
+        }
+        return false;
     }
 
     private async Task DecrementarMarcador(string tipoEquipo)
@@ -203,89 +233,31 @@
         }
     }
 
-    private async void ResetearMarcador()
+    private async Task ResetearMarcador()
     {
         Partido.HistorialSet += $"[{Partido.MarcadorLocal}-{Partido.MarcadorVisitante}]  ";
         Partido.MarcadorLocal = 0;
         Partido.MarcadorVisitante = 0;
         Partido.SetActual += 1;
-        puntajeMaximoSegunSet = Partido.SetActual == SetsMax ? PuntajeMaxDefinitorio : PuntajeMax;
+        puntajeMaximoSegunSet = Partido.SetActual == SetsMax ? PuntajeMaxDefinitorio : PuntajeMax;  //resolver esto para tiempo real
     }
 
-    private async Task VerificarFinalPorSet()
+    private async Task<bool> VerificarFinalPartido()
     {
-        if (Partido.MarcadorLocal >= puntajeMaximoSegunSet -1 && Partido.MarcadorVisitante >= puntajeMaximoSegunSet - 1)
-        {
-            int diferenciaTantosLocal = Partido.MarcadorLocal - Partido.MarcadorVisitante;
-            int diferenciaTantosVisitante = Partido.MarcadorVisitante - Partido.MarcadorLocal;
-
-            Partido.SetGanadosLocal = diferenciaTantosLocal == 2 ? Partido.SetGanadosLocal + 1 : Partido.SetGanadosLocal;
-            Partido.SetGanadosVisitante = diferenciaTantosVisitante == 2 ? Partido.SetGanadosVisitante + 1 : Partido.SetGanadosVisitante;
-
-            if (diferenciaTantosLocal == 2 || diferenciaTantosVisitante == 2)
-            {
-                ResetearMarcador();
-                await VerificarFinalPartido();
-            }
-             await ActualizarPartidosTiempoReal();
-            return;
-        }
-
-        if (Partido.MarcadorLocal >= puntajeMaximoSegunSet)
-        {
-            Partido.SetGanadosLocal += 1;
-            ResetearMarcador();
-        }
-        if (Partido.MarcadorVisitante >= puntajeMaximoSegunSet)
-        {
-            Partido.SetGanadosVisitante += 1;
-            ResetearMarcador();
-        }
-      // await ActualizarPartidosTiempoReal();
-       await VerificarFinalPartido();
+        if (Partido.SetActual > SetsMax || Partido.SetGanadosLocal == setDiferencia || Partido.SetGanadosVisitante == setDiferencia) return true;
+       
+        return false;
     }
 
-    private async Task VerificarFinalPartido()
+    private async Task TerminarPartido()
     {
-
-        if (Partido.SetGanadosLocal == setDiferencia)
-        {
-            Partido.PuntajeLocal = 2;
-            Partido.PuntajeVisitante = 1;
-            TerminarPartido();
-            return;
-        }
-
-        if (Partido.SetGanadosVisitante == setDiferencia)
-        {
-            Partido.PuntajeLocal = 1;
-            Partido.PuntajeVisitante = 2;
-            TerminarPartido();
-            return;
-        }
-
-        if (Partido.SetActual > SetsMax)
-        {
-            if (Partido.SetGanadosLocal > Partido.SetGanadosVisitante)
-            {
-                Partido.PuntajeLocal = 2;
-                Partido.PuntajeVisitante = 1;
-            }
-            else
-            {
-                Partido.PuntajeVisitante = 1;
-                Partido.PuntajeVisitante = 2;
-            }
-            TerminarPartido();
-        }
-    }
-
-    private async void TerminarPartido()
-    {
+        Partido.PuntajeLocal = Partido.SetGanadosLocal > Partido.SetGanadosVisitante ? 2 : 1;
+        Partido.PuntajeVisitante = Partido.SetGanadosVisitante > Partido.SetGanadosLocal ? 2 : 1;
         Partido.EstadoPartido = Util.EstadoPartido.FINALIZADO.ToString();
         EsconderIconoPlay = false;
         Partido.Fin = DateTime.Now;
-        await _servicioFixture.TerminoPartido(Partido);
+        await ActualizarPartidosTiempoReal();
+        //await _servicioFixture.TerminoPartido(Partido);
     }
 
     private async Task ActualizarPartidosTiempoReal()
