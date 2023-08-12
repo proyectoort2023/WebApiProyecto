@@ -71,7 +71,7 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">No se obtener el listado</response>
         [ProducesResponseType(typeof(List<PartidoDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "ORGANIZADOR")]
+        [Authorize]
         [HttpGet("ListadoPartidos/{torneoId}")]
         public async Task<IActionResult> ListadoPartidos(int torneoId)
         {

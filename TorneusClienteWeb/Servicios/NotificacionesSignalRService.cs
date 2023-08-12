@@ -57,13 +57,17 @@ namespace TorneusClienteWeb.Servicios
         }
 
         #region Fixture
-        public void ActualizarPartidosSignalR(List<PartidoDTO> partidos)
+        public async Task ActualizarPartidosSignalR(List<PartidoDTO> partidos)
         {
-            foreach (var partido in partidos)
+            if (_torneoServicio.ObtenerTorneoActual().Id == partidos[0].Torneo.Id)
             {
-                _fixtureServicio.SetPartidos(partido);
+                foreach (var partido in partidos)
+                {
+                    await _fixtureServicio.SetPartidos(partido);
+                }
+                await _fixtureServicio.ActualizarListadoPartidosFront();
             }
-            _fixtureServicio.ActualizarListadoPartidosFront();  
+          
         }
      
         #endregion

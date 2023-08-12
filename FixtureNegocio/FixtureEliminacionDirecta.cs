@@ -24,16 +24,6 @@ namespace FixtureNegocio
             int cantRondas = CantidadRondasRecursivo(cantEquipos);
             int ajusteEqNoJueganPrimeraRonda = (int)Math.Pow(2, cantRondas) - cantEquipos;
 
-            //equipos.ForEach(equipo =>
-            //{
-            //    PartidoDTO partido = new()
-            //    {
-
-            //        RondaDescanso = true
-            //    };
-            //    partidosPorRonda.Add(partido);
-            //});
-
             partidosPorRonda = equipos.Select(equipo => new PartidoDTO()
                                                     {
                                                         EquipoLocal = equipo,
@@ -57,16 +47,6 @@ namespace FixtureNegocio
             int cantPartidos = cantEquipos - 1;
             int cantRondas = CantidadRondasRecursivo(cantEquipos);
             int ajusteEqNoJueganPrimeraRonda = (int)Math.Pow(2, cantRondas) - cantEquipos;
-
-            //equipos.ForEach(equipo =>
-            //{
-            //    PartidoDTO partido = new()
-            //    {
-
-            //        RondaDescanso = true
-            //    };
-            //    partidosPorRonda.Add(partido);
-            //});
 
             for(int i = 0; i < cantEquipos; i++)
             {
@@ -112,7 +92,7 @@ namespace FixtureNegocio
                  int partidosJugadosRonda = cantPartidosPorRonda - ajustePrimeraRonda;
 
                 //caso particular de ajuste de partidos
-                if (ajustePrimeraRonda > 0)
+                if (rondaActual == 1)
                 {
                     for (int i = 0; i < cantPartidosPorRonda - 1; i += 2)
                     {
@@ -120,7 +100,7 @@ namespace FixtureNegocio
                         PartidoDTO partido = new()
                         {
                             EquipoLocal = partidosPorRonda[i].EquipoLocal,
-                            EquipoVisitante = partidosPorRonda[i].EquipoLocal,
+                            EquipoVisitante = partidosPorRonda[i+1].EquipoLocal,
                             GuidPartido = Guid.NewGuid(),
                             Ronda = rondaActual,
                             RondaDescanso = false,
@@ -130,14 +110,17 @@ namespace FixtureNegocio
                     }
                
                 fixture.AddRange(auxFixturePorRonda);
-                auxFiltroFixturDescanso = partidosPorRonda.Skip(partidosJugadosRonda).Take(ajustePrimeraRonda).ToList();
-                auxFiltroFixturDescanso.ForEach(aux => aux.RondaDescanso = true);
-                auxFixturePorRonda.AddRange(auxFiltroFixturDescanso);
 
-                ajustePrimeraRonda = 0;
-
-                return CrearRecursivo(fixture,auxFixturePorRonda, ajustePrimeraRonda,cantidadRondas,rondaActual++);
+                if (ajustePrimeraRonda > 0)
+                {
+                    auxFiltroFixturDescanso = partidosPorRonda.Skip(partidosJugadosRonda).Take(ajustePrimeraRonda).ToList();
+                    auxFiltroFixturDescanso.ForEach(aux => aux.RondaDescanso = true);
+                    auxFixturePorRonda.AddRange(auxFiltroFixturDescanso);
                 }
+                ajustePrimeraRonda = 0;
+                rondaActual++;
+                return CrearRecursivo(fixture,auxFixturePorRonda, ajustePrimeraRonda,cantidadRondas,rondaActual);
+            }
 
 
             //caso comun
@@ -161,8 +144,9 @@ namespace FixtureNegocio
             }
 
             fixture.AddRange(auxFixturePorRonda);
+            rondaActual++;
 
-            return CrearRecursivo(fixture, auxFixturePorRonda, ajustePrimeraRonda, cantidadRondas, rondaActual++);
+            return CrearRecursivo(fixture, auxFixturePorRonda, ajustePrimeraRonda, cantidadRondas, rondaActual);
         }
 
 
