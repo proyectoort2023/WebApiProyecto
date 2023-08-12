@@ -10,7 +10,7 @@
 
 @if (Partido != null)
 {
-    <div class="gridContainer">
+    <div class="gridContainer @ColorActivo()">
         <div class="vis caja">
             <p>@((Partido.EquipoLocal == null || Partido.EquipoLocal.Id == 0) ? MensajeEsperandoContrincante() : Partido.EquipoLocal.Abreviatura)</p>
             <img src="@((Partido.EquipoLocal == null || Partido.EquipoLocal.Id == 0) ? EscudoVacio() : ActualizarLinkImagen(Partido.EquipoLocal.Logo))" alt="" class="imgLogosEquipos">
@@ -84,7 +84,7 @@
        
     </div>
 
-   <EspacioVertical Altura="15px" />
+   <EspacioVertical Altura="25px" />
 
 }
 
@@ -145,6 +145,8 @@
     {
         return $"{_config["UrlBaseParaImagenes"]}{imagenRef}";
     }
+
+    private string ColorActivo() => Partido.EstadoPartido == Util.EstadoPartido.EN_PROCESO.ToString() ? "color-partido-activo" : "";
 
     private string EscudoVacio() => "/imagenes/escudovacio.png";
 
