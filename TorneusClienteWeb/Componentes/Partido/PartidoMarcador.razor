@@ -72,7 +72,7 @@
 
         @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
         {
-            @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
+            @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null && Partido.EstadoPartido == Util.EstadoPartido.PENDIENTE.ToString())
             {
                 <div class="playPartido">
                     <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
