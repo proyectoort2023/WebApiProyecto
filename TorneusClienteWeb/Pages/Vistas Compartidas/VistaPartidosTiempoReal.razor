@@ -33,17 +33,14 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-            await CargaInicial();
+        await CargaInicial();
     }
 
     private async Task CargaInicial()
     {
-         Partidos = _servicioFixture.ObtenerPartidos();
+        Partidos = _servicioFixture.ObtenerPartidos();
         await _servicioFixture.CrearTablaPosiciones();
         _servicioFixture.OnActualizarPartidosEvent += Actualizar;
-
-
-      
     }
 
     private void SiguientePartido()

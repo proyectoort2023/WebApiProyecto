@@ -88,6 +88,5 @@ namespace WebApiTorneus.HubSignalR
             await Clients.All.SendAsync("RecibirActualizarPartidos", partidos);
         }
 
-
     }
 }

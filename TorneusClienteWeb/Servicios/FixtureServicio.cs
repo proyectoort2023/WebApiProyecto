@@ -39,7 +39,7 @@ namespace TorneusClienteWeb.Servicios
             return Partidos;
         }
 
-        public void SetPartidos(PartidoDTO partido)
+        public async Task SetPartidos(PartidoDTO partido)
         {
             int indiceBuscado = BuscarIndicePartido(partido.Id);
             Partidos[indiceBuscado] = partido;
@@ -287,7 +287,7 @@ namespace TorneusClienteWeb.Servicios
             return !(partidosEnProceso == cantidadCanchas);
         }
 
-        public async Task TerminoPartido(PartidoDTO partidoFinalizado)
+        public async Task<List<PartidoDTO>> TerminoPartido(PartidoDTO partidoFinalizado)
         {
             List<PartidoDTO> partidosActualizar = new();
             
@@ -306,8 +306,7 @@ namespace TorneusClienteWeb.Servicios
             {
                 partidosActualizar = await DesignarEquipoASiguientePartido(partidoFinalizado);
             }
-            partidosActualizar.Add(partidoFinalizado);
-            await ActualizacionPartidosTiempoReal(partidosActualizar);
+            return partidosActualizar;
         }
 
         private async Task<List<PartidoDTO>> DesignarEquipoASiguientePartido(PartidoDTO partidoFinalizado)
@@ -480,7 +479,7 @@ namespace TorneusClienteWeb.Servicios
             return equiposSegundosMejores;
         }
 
-        public void ActualizarListadoPartidosFront()
+        public async Task ActualizarListadoPartidosFront()
         {
             OnActualizarPartidosEvent?.Invoke();
         }

@@ -136,7 +136,7 @@
 
         _hubConnection.On<List<PartidoDTO>>("RecibirActualizarPartidos", async (partidos) =>
         {
-            _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
+            await _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
         });
 
     }
@@ -200,10 +200,11 @@
             if (finalPartido)
             {
                 await TerminarPartido();
+
             }
             else
             {
-               await ActualizarPartidosTiempoReal();
+                await ActualizarPartidosTiempoReal();
             }
         }
     }
@@ -245,7 +246,7 @@
     private async Task<bool> VerificarFinalPartido()
     {
         if (Partido.SetActual > SetsMax || Partido.SetGanadosLocal == setDiferencia || Partido.SetGanadosVisitante == setDiferencia) return true;
-       
+
         return false;
     }
 
@@ -256,13 +257,20 @@
         Partido.EstadoPartido = Util.EstadoPartido.FINALIZADO.ToString();
         EsconderIconoPlay = false;
         Partido.Fin = DateTime.Now;
-        await ActualizarPartidosTiempoReal();
-        //await _servicioFixture.TerminoPartido(Partido);
+        var partidos = await _servicioFixture.TerminoPartido(Partido);
+        await ActualizarPartidosTermino(partidos);
     }
 
     private async Task ActualizarPartidosTiempoReal()
     {
         await _servicioFixture.ActualizacionPartidosTiempoReal(new List<PartidoDTO>(){Partido});
+    }
+
+    private async Task ActualizarPartidosTermino(List<PartidoDTO> partidos)
+    {
+        if (partidos.Count > 0) await _servicioFixture.ActualizacionPartidosTiempoReal(partidos);
+        
+        await ActualizarPartidosTiempoReal();
     }
 
 
