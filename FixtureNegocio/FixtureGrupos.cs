@@ -59,9 +59,9 @@ namespace FixtureNegocio
         private List<PartidoDTO> PosicionPartidosAleatorios(List<PartidoDTO> partidos, List<PartidoDTO> partidosAux, int cantidad, bool faseInicial = true)
         {
             int repetidos = partidosAux.Select(p => p.Grupo).Distinct().Count();
-            Random random = new Random();
+            //Random random = new Random();
 
-            int index = random.Next(0, cantidad - 1);
+            int index = 0;
 
             if (cantidad == 1 || repetidos == 1)
             {
@@ -81,7 +81,7 @@ namespace FixtureNegocio
 
             while (ultimoPartidoGrupo == partidosAux[index].Grupo)
             {
-                index = random.Next(0,cantidad - 1);
+                index++;
             }
 
             partidos.Add(partidosAux[index]);

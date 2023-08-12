@@ -224,7 +224,7 @@ namespace TorneusClienteWeb.Servicios
         }
 
 
-        public async Task<bool> CrearFixture()
+        public async Task<bool> GuardarFixture()
         {
             try
             {
