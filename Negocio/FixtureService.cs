@@ -86,6 +86,47 @@ namespace Negocio
             }
         }
 
+        public async Task<bool> ActualizarPartido(Partido partido)
+        {
+            try
+            {
+                var partidoBuscado = await _db.Partidos.SingleOrDefaultAsync(s => s.Id == partido.Id);
+                
+                partidoBuscado.EquipoLocal = partido.EquipoLocal;
+                partidoBuscado.EquipoVisitante = partido.EquipoVisitante;
+                partidoBuscado.Fecha = partido.Fecha;
+                partidoBuscado.MarcadorLocal = partido.MarcadorLocal;
+                partidoBuscado.MarcadorVisitante = partido.MarcadorVisitante;
+                partidoBuscado.SetGanadosLocal = partido.SetGanadosLocal;
+                partidoBuscado.SetGanadosVisitante = partido.SetGanadosVisitante;
+                partidoBuscado.SetActual = partido.SetActual;
+                partidoBuscado.PuntajeLocal = partido.PuntajeLocal;
+                partidoBuscado.PuntajeVisitante = partido.PuntajeVisitante;
+                partidoBuscado.NombreCancha = partido.NombreCancha;
+                partidoBuscado.Inicio = partido.Inicio;
+                partidoBuscado.Fin = partido.Fin;
+                partidoBuscado.HistorialSet = partido.HistorialSet;
+                partidoBuscado.Ronda = partido.Ronda;
+                partidoBuscado.EstadoPartido = partido.EstadoPartido;
+                partidoBuscado.GuidPartido = partido.GuidPartido;
+                partidoBuscado.PartidoSigGanador = partido.PartidoSigGanador;
+                partidoBuscado.PartidoSigPerdedor = partido.PartidoSigPerdedor;
+                partidoBuscado.Grupo = partido.Grupo;
+
+                _db.Entry(partidoBuscado.EquipoLocal).State = EntityState.Unchanged;
+                _db.Entry(partidoBuscado.EquipoVisitante).State = EntityState.Unchanged;
+
+                int resultado = await _db.SaveChangesAsync();
+
+                return resultado > 0;
+            }
+            catch (Exception ex)
+             
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
 
 

@@ -10,7 +10,7 @@
 
 @if (Partido != null)
 {
-    <div class="gridContainer">
+    <div class="gridContainer @ColorActivo()">
         <div class="vis caja">
             <p>@((Partido.EquipoLocal == null || Partido.EquipoLocal.Id == 0) ? MensajeEsperandoContrincante() : Partido.EquipoLocal.Abreviatura)</p>
             <img src="@((Partido.EquipoLocal == null || Partido.EquipoLocal.Id == 0) ? EscudoVacio() : ActualizarLinkImagen(Partido.EquipoLocal.Logo))" alt="" class="imgLogosEquipos">
@@ -21,9 +21,10 @@
         </div>
 
         <div class="medio caja">
-            <p class="gridContwainerFecha">10/01/2023</p>
+            <p class="gridContwainerFecha">@Partido.Fecha.ToString("dd/MM/yyyy")</p>
             <p title="@Partido.HistorialSet">VS</p>
-            <p>00:00</p>
+            <p>@DuracionPartido()</p>
+            <p>@AdicionalInfoGrupo()</p>
             <p>@Partido.NombreCancha</p>
         </div>
 
@@ -45,6 +46,7 @@
 
         <div class="marcV caja">
             <a href="#" @onclick="() => AumentarMarcador(Util.LOCAL)"
+                        @ontouchmove="e => TouchDecrementador(e, Util.LOCAL)"
                         @onclick:preventDefault>
              <h2>@Partido.MarcadorLocal.ToString("00")</h2>
             </a>
@@ -58,6 +60,7 @@
 
         <div class="marcL caja">
                 <a href="#" @onclick="() => AumentarMarcador(Util.VISITANTE)"
+                            @ontouchmove="e => TouchDecrementador(e, Util.VISITANTE)"
                             @onclick:preventDefault>
                     <h2 >@Partido.MarcadorVisitante.ToString("00")</h2>
                 </a>
@@ -70,7 +73,7 @@
             <EspacioVertical Altura="20px" />
         }
 
-        @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+        @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
         {
             @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null && Partido.EstadoPartido == Util.EstadoPartido.PENDIENTE.ToString())
             {
@@ -84,7 +87,7 @@
        
     </div>
 
-   <EspacioVertical Altura="15px" />
+   <EspacioVertical Altura="25px" />
 
 }
 
@@ -113,6 +116,8 @@
     private string ImagenPlay = "play.png";
 
     private DateTime HorarioInicioPartido;
+
+    private bool touchLargoCorriendo = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -146,6 +151,8 @@
         return $"{_config["UrlBaseParaImagenes"]}{imagenRef}";
     }
 
+    private string ColorActivo() => Partido.EstadoPartido == Util.EstadoPartido.EN_PROCESO.ToString() ? "color-partido-activo" : "";
+
     private string EscudoVacio() => "/imagenes/escudovacio.png";
 
     private string MensajeEsperandoContrincante() => "Esperando...";
@@ -176,7 +183,7 @@
 
     private async Task AumentarMarcador(string tipoEquipo)
     {
-        if(_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+        if(_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
         {
             if (tipoEquipo == "LOCAL")
             {
@@ -222,6 +229,27 @@
         return false;
     }
 
+
+
+    private async Task TouchDecrementador(TouchEventArgs e, string tipoEquipo)
+    {
+        if (!touchLargoCorriendo && e.Touches.Length > 0)
+        {
+            var firstTouch = e.Touches[0];
+            if (firstTouch.ClientX > 50) 
+            {
+                touchLargoCorriendo = true;
+                await DecrementarMarcador(tipoEquipo);
+
+                await Task.Delay(1000); 
+
+                touchLargoCorriendo = false;
+            }
+        }
+    }
+
+
+
     private async Task DecrementarMarcador(string tipoEquipo)
     {
         if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
@@ -232,6 +260,7 @@
         {
             Partido.MarcadorVisitante -= 1;
         }
+        await ActualizarPartidosTiempoReal();
     }
 
     private async Task ResetearMarcador()
@@ -258,6 +287,12 @@
         EsconderIconoPlay = false;
         Partido.Fin = DateTime.Now;
         var partidos = await _servicioFixture.TerminoPartido(Partido);
+
+            if (await _servicioFixture.ActualizarPartidoTorneo(Partido))
+            {
+                _snackBar.Add("Partido finalizado y actualizado", Severity.Success);
+            }
+
         await ActualizarPartidosTermino(partidos);
     }
 
@@ -269,9 +304,25 @@
     private async Task ActualizarPartidosTermino(List<PartidoDTO> partidos)
     {
         if (partidos.Count > 0) await _servicioFixture.ActualizacionPartidosTiempoReal(partidos);
-        
+
         await ActualizarPartidosTiempoReal();
     }
 
+    private string DuracionPartido()
+    {
+        if (Partido.Inicio != DateTime.MinValue && Partido.Fin != DateTime.MinValue)
+        {
+            return $"{Util.TiempoEnMinutos(Partido.Inicio, Partido.Fin)}:00";
+        }
+        return "00:00";
+    }
 
+    private string AdicionalInfoGrupo()
+    {
+        if (!string.IsNullOrEmpty(Partido.Grupo))
+        {
+            return $"Grupo:{Partido.Grupo}";
+        }
+        return "";
+    }
 }

@@ -200,8 +200,7 @@
                 }
                 
             }
-
-            if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.EQUIPO.ToString())
+            else
             {
                 bool resultado = await _servicioFixture.ObtenerFixtureTorneoDatos();
                 _nav.NavigateTo("/PartidosTiempoReal");

@@ -260,6 +260,14 @@ table tr:nth-child(1) {
     border-radius: 5px 60px 5px 60px;
     padding: 20px;
 }
+.h4-vis-grupos {
+    color: white;
+    background-color: mediumpurple;
+    border-radius: 5px 60px 5px 60px;
+    padding: 7px;
+    text-align:center;
+}
+
 
 .imagen-100{
     width:100%;

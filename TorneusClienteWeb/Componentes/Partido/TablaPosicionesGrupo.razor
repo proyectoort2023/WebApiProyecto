@@ -1,0 +1,49 @@
+﻿@inject FixtureServicio _servicioFixture
+
+
+@foreach (var grupo in tablaPosiciones)
+{
+    <div class="card-general">
+
+        <h4 class="h4-vis-grupos">Grupo @grupo.Grupo</h4>
+
+        <table class="table table-bordered border-primary">
+              <thead>
+                <tr>
+                    <th>Equipo</th>
+                    <th>PJ</th>
+                    <th>PG</th>
+                    <th>SG</th>
+                    <th>TP</th>
+                    <th>TT</th>
+                    <th>Ti</th>
+                </tr>
+              </thead>
+        <tbody>
+
+        @foreach (var equipo in grupo.TablaPosiciones)
+        {
+            <tr>
+                <td>@equipo.Equipo.Abreviatura</td>
+                <td>@equipo.PartidosJugados</td>
+                <td>@equipo.PartidosGanados</td>
+                <td>@equipo.SetsGanados</td>
+                <td>@equipo.TotalPuntos</td>
+                <td>@equipo.TantosTotales</td>
+                <td>@equipo.MejorTiempo</td>
+            </tr>
+        }
+        </tbody>
+        </table>
+    </div>
+}
+
+
+@code {
+    List<GrupoTablaPosicionesView> tablaPosiciones = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        tablaPosiciones = await _servicioFixture.ObtenerTablaPosiciones();
+    }
+}

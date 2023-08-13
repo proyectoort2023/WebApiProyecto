@@ -83,10 +83,10 @@
             if (!resultado) throw new Exception("No se ha podido crear el fixture eliminación directa");
 
             var parametros = new DialogParameters();
-            parametros.Add(nameof(DialogComponent.Mensaje), $"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}");
+            parametros.Add(nameof(DialogComponent.Mensaje), "Confirma creación de fixture de 'eliminación directa'");
 
-            var result = await _dialogService.Show<DialogComponent>($"Confirma creación de fixture de eliminación directa", parametros).Result;
-
+            var result = await _dialogService.Show<DialogComponent>($"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}", parametros).Result;
+       
             if (result.Canceled) return;
 
             await GuardarFixture();
@@ -108,10 +108,10 @@
             if (!resultado) throw new Exception("No se ha podido crear el fixture eliminación directa");
 
             var parametros = new DialogParameters();
-            parametros.Add(nameof(DialogComponent.Mensaje), $"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}");
+            parametros.Add(nameof(DialogComponent.Mensaje), "Confirma creación de fixture de 'Todos contra todos'?");
 
-            var result = await _dialogService.Show<DialogComponent>($"Confirma creación de fixture de eliminación directa", parametros).Result;
-
+            var result = await _dialogService.Show<DialogComponent>($"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}", parametros).Result;
+      
             if (result.Canceled) return;
 
             await GuardarFixture();
@@ -128,10 +128,10 @@
     {
         try
         {
-            bool creacion = await _servicioFixture.CrearFixture();
+            bool creacion = await _servicioFixture.GuardarFixture();
 
             if (creacion) _snackbar.Add("Cruzamiento de equipos creado", Severity.Success);
-            //redirecciono a la pantalla de jugabilidad de partidos.
+            _nav.NavigateTo("/PartidosTiempoReal");
         }
         catch (Exception ex)
         {

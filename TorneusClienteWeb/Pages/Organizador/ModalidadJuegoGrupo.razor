@@ -2,13 +2,14 @@
 @inject TorneoServicio _servicioTorneo
 @inject ISnackbar _snackbar
 @inject FixtureServicio _servicioFixture
+@inject NavigationManager _nav
 
 
         <MudNumericField @bind-Value="cantidadGrupos"
                  Label="Elige la cantidad de grupos"
                  Variant="Variant.Outlined"
                  TextChanged="OnCambioCantidadGrupos" 
-                 Min="1" Max="20"/>
+                 Min="2" Max="20"/>
 
         <MudButton >Seleccionar Equipos</MudButton>
 
@@ -46,8 +47,8 @@
     }
 
 
-    <MudButton @onclick="CrearFixture">Simular Fixture</MudButton>
-    <MudButton @onclick="GuardarFixture">Crear Fixture</MudButton>
+<MudButton @onclick="CrearFixture" Variant="Variant.Filled" Color="Color.Primary">Simular Fixture</MudButton>
+<MudButton @onclick="GuardarFixture" Variant="Variant.Filled" Color="Color.Primary">Crear Fixture</MudButton>
 
 
 
@@ -57,7 +58,7 @@
     List<EquipoDTO> equiposInscriptos = new();
     List<SelectEquipo> selectEquipos = new();
 
-    int cantidadGrupos = 1;
+    int cantidadGrupos = 2;
 
 
     protected async override Task OnInitializedAsync()
@@ -80,7 +81,7 @@
         }
         catch (Exception ex)
         {
-
+            _snackbar.Add(ex.Message, Severity.Warning);
         }
 
     }
@@ -105,7 +106,7 @@
             };
             selectEquipos.Add(selectEquipo);
         }
-
+        OnCambioCantidadGrupos(cantidadGrupos.ToString());
 
     }
 
@@ -133,9 +134,12 @@
     {
         try
         {
+            if (HayGruposVacios()) throw new Exception("No puede haber grupos sin equipos");
+            if (EquiposMinimosInsuficientes()) throw new Exception("Debe haber minimo 3 equipos por grupo");
+
             bool resultado = await _servicioFixture.ArmarFixtureGrupoEliminacionDirecta(selectEquipos, cantidadGrupos);
             if (!resultado) throw new Exception("No se ha podido simular el fixture");
-            _snackbar.Add($"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}", Severity.Success);
+            _snackbar.Add($"Este fixture tiene una duración de jornada de {_servicioFixture.ObtenerTiempoJornada()}", Severity.Info);
         }
         catch (Exception ex)
         {
@@ -147,14 +151,12 @@
     {
         try
         {
-            bool resultado = await _servicioFixture.ArmarFixtureGrupoEliminacionDirecta(selectEquipos, cantidadGrupos);
+            await CrearFixture();
 
-            if (!resultado) throw new Exception("No se ha podido simular el fixture");
-
-            bool creacion = await _servicioFixture.CrearFixture();
+            bool creacion = await _servicioFixture.GuardarFixture();
 
             if (creacion) _snackbar.Add("Cruzamiento de equipos creado", Severity.Success);
-            //redirecciono a la pantalla de jugabilidad de partidos.
+            _nav.NavigateTo("/PartidosTiempoReal");
         }
         catch (Exception ex)
         {
@@ -162,7 +164,19 @@
         }
     }
 
-    
 
+    private bool HayGruposVacios(){
+
+        int cantidadGruposActual = selectEquipos.GroupBy(g => g.Grupo).Count();
+        bool gruposVacios = cantidadGruposActual != cantidadGrupos;
+        return gruposVacios;
+    }
+
+    private bool EquiposMinimosInsuficientes()
+    {
+        bool minimosInsuficiente = selectEquipos.GroupBy(g => g.Grupo)
+                                         .Any(a => a.Count() < 3);
+        return minimosInsuficiente;
+    }
 
 }

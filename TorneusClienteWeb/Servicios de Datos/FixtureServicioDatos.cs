@@ -88,5 +88,36 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 
 
 
+        public async Task<bool> ActualizarPartido(PartidoDTO partidoDTO)
+        {
+
+            try
+            {
+                if (partidoDTO == null) throw new Exception("No hay partido valido");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.PostAsJsonAsync("api/Fixture/ActualizarPartido", partidoDTO);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var partidoActualizado = JsonConvert.DeserializeObject<bool>(content);
+                    return partidoActualizado;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
     }
 }
