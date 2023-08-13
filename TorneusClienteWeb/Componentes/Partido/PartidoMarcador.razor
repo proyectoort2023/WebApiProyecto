@@ -287,6 +287,12 @@
         EsconderIconoPlay = false;
         Partido.Fin = DateTime.Now;
         var partidos = await _servicioFixture.TerminoPartido(Partido);
+
+            if (await _servicioFixture.ActualizarPartidoTorneo(Partido))
+            {
+                _snackBar.Add("Partido finalizado y actualizado", Severity.Success);
+            }
+
         await ActualizarPartidosTermino(partidos);
     }
 

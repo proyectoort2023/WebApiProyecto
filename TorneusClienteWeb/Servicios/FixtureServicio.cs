@@ -489,6 +489,22 @@ namespace TorneusClienteWeb.Servicios
             await _hubConnection.SendAsync("EnviarActualizarPartidos", partidos);
         }
 
+        //public bool EsFinalTorneo()
+        //{
+        //    return !Partidos.Any(a => a.EstadoPartido != Util.EstadoPartido.FINALIZADO.ToString());
+        //}
+        
+        public async Task<bool> ActualizarPartidoTorneo(PartidoDTO partido)
+        {
+            try
+            {
+                return await _fixtureServicioDatos.ActualizarPartido(partido);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 }

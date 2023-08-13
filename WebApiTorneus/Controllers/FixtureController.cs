@@ -41,7 +41,7 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "ORGANIZADOR")]
         [HttpPost("Crear")]
-        public async Task<IActionResult> CrearFixtureToeno([FromBody] PartidosTorneo partidosTorneo)
+        public async Task<IActionResult> CrearFixtureTorneo([FromBody] PartidosTorneo partidosTorneo)
         {
             try
             {
@@ -102,7 +102,35 @@ namespace WebApiTorneus.Controllers
         }
 
 
+        /// <summary>
+        /// Actualiza los datos de un partido al finalizar el mismo
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint actualiza los datos de un partido al finalizar el mismo
+        /// </remarks>
+        /// <response code="200">OK.Partido actualizado</response>
+        /// <response code="400">No se obtener el listado</response>
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "PLANILLERO")]
+        [HttpPost("ActualizarPartido")]
+        public async Task<IActionResult> Actualizar([FromBody] PartidoDTO partidoDTO)
+        {
+            try
+            {
+                if (partidoDTO == null) throw new Exception("No hay partido a actualizar. W203");
 
+                Partido partido = _mapper.Map<PartidoDTO, Partido>(partidoDTO);
+
+                bool partidoActualizado = await _fixtureService.ActualizarPartido(partido);
+
+                return Ok(partidoActualizado);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
     }
