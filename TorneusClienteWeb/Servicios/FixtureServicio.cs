@@ -260,8 +260,7 @@ namespace TorneusClienteWeb.Servicios
 
         public async Task CrearTablaPosiciones()
         {
-           // var filtroGrupos = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo)).Select(s => s.EquipoLocal).ToList();
-
+            TablaPosiciones = new List<TablaPosicion>();
             var filtroEquipos = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo))
                                         .SelectMany(p => new[] {
                                             
@@ -292,7 +291,6 @@ namespace TorneusClienteWeb.Servicios
 
           if (!string.IsNullOrEmpty(partidoFinalizado.Grupo))
             {
-                await ActualizarTablaPosiciones(partidoFinalizado);
                 bool etapaGruposFinalizada = EtapaGrupoEstaFinalizada();
 
                 if (etapaGruposFinalizada)
@@ -353,21 +351,25 @@ namespace TorneusClienteWeb.Servicios
             return !partidosGruposNOEstanFinalizados;
         }
 
-        private async Task ActualizarTablaPosiciones(PartidoDTO partido)
+        private async Task ActualizarTablaPosiciones(List<PartidoDTO> partidos)
         {
-            EquipoDTO equipo1 = partido.EquipoLocal;
-            EquipoDTO equipo2 = partido.EquipoVisitante;
+            await CrearTablaPosiciones();
 
-            int indiceLocal = TablaPosiciones.FindIndex(f => f.Equipo.Id == equipo1.Id);
-            int indiceVisitante = TablaPosiciones.FindIndex(f => f.Equipo.Id == equipo2.Id);
+            foreach(var partido in partidos)
+            {
+                EquipoDTO equipo1 = partido.EquipoLocal;
+                EquipoDTO equipo2 = partido.EquipoVisitante;
 
-            var HistorialSetsLista = ConvertirStringALista(partido.HistorialSet);
-            int SumaPuntajeLocal = HistorialSetsLista.Sum(w => w.Local);
-            int SumaPuntajeVisitante = HistorialSetsLista.Sum(w => w.Visitante);
+                int indiceLocal = TablaPosiciones.FindIndex(f => f.Equipo.Id == equipo1.Id);
+                int indiceVisitante = TablaPosiciones.FindIndex(f => f.Equipo.Id == equipo2.Id);
 
-            TablaPosiciones[indiceLocal].ActualizarTabla(partido.SetGanadosLocal, partido.PuntajeLocal, partido.Inicio, partido.Fin, SumaPuntajeLocal);
-            TablaPosiciones[indiceVisitante].ActualizarTabla(partido.SetGanadosVisitante, partido.PuntajeVisitante, partido.Inicio, partido.Fin, SumaPuntajeVisitante);
+                var HistorialSetsLista = ConvertirStringALista(partido.HistorialSet);
+                int SumaPuntajeLocal = HistorialSetsLista.Sum(w => w.Local);
+                int SumaPuntajeVisitante = HistorialSetsLista.Sum(w => w.Visitante);
 
+                TablaPosiciones[indiceLocal].ActualizarTabla(partido.SetGanadosLocal, partido.PuntajeLocal, partido.Inicio, partido.Fin, SumaPuntajeLocal);
+                TablaPosiciones[indiceVisitante].ActualizarTabla(partido.SetGanadosVisitante, partido.PuntajeVisitante, partido.Inicio, partido.Fin, SumaPuntajeVisitante);
+            }
         }
 
         public List<ResultadoMatchesPuntaje> ConvertirStringALista(string convetir)
@@ -393,6 +395,10 @@ namespace TorneusClienteWeb.Servicios
         {
             List<EquipoDTO> equiposSegundaFase = new List<EquipoDTO>();
             List<PartidoDTO> partidosActualizar = new List<PartidoDTO>();
+
+            var partidosGrupos = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo)).ToList();
+
+            await ActualizarTablaPosiciones(partidosGrupos);
 
             int cantidadGrupos = TablaPosiciones.Select(s => s.Grupo).Distinct().Count();
 
@@ -445,7 +451,16 @@ namespace TorneusClienteWeb.Servicios
             return Partidos.FindIndex(f => f.Id == partidoId);
         }
 
-        public List<GrupoTablaPosicionesView> ObtenerTablaPosicionesView()
+        public async Task<List<GrupoTablaPosicionesView>> ObtenerTablaPosiciones()
+        {
+            var partidosGrupos = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo)).ToList();
+
+            await ActualizarTablaPosiciones(partidosGrupos);
+
+            return ObtenerTablaPosicionesView();
+        }
+
+        private List<GrupoTablaPosicionesView> ObtenerTablaPosicionesView()
         {
 
 
@@ -459,13 +474,15 @@ namespace TorneusClienteWeb.Servicios
                                                                                                        .ThenByDescending(x => x.MejorTiempo)
                                                                                                        .ThenByDescending(x => x.PartidosJugados)
                                                                                                        .ToList()
-                                                                                }).ToList();
+                                                                                })
+                                                                                .OrderBy(o => o.Grupo)
+                                                                                .ToList();
             return tablaOrdenadaView;
         }
         public List<EquipoDTO> ObtenerEquiposSegundosMejoresView(List<GrupoTablaPosicionesView> tablaOrdenadaView)
         {
             var equiposSegundosMejores = tablaOrdenadaView.Select(s => s.TablaPosiciones[1])
-                                                          .OrderByDescending(x => x.PartidosGanados)
+                                                           .OrderByDescending(x => x.PartidosGanados)
                                                            .ThenByDescending(x => x.SetsGanados)
                                                            .ThenByDescending(x => x.TotalPuntos)
                                                            .ThenByDescending(x => x.MejorTiempo)
@@ -505,6 +522,12 @@ namespace TorneusClienteWeb.Servicios
                 throw new Exception(ex.Message);
             }
         }
+
+        public bool HayEtapaGrupos()
+        {
+            return Partidos.Any(a => !string.IsNullOrEmpty(a.Grupo));
+        }
+
 
     }
 }
