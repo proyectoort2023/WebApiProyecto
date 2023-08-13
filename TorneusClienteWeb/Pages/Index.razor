@@ -128,7 +128,15 @@
 
     private void Navegar(string rol)
     {
-        _nav.NavigateTo($"/{rol}/Principal");
+        if (rol == Util.Roles.PLANILLERO.ToString() || rol == Util.Roles.ESPECTADOR.ToString())
+        {
+            _nav.NavigateTo($"/GENERAL/Principal");
+        }
+        else
+        {
+            _nav.NavigateTo($"/{rol}/Principal");
+        }
+       
     }
 
     private void Registrar()

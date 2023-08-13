@@ -45,6 +45,7 @@
 
         <div class="marcV caja">
             <a href="#" @onclick="() => AumentarMarcador(Util.LOCAL)"
+                        @ontouchmove="e => TouchDecrementador(e, Util.LOCAL)"
                         @onclick:preventDefault>
              <h2>@Partido.MarcadorLocal.ToString("00")</h2>
             </a>
@@ -58,6 +59,7 @@
 
         <div class="marcL caja">
                 <a href="#" @onclick="() => AumentarMarcador(Util.VISITANTE)"
+                            @ontouchmove="e => TouchDecrementador(e, Util.VISITANTE)"
                             @onclick:preventDefault>
                     <h2 >@Partido.MarcadorVisitante.ToString("00")</h2>
                 </a>
@@ -70,7 +72,7 @@
             <EspacioVertical Altura="20px" />
         }
 
-        @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+        @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
         {
             @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null && Partido.EstadoPartido == Util.EstadoPartido.PENDIENTE.ToString())
             {
@@ -113,6 +115,8 @@
     private string ImagenPlay = "play.png";
 
     private DateTime HorarioInicioPartido;
+
+    private bool touchLargoCorriendo = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -178,7 +182,7 @@
 
     private async Task AumentarMarcador(string tipoEquipo)
     {
-        if(_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.ORGANIZADOR.ToString())
+        if(_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
         {
             if (tipoEquipo == "LOCAL")
             {
@@ -224,6 +228,27 @@
         return false;
     }
 
+
+
+    private async Task TouchDecrementador(TouchEventArgs e, string tipoEquipo)
+    {
+        if (!touchLargoCorriendo && e.Touches.Length > 0)
+        {
+            var firstTouch = e.Touches[0];
+            if (firstTouch.ClientX > 50) 
+            {
+                touchLargoCorriendo = true;
+                await DecrementarMarcador(tipoEquipo);
+
+                await Task.Delay(1000); 
+
+                touchLargoCorriendo = false;
+            }
+        }
+    }
+
+
+
     private async Task DecrementarMarcador(string tipoEquipo)
     {
         if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
@@ -234,6 +259,7 @@
         {
             Partido.MarcadorVisitante -= 1;
         }
+        await ActualizarPartidosTiempoReal();
     }
 
     private async Task ResetearMarcador()
