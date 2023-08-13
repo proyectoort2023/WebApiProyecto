@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilidades;
 
 namespace FixtureNegocio
 {
@@ -34,19 +35,9 @@ namespace FixtureNegocio
             }
             fixture.Last().DisparadorSiguienteFase = true; //cuando llega al ultimo partido del grupo dispara una alerta de siguiente fase en el torneo
 
-            //falta etapa eleccion de mejores ganadores y mejores jugadores de cada grupo y de eliminacion directa
-
 
             return fixture;
 
-        }
-
-
-        public List<PartidoDTO> ReordenamientoPosicionesPartidosPorGrupo(List<PartidoDTO> partidos)
-        {
-            List<PartidoDTO> partidosReordenados = PosicionPartidosAleatorios(new List<PartidoDTO>(), partidos, partidos.Count);
-
-            return partidosReordenados;
         }
 
         public List<PartidoDTO> ReordenamientoPosicionesPartidosPorEQuipo(List<PartidoDTO> partidos)
@@ -56,41 +47,28 @@ namespace FixtureNegocio
             return partidosReordenados;
         }
 
-        private List<PartidoDTO> PosicionPartidosAleatorios(List<PartidoDTO> partidos, List<PartidoDTO> partidosAux, int cantidad, bool faseInicial = true)
+
+       private List<PartidoDTO> ReordenamientoPosicionesPartidosPorGrupo(List<PartidoDTO> partidos)
         {
-            int repetidos = partidosAux.Select(p => p.Grupo).Distinct().Count();
-            //Random random = new Random();
+            var grupos = partidos.GroupBy(p => p.Grupo).ToList();
+            var maxPartidosPorGrupo = grupos.Max(g => g.Count());
 
-            int index = 0;
+            var partidosReordenados = new List<PartidoDTO>();
 
-            if (cantidad == 1 || repetidos == 1)
+            for (int i = 0; i < maxPartidosPorGrupo; i++)
             {
-                partidos.AddRange(partidosAux);
-                return partidos;
+                foreach (var grupo in grupos)
+                {
+                    if (i < grupo.Count())
+                    {
+                        partidosReordenados.Add(grupo.ElementAt(i));
+                    }
+                }
             }
 
-            if (faseInicial)
-            {
-                partidos.Add(partidosAux.First());
-                partidosAux.RemoveAt(0);
-                faseInicial = false;
-                cantidad -= 1;
-                return PosicionPartidosAleatorios(partidos,partidosAux, cantidad, faseInicial);
-            }
-            string ultimoPartidoGrupo = partidos.Last().Grupo;
-
-            while (ultimoPartidoGrupo == partidosAux[index].Grupo)
-            {
-                index++;
-            }
-
-            partidos.Add(partidosAux[index]);
-            partidosAux.RemoveAt(index);
-            cantidad -= 1;
-
-            return PosicionPartidosAleatorios(partidos, partidosAux, cantidad, faseInicial);
+            return partidosReordenados;
         }
-
+    
 
         private List<PartidoDTO> PosicionPartidosAleatoriosPorEquipo(List<PartidoDTO> partidos, List<PartidoDTO> partidosAux, int cantidad, bool faseInicial = true)
         {

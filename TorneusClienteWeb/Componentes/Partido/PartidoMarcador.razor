@@ -21,9 +21,10 @@
         </div>
 
         <div class="medio caja">
-            <p class="gridContwainerFecha">10/01/2023</p>
+            <p class="gridContwainerFecha">@Partido.Fecha.ToString("dd/MM/yyyy")</p>
             <p title="@Partido.HistorialSet">VS</p>
-            <p>00:00</p>
+            <p>@DuracionPartido()</p>
+            <p>@AdicionalInfoGrupo()</p>
             <p>@Partido.NombreCancha</p>
         </div>
 
@@ -297,9 +298,25 @@
     private async Task ActualizarPartidosTermino(List<PartidoDTO> partidos)
     {
         if (partidos.Count > 0) await _servicioFixture.ActualizacionPartidosTiempoReal(partidos);
-        
+
         await ActualizarPartidosTiempoReal();
     }
 
+    private string DuracionPartido()
+    {
+        if (Partido.Inicio != DateTime.MinValue && Partido.Fin != DateTime.MinValue)
+        {
+            return $"{Util.TiempoEnMinutos(Partido.Inicio, Partido.Fin)}:00";
+        }
+        return "00:00";
+    }
 
+    private string AdicionalInfoGrupo()
+    {
+        if (!string.IsNullOrEmpty(Partido.Grupo))
+        {
+            return $"Grupo:{Partido.Grupo}";
+        }
+        return "";
+    }
 }

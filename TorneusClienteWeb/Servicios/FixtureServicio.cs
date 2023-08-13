@@ -85,12 +85,7 @@ namespace TorneusClienteWeb.Servicios
 
                 Partidos.AddRange(partidosUltimaFase);
 
-                //int cantidadCanchas = _torneoServicio.ObtenerTorneoActual().CantidadCanchas;
-
-                //for (int i = 0; i < cantidadCanchas; i++)
-                //{
-                //    Partidos[i].EstadoPartido = Util.EstadoPartido.POR_COMENZAR.ToString(); //esto quiere decir que el siguiente partido si no tiene siguienteGuid, se tiene que iniciar en el siguiente partido pendiente
-                //}
+                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
 
                 return true;
             }
@@ -131,6 +126,8 @@ namespace TorneusClienteWeb.Servicios
                 List<PartidoDTO> partidosUltimaFase = fixtureElimDirecta.CrearComoSegundaFase(cantidadEquiposUltimaFase);
 
                 Partidos.AddRange(partidosUltimaFase);
+
+                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
                 return true;
             }
             catch (Exception ex)
@@ -151,6 +148,7 @@ namespace TorneusClienteWeb.Servicios
                 FixtureEliminacionDirecta fixtureElimDirecta = new();
 
                 Partidos = fixtureElimDirecta.Crear(equipos);
+                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
 
                 return true;
             }

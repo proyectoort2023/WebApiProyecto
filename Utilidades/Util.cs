@@ -1,4 +1,6 @@
-﻿namespace Utilidades
+﻿using System;
+
+namespace Utilidades
 {
     public static class Util
     {
@@ -48,7 +50,13 @@
             {"PLANILLERO","" },
             {"ESPECTADOR","/ESPECTADOR/Principal" },
         };
+        public static int TiempoEnMinutos(DateTime inicio, DateTime fin)
+        {
+            TimeSpan diferenciaTiempo = fin.Subtract(inicio);
+            double minutosTRanscurridos = diferenciaTiempo.TotalMinutes;
 
+            return (int)minutosTRanscurridos;
+        }
         public enum TipoImagen
         {
             BANNER,
@@ -108,6 +116,20 @@
             {7,"H" },
             {8,"I" },
             {9,"J" },
+        };
+
+        public static Dictionary<string, int> gruposNumeros = new Dictionary<string, int>()
+        {
+            {"A",0 },
+            {"B",1 },
+            {"C",2 },
+            {"D",3 },
+            {"E",4 },
+            {"F",5 },
+            {"G",6 },
+            {"H",7 },
+            {"I",8 },
+            {"J",9 },
         };
 
 
