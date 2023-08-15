@@ -328,7 +328,6 @@
     private void FinToqueLargo()
     {
         toqueLargoTimer?.Dispose();
-        esToqueLArgo = false;
         StateHasChanged();
     }
 
@@ -338,10 +337,10 @@
 
         esToqueLArgo = false;
         StateHasChanged();
-        _snackBar.Add("largo");
         DecrementarMarcador(tipoEquipo).Wait();
 
         toqueLargoTimer?.Dispose();
+        esToqueLArgo = false;
     }
 
 

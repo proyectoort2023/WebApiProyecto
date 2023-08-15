@@ -35,7 +35,6 @@
                         <img src="@UrlImagenes(torneo.Logo)" height="25" class="mr-1" />
                         @torneo.Nombre 
                     </MudSelectItem>
-                    
                 }
             </MudSelect>
 
@@ -61,6 +60,11 @@
     </section>
 }
 else
+{
+    <Cargando />
+}
+
+@if (cargando)
 {
     <Cargando />
 }
@@ -105,7 +109,7 @@ else
         cargando = true;
         await _servicioTorneo.SeleccionTorneo(torneoId);
         Inscripciones = await _servicioInscripcion.ObtenerInscripcionesOrganizador(_servicioTorneo.ObtenerTorneoActual().Id);
-        //cargando = false;
+        cargando = false;
     }
 
     private async Task HabilitadoMercadoPago()

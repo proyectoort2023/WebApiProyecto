@@ -1,0 +1,33 @@
+﻿@page "/ORGANIZADOR/Gestiones"
+@inject NavigationManager _nav
+@inject ServicioMenu _servicioMenu
+
+
+<div class="flex-column-customizable">
+    <div style="width:85vw;margin-bottom:90px;">
+        <BotonAnimado Texto="Inscripciones" Icono="@Util.IconoInscripcion" OnClick="IrInscripciones" />
+        <BotonAnimado Texto="Planilleros" Icono="@Util.IconoJugados" OnClick="IrAPlanilleros" />
+    </div>
+
+</div>
+
+
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        _servicioMenu.ActualizarNavegacionPOP(true, false, "/ORGANIZADOR/Principal");
+        _servicioMenu.ActualizarTitulo("Gestión");
+    }
+
+    private void IrInscripciones()
+    {
+        _nav.NavigateTo("/ORGANIZADOR/GestorInscripciones");
+    }
+
+    private void IrAPlanilleros()
+    {
+        _nav.NavigateTo("/ORGANIZADOR/GestorPlanilleros");
+    }
+
+}
