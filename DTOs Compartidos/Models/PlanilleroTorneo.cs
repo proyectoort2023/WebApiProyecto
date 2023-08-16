@@ -8,7 +8,10 @@ namespace DTOs_Compartidos.Models
 {
     public class PlanilleroTorneo
     {
-        public int UsuarioId { get; set; }
+        public int UsuarioIdOrganizador { get; set; }
+        public int UsuarioIdPlanillero { get; set; }
         public int TorneoId { get; set; }
+        public DateTime FechaTorneo { get; set; }
+        public string NombreTorneo { get; set; }
     }
 }

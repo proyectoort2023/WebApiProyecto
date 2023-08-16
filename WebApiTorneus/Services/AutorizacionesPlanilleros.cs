@@ -6,13 +6,19 @@ namespace WebApiTorneus.Services
     {
         List<PlanilleroTorneo> PlanillerosAutorizados = new();
 
+
+        public async Task<List<PlanilleroTorneo>> ObtenerPlanillerosSegunOrganizador(int usuarioOrganizadorId)
+        {
+            return PlanillerosAutorizados.Where(w => w.UsuarioIdOrganizador == usuarioOrganizadorId).ToList();
+        }
+
         public async Task<bool> AgregarPlanillleroAutorizado(PlanilleroTorneo planillero)
         {
             try
             {
                 if (planillero == null) throw new Exception("No existe lista para autorizar");
 
-                if (ExistenciaPlanilleroAutorizado(planillero)) throw new Exception("Hay usuarios repetidos en el listado actual");
+                if (await ExistenciaPlanilleroAutorizado(planillero)) throw new Exception("Hay usuarios repetidos en el listado actual");
 
                 PlanillerosAutorizados.Add(planillero);
 
@@ -28,7 +34,7 @@ namespace WebApiTorneus.Services
         {
             if (planillero == null) return false;
 
-            PlanillerosAutorizados.RemoveAll(rem => rem.UsuarioId == planillero.UsuarioId && rem.TorneoId == planillero.TorneoId);
+            PlanillerosAutorizados.RemoveAll(rem => rem.UsuarioIdPlanillero == planillero.UsuarioIdPlanillero && rem.TorneoId == planillero.TorneoId);
 
             return true;
         }
@@ -43,7 +49,7 @@ namespace WebApiTorneus.Services
 
         public async Task<bool> ExistenciaPlanilleroAutorizado(PlanilleroTorneo planillero)
         {
-            bool existePlanillero = PlanillerosAutorizados.Any(busqueda => busqueda.UsuarioId == planillero.UsuarioId && busqueda.TorneoId == planillero.TorneoId);
+            bool existePlanillero = PlanillerosAutorizados.Any(busqueda => busqueda.UsuarioIdPlanillero == planillero.UsuarioIdPlanillero && busqueda.TorneoId == planillero.TorneoId);
             return existePlanillero;
         }
 
