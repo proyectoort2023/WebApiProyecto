@@ -100,6 +100,7 @@ builder.Services.AddScoped<MedioPagoService>();
 builder.Services.AddScoped<FixtureService>();
 
 builder.Services.AddSingleton<FixtureTiempoReal>();
+builder.Services.AddSingleton<AutorizacionesPlanilleros>();
 
 
 var app = builder.Build();
