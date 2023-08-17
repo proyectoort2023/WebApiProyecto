@@ -13,7 +13,7 @@ namespace WebApiTorneus.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "ORGANIZADOR")]
+   
     public class OrganizadorPlanilleroController : ControllerBase
     {
 
@@ -36,6 +36,7 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">Validaciones varias no conformadas</response>
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpPost("AgregarAutorizados")]
         public async Task<IActionResult> Agregar([FromBody] PlanilleroTorneo planillerosAut)
         {
@@ -64,7 +65,8 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">Validaciones varias no conformadas</response>
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpDelete("QuitarAutorizados")]
+        [Authorize(Roles = "ORGANIZADOR")]
+        [HttpPost("QuitarAutorizado")]
         public async Task<IActionResult> QuitarAutorizacion([FromBody] PlanilleroTorneo planillerosAut)
         {
             try
@@ -92,6 +94,7 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">Validaciones varias no conformadas</response>
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpDelete("QuitarAutorizadosTorneo/{torneoId}")]
         public async Task<IActionResult> QuitarAutorizacionesPorCierreTorneo(int torneoId)
         {
@@ -120,6 +123,7 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">Validaciones varias no conformadas</response>
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR, PLANILLERO")]
         [HttpPost("ExistenciaPlanilleroEnTorneo")]
         public async Task<IActionResult> ExistenciaAutorizacionPlanillero([FromBody] PlanilleroTorneo planillerosAut)
         {
@@ -138,7 +142,33 @@ namespace WebApiTorneus.Controllers
         }
 
 
+        /// <summary>
+        /// Permite obtener el listado de planilleros autorizados a marcar en un torneo
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint permite obtener el listado de planilleros autorizados a marcar en un torneo
+        /// </remarks>
+        /// <response code="200">OK</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(List<PlanilleroTorneo>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR, PLANILLERO")]
+        [HttpGet("ListadoPlanillerosAutorizados/{usuarioOrganizadorId}")]
+        public async Task<IActionResult> ExistenciaAutorizacionPlanillero(int usuarioOrganizadorId)
+        {
+            try
+            {
+                if (usuarioOrganizadorId < 0) BadRequest("Elemento vacio. W181");
 
+                List<PlanilleroTorneo> listadoPlanilleros = await _autorizacionesPlanilleros.ObtenerPlanillerosSegunOrganizador(usuarioOrganizadorId);
+
+                return Ok(listadoPlanilleros);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 

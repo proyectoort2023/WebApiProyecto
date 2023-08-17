@@ -1,4 +1,5 @@
-﻿using TorneusClienteWeb.Servicios_de_Datos;
+﻿using DTOs_Compartidos.Models;
+using TorneusClienteWeb.Servicios_de_Datos;
 
 namespace TorneusClienteWeb.Servicios
 {
@@ -13,6 +14,26 @@ namespace TorneusClienteWeb.Servicios
         }
 
 
+        public async Task<bool> AgregarPlanilleroAutorizado(PlanilleroTorneo planilleroTorneo)
+        {
+        }
+
+        public async Task<bool> QuitarAutorizacionPlanillero(PlanilleroTorneo planilleroTorneo)
+        {
+        }
+
+        public async Task<bool> QuitarAutorizacionesPorCierreTorneo(int torneoId)
+        {
+        }
+
+        public async Task<bool> ExistenciaAutorizacionPlanillero(PlanilleroTorneo planilleroToreno)
+        {
+        }
+
+        public async Task<List<PlanilleroTorneo>> ListadoPlanillerosAutorizadosOrganizador(int usuarioOrganizadorId)
+        {
+
+        }
 
 
 
@@ -26,6 +47,5 @@ namespace TorneusClienteWeb.Servicios
 
 
 
-
+        }
     }
-}
