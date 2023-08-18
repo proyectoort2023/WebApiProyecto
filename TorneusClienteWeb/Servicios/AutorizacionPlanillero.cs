@@ -16,22 +16,82 @@ namespace TorneusClienteWeb.Servicios
 
         public async Task<bool> AgregarPlanilleroAutorizado(PlanilleroTorneo planilleroTorneo)
         {
+            try
+            {
+              return await _autorizacionPlanilleroDatos.AgregarPlanilleroAutorizado(planilleroTorneo);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<bool> QuitarAutorizacionPlanillero(PlanilleroTorneo planilleroTorneo)
         {
+            try
+            {
+                return await _autorizacionPlanilleroDatos.QuitarAutorizacionPlanillero(planilleroTorneo);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<bool> QuitarAutorizacionesPorCierreTorneo(int torneoId)
         {
+            try
+            {
+                return await _autorizacionPlanilleroDatos.QuitarAutorizacionesPorCierreTorneo(torneoId);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<bool> ExistenciaAutorizacionPlanillero(PlanilleroTorneo planilleroToreno)
         {
+            try
+            {
+                return await _autorizacionPlanilleroDatos.ExistenciaAutorizacionPlanillero(planilleroToreno);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<List<PlanilleroTorneo>> ListadoPlanillerosAutorizadosOrganizador(int usuarioOrganizadorId)
         {
+            try
+            {
+                return await _autorizacionPlanilleroDatos.ListadoPlanillerosAutorizadosOrganizador(usuarioOrganizadorId);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+
+
+        public async Task<DatosPlanillero> ObtenerIdPlanillero(string mail)
+        {
+            try
+            {
+                return await _autorizacionPlanilleroDatos.ObtenerUsuarioIdPlanillero(mail);
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.Message);
+            }
 
         }
 
@@ -43,9 +103,5 @@ namespace TorneusClienteWeb.Servicios
 
 
 
-
-
-
-
-        }
+    }
     }

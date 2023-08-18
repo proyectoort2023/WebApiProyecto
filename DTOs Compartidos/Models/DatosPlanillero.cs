@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace DTOs_Compartidos.Models
 {
-    public class PlanilleroTorneo
+    public class DatosPlanillero
     {
-        public int UsuarioIdOrganizador { get; set; }
         public int UsuarioIdPlanillero { get; set; }
         public string NombrePlanillero { get; set; }
         public string EmailPlanillero { get; set; }
-        public int TorneoId { get; set; }
-        public DateTime FechaTorneo { get; set; }
-        public string NombreTorneo { get; set; }
     }
 }

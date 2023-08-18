@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BDTorneus;
 using DTOs_Compartidos.DTOs;
+using DTOs_Compartidos.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -211,6 +212,32 @@ namespace WebApiTorneus.Controllers
             }
         }
 
+
+
+        /// <summary>
+        /// Obtiene id de usuario si su rol es planillero
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint obtiene id de usuario si su rol es planillero
+        /// </remarks>
+        /// <response code="200">OK. Esta registrado en el marketplace</response>
+        /// <response code="400">Validaciones varias erroneas</response>
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR")]
+        [HttpGet("ObtenerPlanilleroId/{mail}")]
+        public async Task<IActionResult> GetPlanilleroId(string mail)
+        {
+            try
+            {
+                DatosPlanillero usuarioPlanillero = await _usuarioService.ObtenerUsuarioIdPlanillero(mail);
+                return Ok(usuarioPlanillero);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 

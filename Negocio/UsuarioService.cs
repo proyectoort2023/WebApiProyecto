@@ -1,5 +1,6 @@
 ﻿using BDTorneus;
 using DTOs_Compartidos.DTOs;
+using DTOs_Compartidos.Models;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Server.IIS.Core;
 using Microsoft.EntityFrameworkCore;
@@ -152,7 +153,29 @@ namespace Negocio
             }
         }
 
+        public async Task<DatosPlanillero> ObtenerUsuarioIdPlanillero(string mail)
+        {
+            try
+            {
+                var usuario = await _db.Usuarios.SingleOrDefaultAsync(us => us.Mail == mail);
 
+                if (usuario == null) throw new Exception("No se encuentra el usuario. W106");
+
+                if (usuario.Rol != Util.Roles.PLANILLERO.ToString()) throw new Exception("El mail no corresponde a un usuario de tipo planillero. W202");
+
+                var datosPlanillero = new DatosPlanillero()
+                {
+                  UsuarioIdPlanillero = usuario.Id,
+                  NombrePlanillero = usuario.Nombre,
+                  EmailPlanillero =  usuario.Mail
+                };
+                return datosPlanillero;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
     }

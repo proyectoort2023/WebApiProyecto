@@ -176,7 +176,35 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
+        public async Task<DatosPlanillero> ObtenerUsuarioIdPlanillero(string mail)
+        {
 
+            try
+            {
+                if (string.IsNullOrEmpty(mail)) throw new Exception("El mail está vacio");
+
+                string token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.GetAsync($"api/Usuario/ObtenerPlanilleroId/{mail}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var resultado = JsonConvert.DeserializeObject<DatosPlanillero>(content);
+                    return resultado;
+                }
+                else
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    throw new Exception(content);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
 
