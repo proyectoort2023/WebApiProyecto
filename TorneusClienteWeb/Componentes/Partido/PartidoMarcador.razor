@@ -75,7 +75,7 @@
             <EspacioVertical Altura="20px" />
         }
 
-        @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
+        @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString() && existenciaAutorizacion)
         {
             @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null && Partido.EstadoPartido == Util.EstadoPartido.PENDIENTE.ToString())
             {
@@ -251,7 +251,7 @@
     {
         if (existenciaAutorizacion && _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
         {
-                if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
+                if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0) 
                 {
                     Partido.MarcadorLocal -= 1;
                 }
@@ -337,6 +337,7 @@
     private void FinToqueLargo()
     {
         toqueLargoTimer?.Dispose();
+        esToqueLArgo = false;
         StateHasChanged();
     }
 
@@ -344,7 +345,6 @@
     {
         string tipoEquipo = state.ToString();
 
-        esToqueLArgo = false;
         StateHasChanged();
         DecrementarMarcador(tipoEquipo).Wait();
 
