@@ -5,7 +5,7 @@
 @inject ISnackbar _snackBar
 @inject HubConnection _hubConnection
 @inject NotificacionesSignalRService _servicioNotificacionesSignalR
-
+@inject AutorizacionPlanillero _servicioAutorizacionPlanillero
 
 
 @if (Partido != null)
@@ -124,6 +124,10 @@
 
     private bool touchLargoCorriendo = false;
 
+    int idUsuario = 0;
+    bool existenciaAutorizacion = false;
+
+
     protected async override Task OnInitializedAsync()
     {
         await Iniciar();
@@ -148,6 +152,9 @@
         {
             await _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
         });
+
+        idUsuario = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+        existenciaAutorizacion = await _servicioAutorizacionPlanillero.ExistenciaAutorizacionPlanillero(_servicioTorneo.ObtenerTorneoActual().Id, idUsuario);
 
     }
 
@@ -188,8 +195,7 @@
 
     private async Task AumentarMarcador(string tipoEquipo)
     {
-
-        if(_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
+        if (existenciaAutorizacion && _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
         {
             if (!esToqueLArgo)
             {
@@ -243,15 +249,18 @@
 
     private async Task DecrementarMarcador(string tipoEquipo)
     {
-        if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
+        if (existenciaAutorizacion && _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
         {
-            Partido.MarcadorLocal -= 1;
+                if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
+                {
+                    Partido.MarcadorLocal -= 1;
+                }
+                else if (Partido.MarcadorVisitante > 0)
+                {
+                    Partido.MarcadorVisitante -= 1;
+                }
+                await ActualizarPartidosTiempoReal();
         }
-        else if (Partido.MarcadorVisitante > 0)
-        {
-            Partido.MarcadorVisitante -= 1;
-        }
-        await ActualizarPartidosTiempoReal();
     }
 
     private async Task ResetearMarcador()

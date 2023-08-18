@@ -52,10 +52,15 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task<bool> ExistenciaAutorizacionPlanillero(PlanilleroTorneo planilleroToreno)
+        public async Task<bool> ExistenciaAutorizacionPlanillero(int torneoId, int planilladorId)
         {
             try
             {
+                PlanilleroTorneo planilleroToreno = new()
+                {
+                      TorneoId = torneoId,
+                      UsuarioIdPlanillero = planilladorId
+                };
                 return await _autorizacionPlanilleroDatos.ExistenciaAutorizacionPlanillero(planilleroToreno);
             }
             catch (Exception ex)

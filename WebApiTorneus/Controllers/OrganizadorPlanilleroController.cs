@@ -154,7 +154,7 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "ORGANIZADOR, PLANILLERO")]
         [HttpGet("ListadoPlanillerosAutorizados/{usuarioOrganizadorId}")]
-        public async Task<IActionResult> ExistenciaAutorizacionPlanillero(int usuarioOrganizadorId)
+        public async Task<IActionResult> AutorizacionesListado(int usuarioOrganizadorId)
         {
             try
             {

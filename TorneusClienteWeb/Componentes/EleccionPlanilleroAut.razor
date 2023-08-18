@@ -93,18 +93,26 @@
 
     private async Task AgregarAutorizacionPlanillero()
     {
-        if (planilleroTorneo.TorneoId < 1)
+        try
         {
-            _snackbar.Add("Debe seleccionar un torneo",Severity.Warning);
-            return;
+            if (planilleroTorneo.TorneoId < 1)
+            {
+                _snackbar.Add("Debe seleccionar un torneo", Severity.Warning);
+                return;
+            }
+            await BuscarPlanilleroPorMail();
+
+            planilleroTorneo.UsuarioIdOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+
+            if (!VerificarDatos()) return;
+
+            MudDialog.Close(DialogResult.Ok(planilleroTorneo));
         }
-        await BuscarPlanilleroPorMail();
-
-        planilleroTorneo.UsuarioIdOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
-
-        if (!VerificarDatos()) return;
-
-        MudDialog.Close(DialogResult.Ok(planilleroTorneo));
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+       
     }
 
     private async Task BuscarPlanilleroPorMail()
@@ -122,7 +130,6 @@
         catch (Exception ex)
         {
             _snackbar.Add(ex.Message, Severity.Warning);
-            return;
         }
     }
 
