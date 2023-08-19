@@ -67,7 +67,7 @@
 
     private async Task CargarTorneos()
     {
-        Torneos = _servicioTorneo.ObtenerTorneos();
+        Torneos = _servicioTorneo.ObtenerTorneos().Where(w => w.Suspendido != true && w.Cerrrado != true).ToList();
     }
 
     private string UrlImagenes(string nombreImagen)
@@ -100,7 +100,9 @@
                 _snackbar.Add("Debe seleccionar un torneo", Severity.Warning);
                 return;
             }
-            await BuscarPlanilleroPorMail();
+            bool encontradoPlanillero = await BuscarPlanilleroPorMail();
+
+            if (!encontradoPlanillero) return;
 
             planilleroTorneo.UsuarioIdOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
 
@@ -112,24 +114,26 @@
         {
             _snackbar.Add(ex.Message, Severity.Warning);
         }
-       
+
     }
 
-    private async Task BuscarPlanilleroPorMail()
+    private async Task<bool> BuscarPlanilleroPorMail()
     {
         try
         {
             DatosPlanillero datosPlanillero = await _servicioAutorizacionPlanillero.ObtenerIdPlanillero(Mail);
 
-            if (datosPlanillero == null) throw new Exception("No se pudo conseguir datos del usuario planillero buscado");
+            if (datosPlanillero == null) throw new Exception("El mail no existe en el sistema o el mail no corresponde a un usuario planillero");
 
             planilleroTorneo.UsuarioIdPlanillero = datosPlanillero.UsuarioIdPlanillero;
             planilleroTorneo.NombrePlanillero = datosPlanillero.NombrePlanillero;
             planilleroTorneo.EmailPlanillero = datosPlanillero.EmailPlanillero;
+            return true;
         }
         catch (Exception ex)
         {
             _snackbar.Add(ex.Message, Severity.Warning);
+            return false;
         }
     }
 

@@ -285,9 +285,10 @@ table tr:nth-child(1) {
 
 .listaBox {
     width: 100%;
-    padding: 10px;
+    padding: 5px;
     border-radius: 15px;
-    border: 1px solid #e6e600;
-    background-color: #b3b300;
+    /* border: 1px solid #abdeb3; */
+    background-color: var(--colorGreenGlobo);
     box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    color: snow;
 }

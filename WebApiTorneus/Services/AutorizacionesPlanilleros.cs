@@ -18,7 +18,7 @@ namespace WebApiTorneus.Services
             {
                 if (planillero == null) throw new Exception("No existe lista para autorizar");
 
-                if (await ExistenciaPlanilleroAutorizado(planillero)) throw new Exception("Hay usuarios repetidos en el listado actual");
+                if (await ValidarPlanillero(planillero)) throw new Exception("El usuario que quiere autorizar ya está autorizado en otro torneo el mismo dia");
 
                 PlanillerosAutorizados.Add(planillero);
 
@@ -49,8 +49,16 @@ namespace WebApiTorneus.Services
 
         public async Task<bool> ExistenciaPlanilleroAutorizado(PlanilleroTorneo planillero)
         {
-            bool existePlanillero = PlanillerosAutorizados.Any(busqueda => busqueda.UsuarioIdPlanillero == planillero.UsuarioIdPlanillero && busqueda.TorneoId == planillero.TorneoId);
+            bool existePlanillero = PlanillerosAutorizados.Any(busqueda => busqueda.UsuarioIdPlanillero == planillero.UsuarioIdPlanillero 
+                                                                        && busqueda.TorneoId == planillero.TorneoId);
             return existePlanillero;
+        }
+
+        public async Task<bool> ValidarPlanillero(PlanilleroTorneo planillero)
+        {
+            bool validarPlanillero = PlanillerosAutorizados.Any(busqueda => busqueda.UsuarioIdPlanillero == planillero.UsuarioIdPlanillero
+                                                                        && busqueda.FechaTorneo == planillero.FechaTorneo);
+            return validarPlanillero;
         }
 
     }
