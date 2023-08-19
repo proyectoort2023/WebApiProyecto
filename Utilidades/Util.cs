@@ -57,6 +57,14 @@ namespace Utilidades
 
             return (int)minutosTRanscurridos;
         }
+
+        public static int TiempoEnMilisegundos(DateTime inicio, DateTime fin)
+        {
+            TimeSpan diferenciaTiempo = fin.Subtract(inicio);
+            double minutosTRanscurridos = diferenciaTiempo.TotalMilliseconds;
+
+            return (int)minutosTRanscurridos;
+        }
         public enum TipoImagen
         {
             BANNER,

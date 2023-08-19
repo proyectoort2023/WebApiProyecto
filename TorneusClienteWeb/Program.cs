@@ -96,6 +96,8 @@ builder.Services.AddScoped<MedioPagoServicioDatos>();
 builder.Services.AddScoped<FixtureServicio>();
 builder.Services.AddScoped<FixtureServicioDatos>();
 
+builder.Services.AddScoped<AutorizacionPlanillero>();
+builder.Services.AddScoped<AutorizacionPlanilleroDatos>();
 
 
 await builder.Build().RunAsync();
