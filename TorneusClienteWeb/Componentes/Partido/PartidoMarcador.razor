@@ -80,13 +80,11 @@
         {
             @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null && Partido.EstadoPartido == Util.EstadoPartido.PENDIENTE.ToString())
             {
-                <div class="playPartido">
 
+                <div class="playPartido">
                       <a href="" @onclick="NotificarComienzoAEQuipos" @onclick:preventDefault>
                         <img src="/imagenes/@ImagenNotificar" alt="" class="imgPlay">
                     </a>
-
-                    <EspacioVertical Altura="3px" />
 
                     <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
                         <img src="/imagenes/@ImagenPlay" alt="" class="imgPlay">
@@ -200,6 +198,7 @@
             _snackBar.Add("Todavia no hay dos equipos confirmados", Severity.Info);
         }
         await ActualizarPartidosTiempoReal();
+        //funcion para dar aviso
     }
 
     private async Task AumentarMarcador(string tipoEquipo)
@@ -260,15 +259,15 @@
     {
         if (existenciaAutorizacion && _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
         {
-                if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0) 
-                {
-                    Partido.MarcadorLocal -= 1;
-                }
-                else if (Partido.MarcadorVisitante > 0)
-                {
-                    Partido.MarcadorVisitante -= 1;
-                }
-                await ActualizarPartidosTiempoReal();
+            if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0) 
+            {
+                Partido.MarcadorLocal -= 1;
+            }
+            else if (Partido.MarcadorVisitante > 0)
+            {
+                Partido.MarcadorVisitante -= 1;
+            }
+            await ActualizarPartidosTiempoReal();
         }
     }
 
@@ -361,17 +360,19 @@
         esToqueLArgo = false;
     }
 
+
+
     private async Task NotificarComienzoAEQuipos()
     {
         if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null &&
-         Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0)
+           Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0)
         {
             if (_servicioFixture.HayCanchaLibre())
             {
                 bool notificacionsoloAEquipo = false;
                 string mensaje = "Presentarse a jugar en cancha";
-                bool notificadoLocal = await _servicioNotificacion.RegistrarNotificacion(mensaje, Partido.EquipoLocal, _servicioTorneo.ObtenerTorneoActual(), notificacionsoloAEquipo);
-                bool notificadoVisitante = await _servicioNotificacion.RegistrarNotificacion(mensaje, Partido.EquipoVisitante, _servicioTorneo.ObtenerTorneoActual(), notificacionsoloAEquipo);
+                bool notificadoLocal = await _servicioNotificacion.RegistrarNotificación(mensaje, Partido.EquipoLocal, _servicioTorneo.ObtenerTorneoActual(), notificacionsoloAEquipo);
+                bool notificadoVisitante = await _servicioNotificacion.RegistrarNotificación(mensaje, Partido.EquipoVisitante, _servicioTorneo.ObtenerTorneoActual(), notificacionsoloAEquipo);
 
                 if (notificadoLocal && notificadoVisitante)
                 {
@@ -388,7 +389,6 @@
             _snackBar.Add("Todavia no hay dos equipos confirmados", Severity.Info);
         }
     }
-
 
 
 }

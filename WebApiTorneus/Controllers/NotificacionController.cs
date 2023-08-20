@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Negocio.DTOs;
 using Negocio;
-using static Utilidades.Util;
+using Negocio.DTOs;
 using WebApiTorneus.HubSignalR;
+using WebApiTorneus.Services;
+using static Utilidades.Util;
 
 namespace WebApiTorneus.Controllers
 {
@@ -19,10 +20,13 @@ namespace WebApiTorneus.Controllers
         private readonly IMapper _mapper;
         private readonly NotificacionService _notificacionService;
 
-        public NotificacionController(IMapper mapper, NotificacionService notificacionService)
+        private readonly IHubContext<TorneusHub> _torneoHub;
+
+        public NotificacionController(IMapper mapper, NotificacionService notificacionService, IHubContext<TorneusHub> torneoHub)
         {
             _mapper = mapper;
             _notificacionService = notificacionService;
+             _torneoHub = torneoHub;
         }
 
 
@@ -48,42 +52,14 @@ namespace WebApiTorneus.Controllers
 
                 if (registrada != null)
                 {
-                    return Ok(registrada);
+                    await _torneoHub.Clients.All.SendAsync("RecibirNuevaNotificacion", registrada);
+                    return Ok(registrada.Id > 0);
                 }
                 else
                 {
                     return BadRequest("No se puedo registrar");
                 }
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-
-        /// <summary>
-        /// Permite obtener las notificaciones segun el rol del usuario
-        /// <remarks>
-        /// Este endpoint permite obtener las notificaciones segun el rol del usuario
-        /// </remarks>
-        /// <response code="200">OK </response>
-        /// <response code="400">Validaciones varias no conformadas</response>
-        [ProducesResponseType(typeof(List<NotificacionDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize]
-        [HttpPost("ObtenerNotificaciones")]
-        public async Task<IActionResult> ObtenerNotificaciones(UsuarioLogueado usuario)
-        {
-            try
-            {
-                if (usuario == null) throw new Exception("No se ha recibido ningun usuario");
-
-                var listaNotificaciones = _mapper.Map<List<Notificacion>, List<NotificacionDTO>>(await _notificacionService.ObtenerSegunUsuario(usuario));
-
-                return Ok(listaNotificaciones);
-
+                
             }
             catch (Exception ex)
             {
@@ -93,33 +69,10 @@ namespace WebApiTorneus.Controllers
 
 
 
-        /// <summary>
-        /// Permite eliminar todas las notificaciones luego del termino de un torneo
-        /// <remarks>
-        /// Este endpoint permite eliminar todas las notificaciones luego del termino de un torneo
-        /// </remarks>
-        /// <response code="200">OK </response>
-        /// <response code="400">Validaciones varias no conformadas</response>
-        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize]
-        [HttpDelete("BorrarNotificacionesFinTorneo/{torneoId}")]
-        public async Task<IActionResult> BorrarNotificacionesFinTorneo(int torneoId)
-        {
-            try
-            {
-                if (torneoId < 0) throw new Exception("No se ha recibido ningun torneo");
 
-                bool borrados = await _notificacionService.BorrarNotificacionesTerminoPartido(torneoId);
 
-                return Ok(borrados);
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+
 
 
 
