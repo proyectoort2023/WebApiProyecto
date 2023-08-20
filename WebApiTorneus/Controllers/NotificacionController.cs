@@ -68,7 +68,63 @@ namespace WebApiTorneus.Controllers
         }
 
 
+        /// <summary>
+        /// Permite obtener las notificaciones segun el rol del usuario
+        /// <remarks>
+        /// Este endpoint permite obtener las notificaciones segun el rol del usuario
+        /// </remarks>
+        /// <response code="200">OK </response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(List<NotificacionDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize]
+        [HttpGet("ObtenerNotificaciones/{usuarioId}")]
+        public async Task<IActionResult> ObtenerNotificaciones(int usuarioId)
+        {
+            try
+            {
+                if (usuarioId < 0) throw new Exception("No se ha recibido ningun usuario");
 
+                var listaNotificaciones = _mapper.Map<List<Notificacion>, List<NotificacionDTO>>(await _notificacionService.ObtenerSegunUsuario(usuarioId));
+
+                return Ok(listaNotificaciones);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Permite eliminar todas las notificaciones luego del termino de un torneo
+        /// <remarks>
+        /// Este endpoint permite eliminar todas las notificaciones luego del termino de un torneo
+        /// </remarks>
+        /// <response code="200">OK </response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "ORGANIZADOR,PLANILLERO")]
+        [HttpDelete("BorrarNotificacionesFinTorneo/{torneoId}")]
+        public async Task<IActionResult> BorrarNotificacionesFinTorneo(int torneoId)
+        {
+            try
+            {
+                if (torneoId < 0 ) throw new Exception("No se ha recibido ningun torneo");
+
+                bool borrados = await _notificacionService.BorrarNotificacionesTerminoPartido(torneoId);
+
+                return Ok(borrados);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 

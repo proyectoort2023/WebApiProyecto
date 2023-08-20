@@ -14,17 +14,17 @@ namespace TorneusClienteWeb.Servicios
     {
         [Inject] private TorneoServicio _torneoServicio { get; set; }
         [Inject] private UsuarioServicio _usuarioServicio { get; set; }
-        [Inject] private InscripcionServicioDatos _inscripcionServicio { get; set; }
+        [Inject] private InscripcionServicioDatos _inscripcionServicioDatos { get; set; }
 
         private List<InscripcionDTO> _inscripciones { get; set; } = new List<InscripcionDTO>();
 
         private InscripcionDTO _inscripcionSeleccionado;
 
-        public InscripcionServicio(TorneoServicio torneoServicio, UsuarioServicio usuarioServicio, InscripcionServicioDatos inscripcionServicio)
+        public InscripcionServicio(TorneoServicio torneoServicio, UsuarioServicio usuarioServicio, InscripcionServicioDatos inscripcionServicioDatos)
         {
             _torneoServicio = torneoServicio;
             _usuarioServicio = usuarioServicio;
-            _inscripcionServicio = inscripcionServicio;
+            _inscripcionServicioDatos = inscripcionServicioDatos;
         }
 
         private async Task CargarInscripciones()
@@ -32,7 +32,7 @@ namespace TorneusClienteWeb.Servicios
             try
             {
                 int usuarioId = _usuarioServicio.ObtenerUsuarioLogueado().Id;
-                _inscripciones = await _inscripcionServicio.ObtenerInscripcionesDeUsuario(usuarioId);
+                _inscripciones = await _inscripcionServicioDatos.ObtenerInscripcionesDeUsuario(usuarioId);
             }
             catch (Exception ex)
             {
@@ -55,7 +55,7 @@ namespace TorneusClienteWeb.Servicios
 
         public async Task<List<InscripcionDTO>> ObtenerInscripcionesOrganizador(int torneoId)
         {
-            _inscripciones = await _inscripcionServicio.ObtenerInscripcionesTorneo(torneoId);
+            _inscripciones = await _inscripcionServicioDatos.ObtenerInscripcionesTorneo(torneoId);
             return _inscripciones;
         }
 
@@ -81,7 +81,7 @@ namespace TorneusClienteWeb.Servicios
                     PreferenciaMP = ""
                 };
 
-                InscripcionDTO nuevaInscripcion = await _inscripcionServicio.RegistrarNuevaInscripcion(inscripcion);
+                InscripcionDTO nuevaInscripcion = await _inscripcionServicioDatos.RegistrarNuevaInscripcion(inscripcion);
 
                 if (nuevaInscripcion == null) throw new Exception("No se ha podido realizar la inscripcion");
 
@@ -116,7 +116,7 @@ namespace TorneusClienteWeb.Servicios
                     InscripcionId = _inscripcionSeleccionado.Id
                 };
 
-                bool resultado = await _inscripcionServicio.ActualizarDatosPagoEfetivo(inscripcionEf);
+                bool resultado = await _inscripcionServicioDatos.ActualizarDatosPagoEfetivo(inscripcionEf);
                 //await CargarInscripciones();
                 if (!resultado) throw new Exception("No se ha podido actualizar");
 
@@ -134,7 +134,7 @@ namespace TorneusClienteWeb.Servicios
         {
             try
             {
-                bool resultado = await _inscripcionServicio.ActualizarDatosPagoMercadopago(preferenciaMP);
+                bool resultado = await _inscripcionServicioDatos.ActualizarDatosPagoMercadopago(preferenciaMP);
                 await CargarInscripciones();
                 return resultado;
             }
@@ -161,7 +161,7 @@ namespace TorneusClienteWeb.Servicios
         {
             try
             {
-                bool resultado = await _inscripcionServicio.BajaInscripcion(inscripcionId);
+                bool resultado = await _inscripcionServicioDatos.BajaInscripcion(inscripcionId);
                 if (resultado)
                 {
                     _inscripciones.RemoveAll(rem => rem.Id == inscripcionId);
@@ -173,8 +173,6 @@ namespace TorneusClienteWeb.Servicios
                 throw new Exception(ex.Message);
             }
         }
-
-
 
     }
 }

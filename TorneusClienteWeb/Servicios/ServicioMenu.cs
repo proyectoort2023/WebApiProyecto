@@ -13,6 +13,8 @@ namespace BlazorTorneusClient.Servicios
         public string Titulo = "";
         public NavegacionPOP navegacionPop = new();
 
+        public bool nuevaNotificacion = false;
+
         public event Action OnActualizarMenu;
 
         public void ActualizarItems(List<MenuItem> nuevoMenuItems)
@@ -46,6 +48,12 @@ namespace BlazorTorneusClient.Servicios
             navegacionPop.BotonAtrasHabilitado = habilitadoBotonAtras;
             navegacionPop.EsPaginaPrincipal = esPaginaPrincipal;
             navegacionPop.AccionIrAtrasUrl = url;
+            ActualizarMenu();
+        }
+
+        public void NuevaNotificacionIcono()
+        {
+            nuevaNotificacion = true;
             ActualizarMenu();
         }
     }
