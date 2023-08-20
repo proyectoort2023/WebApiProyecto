@@ -178,5 +178,23 @@ namespace Negocio
         }
 
 
+        public async Task<Usuario> ObtenerUsuarioSegunId(int usuarioId)
+        {
+            try
+            {
+                var usuario = await _db.Usuarios.SingleOrDefaultAsync(us => us.Id == usuarioId);
+
+                if (usuario == null) throw new Exception("No se encuentra el usuario. W108");
+               
+                return usuario;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
     }
 }

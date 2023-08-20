@@ -73,8 +73,8 @@ namespace Negocio
         {
             try
             {
-                var partidos = await _db.Partidos.Include(i => i.EquipoLocal)
-                                                 .Include(i => i.EquipoVisitante)
+                var partidos = await _db.Partidos.Include(i => i.EquipoLocal.Usuario)
+                                                 .Include(i => i.EquipoVisitante.Usuario)
                                                  .Include(i => i.Torneo)
                                                  .Where(w => w.Torneo.Id == torneoId).ToListAsync();
 

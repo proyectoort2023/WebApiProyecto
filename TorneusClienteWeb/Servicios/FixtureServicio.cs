@@ -20,6 +20,8 @@ namespace TorneusClienteWeb.Servicios
         List<PartidoDTO> Partidos = new List<PartidoDTO>();
         List<TablaPosicion> TablaPosiciones = new List<TablaPosicion>();
 
+        public int TiempoPromedioMinutos = 0;
+
         public event Action OnActualizarPartidosEvent;
 
         [Inject] private TorneoServicio _torneoServicio { get; set; }
@@ -85,7 +87,9 @@ namespace TorneusClienteWeb.Servicios
 
                 Partidos.AddRange(partidosUltimaFase);
 
-                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
+                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
+
+                Partidos.ForEach(o =>  o.Fecha = fecha);
 
                 return true;
             }
@@ -127,7 +131,10 @@ namespace TorneusClienteWeb.Servicios
 
                 Partidos.AddRange(partidosUltimaFase);
 
-                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
+                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
+
+                Partidos.ForEach(o => o.Fecha = fecha);
+
                 return true;
             }
             catch (Exception ex)
@@ -148,8 +155,11 @@ namespace TorneusClienteWeb.Servicios
                 FixtureEliminacionDirecta fixtureElimDirecta = new();
 
                 Partidos = fixtureElimDirecta.Crear(equipos);
-                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
 
+
+                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
+
+                Partidos.ForEach(o => o.Fecha = fecha);
                 return true;
             }
             catch (Exception ex)
@@ -528,6 +538,19 @@ namespace TorneusClienteWeb.Servicios
             return Partidos.Any(a => !string.IsNullOrEmpty(a.Grupo));
         }
 
+        public async Task ActualizarTiempoPromedioPartidos()
+        {
+            var partidosFinalizados = Partidos.Where(w => w.EstadoPartido == Util.EstadoPartido.FINALIZADO.ToString()).ToList();
+
+            int promedio = 0;
+
+            foreach (var partido in partidosFinalizados)
+            {
+                promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
+            }
+            TiempoPromedioMinutos = (int)(promedio/ partidosFinalizados.Count);
+
+        }
 
     }
 }
