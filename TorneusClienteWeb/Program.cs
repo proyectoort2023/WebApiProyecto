@@ -99,5 +99,8 @@ builder.Services.AddScoped<FixtureServicioDatos>();
 builder.Services.AddScoped<AutorizacionPlanillero>();
 builder.Services.AddScoped<AutorizacionPlanilleroDatos>();
 
+builder.Services.AddScoped<NotificacionServicio>();
+builder.Services.AddScoped<NotificacionServicioDatos>();
+
 
 await builder.Build().RunAsync();

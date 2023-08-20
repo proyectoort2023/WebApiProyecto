@@ -147,7 +147,6 @@ hr {
     bottom: 10%;
 }
 
-
     .playPartido img {
         height: 50px;
         height: 50px;
@@ -203,4 +202,10 @@ hr {
             height: 40px;
             height: 40px;
         }
+}
+
+.posicionTiempoProm{
+    position:fixed;
+    bottom: 80px;
+    left: 15px;
 }

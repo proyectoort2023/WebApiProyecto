@@ -19,6 +19,8 @@ else
         {
             <PartidoMarcador Partido="partido" SiguientePartido="SiguientePartido" />
         }
+        <span class="posicionTiempoProm globo-propiedad">Tiempo prom. partidos: @_servicioFixture.TiempoPromedioMinutos min</span>
+
         @if (_servicioFixture.HayEtapaGrupos())
         {
             <MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="@Icons.Material.Filled.RemoveRedEye" Size="Size.Large" OnClick="VerTablaPosiciones" />
