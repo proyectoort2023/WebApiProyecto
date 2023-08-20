@@ -12,12 +12,21 @@ namespace TorneusClienteWeb.Servicios
 
         private readonly NotificacionServicioDatos  _notificacionServicioDatos;
 
+        private List<NotificacionDTO> Notificaciones = new();
+
         public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos)
         {
             _notificacionServicioDatos = notificacionServicioDatos;
          }
 
-        public async Task<bool> RegistrarNotificación(string mensaje, EquipoDTO equipo, TorneoDTO torneo, bool general)
+
+        public async Task SetNotificacion(NotificacionDTO notificacion)
+        {
+            Notificaciones.Add(notificacion);
+            Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
+        }
+
+        public async Task<bool> RegistrarNotificacion(string mensaje, EquipoDTO equipo, TorneoDTO torneo, bool general)
         { 
             try 
 	            {	  
@@ -35,10 +44,50 @@ namespace TorneusClienteWeb.Servicios
 	        {
                     throw new Exception(ex.Message);
 	        }
-          
-
         }
 
+        public async Task<List<NotificacionDTO>> ObtenerNotificaciones(int usuarioId)
+        {
+            try
+            {
+                if (Notificaciones.Count == 0)
+                {
+                    await ObtenerNotificacionesDatos(usuarioId);
+                }
+                return Notificaciones;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        private async Task ObtenerNotificacionesDatos(int usuarioId)
+        {
+            try
+            {
+                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuarioId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<bool> BorrarNotificacionesDatos(int torneoId)
+        {
+            try
+            {
+                bool borrados = await _notificacionServicioDatos.BorrarNotificacionesFinTorneo(torneoId);
+                return borrados;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
 

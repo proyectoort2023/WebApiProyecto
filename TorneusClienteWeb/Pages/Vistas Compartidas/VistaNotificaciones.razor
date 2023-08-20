@@ -7,9 +7,9 @@
 
 @if (Notificaciones != null)
 {
-    if (Notificaciones.Count > 0)
+    if(Notificaciones.Count > 0)
     {
-        @foreach (var notificacion in Notificaciones)
+        @foreach(var notificacion in Notificaciones)
         {
             <ItemNotificacion Notificacion="notificacion" />
         }
@@ -33,11 +33,12 @@ else
 
         await Actualizar();
 
-        _hubConnection.On<NotificacionDTO>("RecibirMensajesNotificaciones", async (notificacion) =>
+        _hubConnection.On<NotificacionDTO>("RecibirNuevaNotificacion", async (notificacion) =>
        {
-           if (notificacion.General || notificacion.Equipo.UsuarioId == _servicioUsuario.ObtenerUsuarioLogueado().Id)
-           {
+       if (notificacion.General || notificacion.Equipo.Usuario.Id == _servicioUsuario.ObtenerUsuarioLogueado().Id)
+       {
                await _servicioNotificaciones.SetNotificacion(notificacion);
+               _servicioMenu.NuevaNotificacionIcono();
                await Actualizar();
                StateHasChanged();
            }
@@ -47,6 +48,6 @@ else
 
     private async Task Actualizar()
     {
-        Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones(_servicioUsuario.ObtenerUsuarioLogueado());
+        Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones(_servicioUsuario.ObtenerUsuarioLogueado().Id);
     }
 }

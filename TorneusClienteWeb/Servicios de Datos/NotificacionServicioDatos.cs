@@ -47,5 +47,62 @@ namespace TorneusClienteWeb.Servicios_de_Datos
                 throw new Exception(ex.Message);
             }
         }
+
+
+        public async Task<List<NotificacionDTO>> ObtenerListadoNotificaciones(int usuarioId)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.GetAsync($"api/Notificacion/ObtenerNotificaciones/{usuarioId}");
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var contentError = await response.Content.ReadAsStringAsync();
+                    throw new Exception(contentError);
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<List<NotificacionDTO>>(content);
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
+        public async Task<bool> BorrarNotificacionesFinTorneo(int torneoId)
+        {
+            try
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var response = await _httpClient.DeleteAsync($"api/Notificacion/BorrarNotificacionesFinTorneo/{torneoId}");
+
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var contentError = await response.Content.ReadAsStringAsync();
+                    throw new Exception(contentError);
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<bool>(content);
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
+
     }
 }
