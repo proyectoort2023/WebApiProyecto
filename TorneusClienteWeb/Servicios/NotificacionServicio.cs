@@ -46,13 +46,13 @@ namespace TorneusClienteWeb.Servicios
 	        }
         }
 
-        public async Task<List<NotificacionDTO>> ObtenerNotificaciones(int usuarioId)
+        public async Task<List<NotificacionDTO>> ObtenerNotificaciones(UsuarioLogueado usuario)
         {
             try
             {
                 if (Notificaciones.Count == 0)
                 {
-                    await ObtenerNotificacionesDatos(usuarioId);
+                    await ObtenerNotificacionesDatos(usuario);
                 }
                 return Notificaciones;
             }
@@ -63,11 +63,11 @@ namespace TorneusClienteWeb.Servicios
         }
 
 
-        private async Task ObtenerNotificacionesDatos(int usuarioId)
+        private async Task ObtenerNotificacionesDatos(UsuarioLogueado usuario)
         {
             try
             {
-                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuarioId);
+                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuario);
             }
             catch (Exception ex)
             {

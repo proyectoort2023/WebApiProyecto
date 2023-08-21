@@ -123,7 +123,7 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">Validaciones varias no conformadas</response>
         [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "ORGANIZADOR, PLANILLERO")]
+        [Authorize]
         [HttpPost("ExistenciaPlanilleroEnTorneo")]
         public async Task<IActionResult> ExistenciaAutorizacionPlanillero([FromBody] PlanilleroTorneo planillerosAut)
         {

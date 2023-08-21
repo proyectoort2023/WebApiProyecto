@@ -78,14 +78,14 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(List<NotificacionDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize]
-        [HttpGet("ObtenerNotificaciones/{usuarioId}")]
-        public async Task<IActionResult> ObtenerNotificaciones(int usuarioId)
+        [HttpPost("ObtenerNotificaciones")]
+        public async Task<IActionResult> ObtenerNotificaciones(UsuarioLogueado usuario)
         {
             try
             {
-                if (usuarioId < 0) throw new Exception("No se ha recibido ningun usuario");
+                if (usuario == null) throw new Exception("No se ha recibido ningun usuario");
 
-                var listaNotificaciones = _mapper.Map<List<Notificacion>, List<NotificacionDTO>>(await _notificacionService.ObtenerSegunUsuario(usuarioId));
+                var listaNotificaciones = _mapper.Map<List<Notificacion>, List<NotificacionDTO>>(await _notificacionService.ObtenerSegunUsuario(usuario));
 
                 return Ok(listaNotificaciones);
 

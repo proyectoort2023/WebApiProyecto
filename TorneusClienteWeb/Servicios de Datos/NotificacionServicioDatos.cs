@@ -49,13 +49,13 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
-        public async Task<List<NotificacionDTO>> ObtenerListadoNotificaciones(int usuarioId)
+        public async Task<List<NotificacionDTO>> ObtenerListadoNotificaciones(UsuarioLogueado usuario)
         {
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                var response = await _httpClient.GetAsync($"api/Notificacion/ObtenerNotificaciones/{usuarioId}");
+                var response = await _httpClient.PostAsJsonAsync($"api/Notificacion/ObtenerNotificaciones", usuario);
 
 
                 if (!response.IsSuccessStatusCode)

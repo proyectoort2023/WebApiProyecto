@@ -48,6 +48,6 @@ else
 
     private async Task Actualizar()
     {
-        Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones(_servicioUsuario.ObtenerUsuarioLogueado().Id);
+        Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones(_servicioUsuario.ObtenerUsuarioLogueado());
     }
 }
