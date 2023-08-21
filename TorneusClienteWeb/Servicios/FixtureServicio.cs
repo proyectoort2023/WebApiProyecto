@@ -19,7 +19,6 @@ namespace TorneusClienteWeb.Servicios
 
         List<PartidoDTO> Partidos = new List<PartidoDTO>();
         List<TablaPosicion> TablaPosiciones = new List<TablaPosicion>();
-
         public int TiempoPromedioMinutos = 0;
 
         public event Action OnActualizarPartidosEvent;
@@ -87,9 +86,7 @@ namespace TorneusClienteWeb.Servicios
 
                 Partidos.AddRange(partidosUltimaFase);
 
-                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
-
-                Partidos.ForEach(o =>  o.Fecha = fecha);
+                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
 
                 return true;
             }
@@ -131,10 +128,7 @@ namespace TorneusClienteWeb.Servicios
 
                 Partidos.AddRange(partidosUltimaFase);
 
-                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
-
-                Partidos.ForEach(o => o.Fecha = fecha);
-
+                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
                 return true;
             }
             catch (Exception ex)
@@ -155,11 +149,8 @@ namespace TorneusClienteWeb.Servicios
                 FixtureEliminacionDirecta fixtureElimDirecta = new();
 
                 Partidos = fixtureElimDirecta.Crear(equipos);
+                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
 
-
-                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
-
-                Partidos.ForEach(o => o.Fecha = fecha);
                 return true;
             }
             catch (Exception ex)
@@ -548,9 +539,11 @@ namespace TorneusClienteWeb.Servicios
             {
                 promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
             }
-            TiempoPromedioMinutos = (int)(promedio/ partidosFinalizados.Count);
+            TiempoPromedioMinutos = (int)(promedio / partidosFinalizados.Count);
 
         }
+
+
 
     }
 }
