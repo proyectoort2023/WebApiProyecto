@@ -19,6 +19,7 @@ namespace TorneusClienteWeb.Servicios
 
         List<PartidoDTO> Partidos = new List<PartidoDTO>();
         List<TablaPosicion> TablaPosiciones = new List<TablaPosicion>();
+        public int TiempoPromedioMinutos = 0;
 
         public event Action OnActualizarPartidosEvent;
 
@@ -527,6 +528,21 @@ namespace TorneusClienteWeb.Servicios
         {
             return Partidos.Any(a => !string.IsNullOrEmpty(a.Grupo));
         }
+
+        public async Task ActualizarTiempoPromedioPartidos()
+        {
+            var partidosFinalizados = Partidos.Where(w => w.EstadoPartido == Util.EstadoPartido.FINALIZADO.ToString()).ToList();
+
+            int promedio = 0;
+
+            foreach (var partido in partidosFinalizados)
+            {
+                promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
+            }
+            TiempoPromedioMinutos = (int)(promedio / partidosFinalizados.Count);
+
+        }
+
 
 
     }
