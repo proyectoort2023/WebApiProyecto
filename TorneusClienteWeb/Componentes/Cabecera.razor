@@ -51,6 +51,7 @@
     protected async override Task OnInitializedAsync()
     {
         _servicioMenu.OnActualizarMenu += Actualizar;
+        await IniciarNotif();
     }
 
     private async void IrAtras()

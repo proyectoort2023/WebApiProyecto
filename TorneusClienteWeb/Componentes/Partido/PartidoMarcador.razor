@@ -6,6 +6,7 @@
 @inject HubConnection _hubConnection
 @inject NotificacionesSignalRService _servicioNotificacionesSignalR
 @inject AutorizacionPlanillero _servicioAutorizacionPlanillero
+@inject NotificacionServicio _servicioNotificacion
 
 
 @if (Partido != null)
@@ -80,6 +81,13 @@
             @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null && Partido.EstadoPartido == Util.EstadoPartido.PENDIENTE.ToString())
             {
                 <div class="playPartido">
+
+                      <a href="" @onclick="NotificarComienzoAEQuipos" @onclick:preventDefault>
+                        <img src="/imagenes/@ImagenNotificar" alt="" class="imgPlay">
+                    </a>
+
+                    <EspacioVertical Altura="3px" />
+
                     <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
                         <img src="/imagenes/@ImagenPlay" alt="" class="imgPlay">
                     </a>
@@ -119,6 +127,7 @@
     private bool EsconderIconoPlay = true;
 
     private string ImagenPlay = "play.png";
+    private string ImagenNotificar = "enviarPartido.png";
 
     private DateTime HorarioInicioPartido;
 
@@ -352,7 +361,33 @@
         esToqueLArgo = false;
     }
 
+    private async Task NotificarComienzoAEQuipos()
+    {
+        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null &&
+         Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0)
+        {
+            if (_servicioFixture.HayCanchaLibre())
+            {
+                bool notificacionsoloAEquipo = false;
+                string mensaje = "Presentarse a jugar en cancha";
+                bool notificadoLocal = await _servicioNotificacion.RegistrarNotificacion(mensaje, Partido.EquipoLocal, _servicioTorneo.ObtenerTorneoActual(), notificacionsoloAEquipo);
+                bool notificadoVisitante = await _servicioNotificacion.RegistrarNotificacion(mensaje, Partido.EquipoVisitante, _servicioTorneo.ObtenerTorneoActual(), notificacionsoloAEquipo);
 
+                if (notificadoLocal && notificadoVisitante)
+                {
+                    _snackBar.Add("Equipos notificados", Severity.Success);
+                }
+            }
+            else
+            {
+                _snackBar.Add("No hay canchas disopnibles aun", Severity.Info);
+            }
+        }
+        else
+        {
+            _snackBar.Add("Todavia no hay dos equipos confirmados", Severity.Info);
+        }
+    }
 
 
 
