@@ -20,13 +20,10 @@ namespace WebApiTorneus.Controllers
         private readonly IMapper _mapper;
         private readonly NotificacionService _notificacionService;
 
-        private readonly IHubContext<TorneusHub> _torneoHub;
-
-        public NotificacionController(IMapper mapper, NotificacionService notificacionService, IHubContext<TorneusHub> torneoHub)
+        public NotificacionController(IMapper mapper, NotificacionService notificacionService)
         {
             _mapper = mapper;
             _notificacionService = notificacionService;
-             _torneoHub = torneoHub;
         }
 
 
@@ -52,8 +49,7 @@ namespace WebApiTorneus.Controllers
 
                 if (registrada != null)
                 {
-                    await _torneoHub.Clients.All.SendAsync("RecibirNuevaNotificacion", registrada);
-                    return Ok(registrada.Id > 0);
+                    return Ok(registrada);
                 }
                 else
                 {
