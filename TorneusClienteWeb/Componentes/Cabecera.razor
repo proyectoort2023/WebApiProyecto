@@ -2,9 +2,7 @@
 @inject UsuarioServicio _usuarioServicio
 @inject NavigationManager _nav
 @inject ILocalStorageService _localStorage
-@inject UsuarioServicio _servicioUsuario
 @inject HubConnection _hubConnection
-
 
 
 <div class="myHead">
@@ -31,7 +29,7 @@
         </div>
     </section>
   
-    @if (_servicioMenu.nuevaNotificacion)
+    @if (_servicioMenu.NuevaNotificacion)
     {
         <button class="menu-button" @onclick="NotificacionLeida">
             <img src="/imagenes/campana.gif" alt="Campana" class="imgCampana" />
@@ -43,7 +41,6 @@
             <i class="fas fa-bell size-icon"></i>
         </button>
     }
-   
 </div>
 
 
@@ -53,14 +50,6 @@
 
     protected async override Task OnInitializedAsync()
     {
-        _hubConnection.On<NotificacionDTO>("RecibirNuevaNotificacion", async (notificacion) =>
-     {
-         if (notificacion.General || notificacion.Equipo.Usuario.Id == _servicioUsuario.ObtenerUsuarioLogueado().Id)
-         {
-             _servicioMenu.NuevaNotificacionIcono();
-         }
-     });
-
         _servicioMenu.OnActualizarMenu += Actualizar;
     }
 
@@ -78,13 +67,24 @@
 
     }
 
+    private async Task IniciarNotif()
+    {
+        _hubConnection.On<NotificacionDTO>("RecibirMensajesNotificaciones", async (notificacion) =>
+        {
+            if (notificacion.General || notificacion.Equipo.Usuario.Id == _usuarioServicio.ObtenerUsuarioLogueado().Id)
+            {
+                _servicioMenu.NuevaNotificacionIcono();
+            }
+        });
+    }
     private void Actualizar()
     {
         StateHasChanged();
     }
+
     private async Task NotificacionLeida()
     {
-        _servicioMenu.nuevaNotificacion = false;
+        _servicioMenu.NuevaNotificacion = false;
         _nav.NavigateTo("/VistaNotificaciones");
     }
 }
