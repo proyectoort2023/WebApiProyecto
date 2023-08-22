@@ -1,0 +1,52 @@
+﻿@page "/VistaNotificaciones"
+@inject NotificacionServicio _servicioNotificaciones
+@inject UsuarioServicio _servicioUsuario
+@inject HubConnection _hubConnection
+@inject ServicioMenu _servicioMenu
+
+
+@if (Notificaciones != null)
+{
+    if (Notificaciones.Count > 0)
+    {
+        @foreach (var notificacion in Notificaciones)
+        {
+            <ItemNotificacion Notificacion="notificacion" />
+        }
+    }
+    else
+    {
+        <h3>No tiene notificaciones recibidas aun.</h3>
+    }
+}
+else
+{
+    <Cargando />
+}
+
+
+@code {
+    List<NotificacionDTO> Notificaciones;
+
+    protected async override Task OnInitializedAsync()
+    {
+
+        await Actualizar();
+
+        _hubConnection.On<NotificacionDTO>("RecibirNuevaNotificacion", async (notificacion) =>
+       {
+           if (notificacion.General || notificacion.Equipo.Usuario.Id == _servicioUsuario.ObtenerUsuarioLogueado().Id)
+           {
+               await _servicioNotificaciones.SetNotificacion(notificacion);
+               await Actualizar();
+               StateHasChanged();
+           }
+       });
+
+    }
+
+    private async Task Actualizar()
+    {
+        Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones(_servicioUsuario.ObtenerUsuarioLogueado());
+    }
+}

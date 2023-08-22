@@ -1,0 +1,28 @@
+﻿@if (Notificacion != null)
+{
+    <section class="card-general card-general-relativo2 @ClaseGeneralColorMensaje()">
+        <article>
+            <span class="@ClaseMEnsajeAEquipo()">@NombreEquipo()</span>
+            <span class="letra-oscura">(@Notificacion.FechaHora.ToString("HH:mm")) @Notificacion.Mensaje</span>
+        </article>
+
+        <span class="card-general-encabezado2 @ClaseEquipoColorTitulo()">@Notificacion.Torneo.Nombre</span>
+
+    </section>
+
+}
+
+
+@code {
+    [Parameter]
+    public NotificacionDTO Notificacion { get; set; }
+
+    private string ClaseGeneralColorMensaje() => Notificacion.General ? "notify-general-verde" : "notify-general-violeta";
+
+    private string ClaseEquipoColorTitulo() => Notificacion.General ? "gradiente-verde" : "gradiente-violeta";
+
+    private string ClaseMEnsajeAEquipo() => Notificacion.Equipo != null ? "titulo-equipo-notificacion" : "";
+
+    private string NombreEquipo() => Notificacion.Equipo != null ? Notificacion.Equipo.Nombre : "";
+
+}
