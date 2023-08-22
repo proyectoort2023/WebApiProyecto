@@ -72,7 +72,7 @@
     {
         _hubConnection.On<NotificacionDTO>("RecibirMensajesNotificaciones", async (notificacion) =>
         {
-            if (notificacion.General || notificacion.Equipo.Usuario.Id == _usuarioServicio.ObtenerUsuarioLogueado().Id)
+            if (notificacion.General || notificacion.Equipo.UsuarioId == _usuarioServicio.ObtenerUsuarioLogueado().Id)
             {
                 _servicioMenu.NuevaNotificacionIcono();
             }
@@ -87,5 +87,6 @@
     {
         _servicioMenu.NuevaNotificacion = false;
         _nav.NavigateTo("/VistaNotificaciones");
+        Actualizar();
     }
 }
