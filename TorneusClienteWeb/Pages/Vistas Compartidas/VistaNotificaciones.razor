@@ -7,15 +7,9 @@
 
 @if (Notificaciones != null)
 {
-<<<<<<< HEAD
-    if(Notificaciones.Count > 0)
-    {
-        @foreach(var notificacion in Notificaciones)
-=======
     if (Notificaciones.Count > 0)
     {
         @foreach (var notificacion in Notificaciones)
->>>>>>> dev: front notificacion estructura
         {
             <ItemNotificacion Notificacion="notificacion" />
         }
@@ -41,16 +35,9 @@ else
 
         _hubConnection.On<NotificacionDTO>("RecibirMensajesNotificaciones", async (notificacion) =>
        {
-<<<<<<< HEAD
-       if (notificacion.General || notificacion.Equipo.Usuario.Id == _servicioUsuario.ObtenerUsuarioLogueado().Id)
-       {
-               await _servicioNotificaciones.SetNotificacion(notificacion);
-               _servicioMenu.NuevaNotificacionIcono();
-=======
-           if (notificacion.General || notificacion.Equipo.Usuario.Id == _servicioUsuario.ObtenerUsuarioLogueado().Id)
+           if (notificacion.General || notificacion.Equipo.UsuarioId == _servicioUsuario.ObtenerUsuarioLogueado().Id)
            {
                await _servicioNotificaciones.SetNotificacion(notificacion);
->>>>>>> dev: front notificacion estructura
                await Actualizar();
                StateHasChanged();
            }
@@ -60,10 +47,6 @@ else
 
     private async Task Actualizar()
     {
-<<<<<<< HEAD
-        Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones(_servicioUsuario.ObtenerUsuarioLogueado().Id);
-=======
         Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones(_servicioUsuario.ObtenerUsuarioLogueado());
->>>>>>> dev: front notificacion estructura
     }
 }
