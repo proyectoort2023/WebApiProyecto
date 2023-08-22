@@ -33,7 +33,7 @@ else
 
         await Actualizar();
 
-        _hubConnection.On<NotificacionDTO>("RecibirNuevaNotificacion", async (notificacion) =>
+        _hubConnection.On<NotificacionDTO>("RecibirMensajesNotificaciones", async (notificacion) =>
        {
            if (notificacion.General || notificacion.Equipo.Usuario.Id == _servicioUsuario.ObtenerUsuarioLogueado().Id)
            {
