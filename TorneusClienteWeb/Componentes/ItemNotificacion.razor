@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 ﻿
 
 @if (Notificacion != null)
+=======
+﻿@if (Notificacion != null)
+>>>>>>> dev: front notificacion estructura
 {
     <section class="card-general card-general-relativo2 @ClaseGeneralColorMensaje()">
         <article>
             <span class="@ClaseMEnsajeAEquipo()">@NombreEquipo()</span>
+<<<<<<< HEAD
             <span class="letra-oscura">@Notificacion.Mensaje</span>
+=======
+            <span class="letra-oscura">(@Notificacion.FechaHora.ToString("HH:mm")) @Notificacion.Mensaje</span>
+>>>>>>> dev: front notificacion estructura
         </article>
 
         <span class="card-general-encabezado2 @ClaseEquipoColorTitulo()">@Notificacion.Torneo.Nombre</span>
@@ -27,4 +35,8 @@
 
     private string NombreEquipo() => Notificacion.Equipo != null ? Notificacion.Equipo.Nombre : "";
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> dev: front notificacion estructura

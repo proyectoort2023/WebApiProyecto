@@ -10,7 +10,10 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 {
     public class NotificacionServicioDatos
     {
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev: front notificacion estructura
         private readonly HttpClient _httpClient;
         [Inject] private UsuarioServicio _usuarioServicio { get; set; }
 
@@ -49,13 +52,21 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
+<<<<<<< HEAD
         public async Task<List<NotificacionDTO>> ObtenerListadoNotificaciones(int usuarioId)
+=======
+        public async Task<List<NotificacionDTO>> ObtenerListadoNotificaciones(UsuarioLogueado usuario)
+>>>>>>> dev: front notificacion estructura
         {
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+<<<<<<< HEAD
                 var response = await _httpClient.GetAsync($"api/Notificacion/ObtenerNotificaciones/{usuarioId}");
+=======
+                var response = await _httpClient.PostAsJsonAsync($"api/Notificacion/ObtenerNotificaciones", usuario);
+>>>>>>> dev: front notificacion estructura
 
 
                 if (!response.IsSuccessStatusCode)
@@ -103,6 +114,9 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev: front notificacion estructura
     }
 }
