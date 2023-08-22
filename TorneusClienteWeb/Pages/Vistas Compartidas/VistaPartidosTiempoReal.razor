@@ -48,6 +48,7 @@ else
         Partidos = _servicioFixture.ObtenerPartidos();
         await _servicioFixture.CrearTablaPosiciones();
         _servicioFixture.OnActualizarPartidosEvent += Actualizar;
+
     }
 
     private void SiguientePartido()

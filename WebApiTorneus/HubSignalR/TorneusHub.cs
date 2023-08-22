@@ -1,4 +1,5 @@
-﻿using DTOs_Compartidos.Models;
+﻿using DTOs_Compartidos.DTOs;
+using DTOs_Compartidos.Models;
 using Microsoft.AspNetCore.SignalR;
 using Negocio.DTOs;
 using WebApiTorneus.Services;
@@ -86,6 +87,11 @@ namespace WebApiTorneus.HubSignalR
         {
             await _fixtureTiempoReal.ActualizarPartidos(partidos);
             await Clients.All.SendAsync("RecibirActualizarPartidos", partidos);
+        }
+
+        public async Task EnviarMensajesNotificaciones(NotificacionDTO notificacionDTO)
+        {
+            await Clients.All.SendAsync("RecibirMensajesNotificaciones", notificacionDTO);
         }
 
     }
