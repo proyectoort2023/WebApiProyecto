@@ -26,7 +26,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
             token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
         }
 
-        public async Task<bool> RegistrarNotificacion(NotificacionDTO notificacion)
+        public async Task<NotificacionDTO> RegistrarNotificacion(NotificacionDTO notificacion)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                var resultado = JsonConvert.DeserializeObject<bool>(content);
+                var resultado = JsonConvert.DeserializeObject<NotificacionDTO>(content);
                 return resultado;
             }
             catch (Exception ex)
