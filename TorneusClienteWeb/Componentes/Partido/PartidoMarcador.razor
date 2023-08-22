@@ -86,6 +86,8 @@
                         <img src="/imagenes/@ImagenNotificar" alt="" class="imgPlay">
                     </a>
 
+                    <EspacioVertical Altura="3px" />
+
                     <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
                         <img src="/imagenes/@ImagenPlay" alt="" class="imgPlay">
                     </a>
@@ -95,7 +97,7 @@
        
     </div>
 
-   <EspacioVertical Altura="25px" />
+   <EspacioVertical Altura="35px" />
 
 }
 
@@ -155,13 +157,14 @@
         puntajeMaximoSegunSet = PuntajeMax;
         if (Partido.PuntajeLocal > 0 || Partido.PuntajeVisitante > 0) EsconderIconoPlay = true;
 
+        idUsuario = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+        existenciaAutorizacion = await _servicioAutorizacionPlanillero.ExistenciaAutorizacionPlanillero(_servicioTorneo.ObtenerTorneoActual().Id, idUsuario);
+
+
         _hubConnection.On<List<PartidoDTO>>("RecibirActualizarPartidos", async (partidos) =>
         {
             await _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
         });
-
-        idUsuario = _servicioUsuario.ObtenerUsuarioLogueado().Id;
-        existenciaAutorizacion = await _servicioAutorizacionPlanillero.ExistenciaAutorizacionPlanillero(_servicioTorneo.ObtenerTorneoActual().Id, idUsuario);
 
     }
 
@@ -198,7 +201,6 @@
             _snackBar.Add("Todavia no hay dos equipos confirmados", Severity.Info);
         }
         await ActualizarPartidosTiempoReal();
-        //funcion para dar aviso
     }
 
     private async Task AumentarMarcador(string tipoEquipo)

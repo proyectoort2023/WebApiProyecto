@@ -23,7 +23,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
             token = _usuarioServicio.ObtenerUsuarioLogueado().Token;
         }
 
-        public async Task<bool> RegistrarNotificacion(NotificacionDTO notificacion)
+        public async Task<NotificacionDTO> RegistrarNotificacion(NotificacionDTO notificacion)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
                 }
 
                 var content = await response.Content.ReadAsStringAsync();
-                var resultado = JsonConvert.DeserializeObject<bool>(content);
+                var resultado = JsonConvert.DeserializeObject<NotificacionDTO>(content);
                 return resultado;
             }
             catch (Exception ex)
@@ -49,13 +49,13 @@ namespace TorneusClienteWeb.Servicios_de_Datos
         }
 
 
-        public async Task<List<NotificacionDTO>> ObtenerListadoNotificaciones(int usuarioId)
+        public async Task<List<NotificacionDTO>> ObtenerListadoNotificaciones(UsuarioLogueado usuario)
         {
             try
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                var response = await _httpClient.GetAsync($"api/Notificacion/ObtenerNotificaciones/{usuarioId}");
+                var response = await _httpClient.PostAsJsonAsync($"api/Notificacion/ObtenerNotificaciones", usuario);
 
 
                 if (!response.IsSuccessStatusCode)

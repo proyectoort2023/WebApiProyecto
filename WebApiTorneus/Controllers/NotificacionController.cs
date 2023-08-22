@@ -20,13 +20,10 @@ namespace WebApiTorneus.Controllers
         private readonly IMapper _mapper;
         private readonly NotificacionService _notificacionService;
 
-        private readonly IHubContext<TorneusHub> _torneoHub;
-
-        public NotificacionController(IMapper mapper, NotificacionService notificacionService, IHubContext<TorneusHub> torneoHub)
+        public NotificacionController(IMapper mapper, NotificacionService notificacionService)
         {
             _mapper = mapper;
             _notificacionService = notificacionService;
-             _torneoHub = torneoHub;
         }
 
 
@@ -52,8 +49,7 @@ namespace WebApiTorneus.Controllers
 
                 if (registrada != null)
                 {
-                    await _torneoHub.Clients.All.SendAsync("RecibirNuevaNotificacion", registrada);
-                    return Ok(registrada.Id > 0);
+                    return Ok(registrada);
                 }
                 else
                 {
@@ -78,14 +74,14 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(List<NotificacionDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize]
-        [HttpGet("ObtenerNotificaciones/{usuarioId}")]
-        public async Task<IActionResult> ObtenerNotificaciones(int usuarioId)
+        [HttpPost("ObtenerNotificaciones")]
+        public async Task<IActionResult> ObtenerNotificaciones(UsuarioLogueado usuario)
         {
             try
             {
-                if (usuarioId < 0) throw new Exception("No se ha recibido ningun usuario");
+                if (usuario == null) throw new Exception("No se ha recibido ningun usuario");
 
-                var listaNotificaciones = _mapper.Map<List<Notificacion>, List<NotificacionDTO>>(await _notificacionService.ObtenerSegunUsuario(usuarioId));
+                var listaNotificaciones = _mapper.Map<List<Notificacion>, List<NotificacionDTO>>(await _notificacionService.ObtenerSegunUsuario(usuario));
 
                 return Ok(listaNotificaciones);
 

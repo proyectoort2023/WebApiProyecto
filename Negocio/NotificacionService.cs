@@ -49,24 +49,22 @@ namespace Negocio
 
 
 
-        public async Task<List<Notificacion>> ObtenerSegunUsuario(int usuarioId)
+        public async Task<List<Notificacion>> ObtenerSegunUsuario(UsuarioLogueado usuario)
         {
-            Usuario usuario = await _usuarioService.ObtenerUsuarioSegunId(usuarioId);
+           
 
             List<Notificacion> notificaciones = new List<Notificacion>();
+            List<Notificacion> notificacionesEquipo = new();
+
 
             try
             {
-                if (usuario.Rol != Util.Roles.EQUIPO.ToString())
-                {
-                    notificaciones = await _db.Notificaciones.Include(i => i.Torneo)
-                                                             .Include(i => i.Equipo)
-                                                             .Where(w => w.General == true)
-                                                             .OrderByDescending(o => o.FechaHora)
-                                                             .ToListAsync();
-                    return notificaciones;
-                 }
-                else
+                    var notificacionGeneral = await _db.Notificaciones.Include(i => i.Torneo)
+                                                                      .Include(i => i.Equipo)
+                                                                      .Where(w => w.General == true)
+                                                                      .ToListAsync();
+
+                if (usuario.Rol == Util.Roles.EQUIPO.ToString())
                 {
                     var inscrpciones = await _inscripcionService.ObtenerInscripcionesSegunUsuario(usuario.Id);
                     List<int> listaIdTorneos = new();
@@ -78,20 +76,19 @@ namespace Negocio
 
                     if (listaIdTorneos.Count > 0)
                     {
-                        notificaciones = await _db.Notificaciones.Include(i => i.Torneo)
+                       notificacionesEquipo = await _db.Notificaciones.Include(i => i.Torneo)
                                                                  .Include(i => i.Equipo)
                                                                  .Where(w => listaIdTorneos.Contains(w.Torneo.Id))
-                                                                 .OrderByDescending(o => o.FechaHora)
                                                                  .ToListAsync();
-                        return notificaciones;
-                    }
-                    else
-                    {
-                        return notificaciones;
                     }
 
                 }
 
+                notificaciones.AddRange(notificacionGeneral);
+                notificaciones.AddRange(notificacionesEquipo);
+
+                notificaciones = notificaciones.OrderByDescending(w => w.FechaHora).ToList();
+                return notificaciones;
             }
             catch (Exception ex)
             {
