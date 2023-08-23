@@ -65,6 +65,7 @@ namespace TorneusClienteWeb.Servicios
                 {
                     await _fixtureServicio.SetPartidos(partido);
                 }
+                await _fixtureServicio.ActualizarTiempoPromedioPartidos();
                 await _fixtureServicio.ActualizarListadoPartidosFront();
             }
           

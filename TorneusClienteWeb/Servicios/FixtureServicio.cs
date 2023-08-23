@@ -21,7 +21,7 @@ namespace TorneusClienteWeb.Servicios
         List<TablaPosicion> TablaPosiciones = new List<TablaPosicion>();
 
         public event Action OnActualizarPartidosEvent;
-
+        public int TiempoPromedioMinutos = 0;
         [Inject] private TorneoServicio _torneoServicio { get; set; }
         [Inject] private HubConnection _hubConnection { get; set; }
 
@@ -528,6 +528,19 @@ namespace TorneusClienteWeb.Servicios
             return Partidos.Any(a => !string.IsNullOrEmpty(a.Grupo));
         }
 
+        public async Task ActualizarTiempoPromedioPartidos()
+        {
+            var partidosFinalizados = Partidos.Where(w => w.EstadoPartido == Util.EstadoPartido.FINALIZADO.ToString()).ToList();
+
+            int promedio = 0;
+
+            foreach (var partido in partidosFinalizados)
+            {
+                promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
+            }
+            TiempoPromedioMinutos = (int)(promedio / partidosFinalizados.Count);
+
+        }
 
     }
 }

@@ -204,3 +204,9 @@ hr {
             height: 40px;
         }
 }
+
+.posicionTiempoProm {
+    position: fixed;
+    bottom: 80px;
+    left: 15px;
+}
