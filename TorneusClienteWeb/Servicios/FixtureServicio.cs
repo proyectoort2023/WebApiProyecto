@@ -453,7 +453,7 @@ namespace TorneusClienteWeb.Servicios
 
         public async Task<List<GrupoTablaPosicionesView>> ObtenerTablaPosiciones()
         {
-            var partidosGrupos = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo)).ToList();
+            var partidosGrupos = Partidos.Where(w => !string.IsNullOrEmpty(w.Grupo) && w.EstadoPartido == Util.EstadoPartido.FINALIZADO.ToString()).ToList();
 
             await ActualizarTablaPosiciones(partidosGrupos);
 
