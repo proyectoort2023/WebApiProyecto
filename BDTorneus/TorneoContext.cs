@@ -31,5 +31,6 @@ namespace BDTorneus
         public DbSet<Partido> Partidos { get; set; }
         public DbSet<Torneo> Torneos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<AutorizacionPlanillero> AutorizacionesPlanilleros { get; set; }
     }
 }
