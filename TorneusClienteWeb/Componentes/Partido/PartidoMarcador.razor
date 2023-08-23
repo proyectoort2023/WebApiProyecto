@@ -139,10 +139,7 @@
         puntajeMaximoSegunSet = PuntajeMax;
         if (Partido.PuntajeLocal > 0 || Partido.PuntajeVisitante > 0) EsconderIconoPlay = true;
 
-        _hubConnection.On<List<PartidoDTO>>("RecibirActualizarPartidos", async (partidos) =>
-        {
-            await _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
-        });
+      
 
     }
 

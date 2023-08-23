@@ -46,6 +46,11 @@ else
         Partidos = _servicioFixture.ObtenerPartidos();
         await _servicioFixture.CrearTablaPosiciones();
         _servicioFixture.OnActualizarPartidosEvent += Actualizar;
+
+        _hubConnection.On<List<PartidoDTO>>("RecibirActualizarPartidos", async (partidos) =>
+      {
+          await _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
+      });
     }
 
     private void SiguientePartido()
