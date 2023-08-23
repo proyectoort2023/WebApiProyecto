@@ -89,7 +89,11 @@ namespace Negocio
 
         public async Task<List<AutorizacionPlanillero>> ObtenerAutorizacionesPlanillero(int planilleroId)
         {
-            var listado = await _db.AutorizacionesPlanilleros.Where(w => w.UsuarioPlanillero.Id == planilleroId).ToListAsync();
+            var listado = await _db.AutorizacionesPlanilleros.AsNoTracking()
+                                                             .Include(i => i.Torneo)
+                                                             .Include(i => i.UsuarioOrganizador)
+                                                             .Include(i => i.UsuarioPlanillero)
+                                                             .Where(w => w.UsuarioPlanillero.Id == planilleroId).ToListAsync();
             return listado;
         }
 
