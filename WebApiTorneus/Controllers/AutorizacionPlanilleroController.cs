@@ -53,18 +53,18 @@ namespace WebApiTorneus.Controllers
 
 
         /// <summary>
-        /// Permite obtener el listado de todas las autorizaciones que el organizador le brindó a un determinado planillero
+        /// Permite obtener el listado de todas las autorizaciones de un planillero de todos los organizadores que le dieron acceso a la marcación de su torneo
         /// </summary>
         /// <remarks>
-        /// Este endpoint permite obtener el listado de todas las autorizaciones que el organizador le brindó a un determinado planillero
+        /// Este endpoint permite obtener el listado de todas las autorizaciones de un planillero de todos los organizadores que le dieron acceso a la marcación de su torneo
         /// </remarks>
         /// <response code="200">OK.</response>
         /// <response code="400">Validaciones varias no conformadas</response>
         [ProducesResponseType(typeof(List<AutorizacionPlanilleroDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "PLANILLERO")]
-        [HttpGet("ObtenerAutorizaciones/{planilleroId}")]
-        public async Task<IActionResult> ObtenerListadoAutorizaciones(int planilleroId)
+        [HttpGet("ObtenerAutorizacionesPlanillero/{planilleroId}")]
+        public async Task<IActionResult> ObtenerListadoAutorizacionesPlanilleros(int planilleroId)
         {
             try
             {
@@ -77,6 +77,53 @@ namespace WebApiTorneus.Controllers
                 {
                     autPlanillerosDTO = autPlanilleros.Select(s => new AutorizacionPlanilleroDTO()
                     {
+                        Id = s.Id,
+                        UsuarioIdOrganizador = s.UsuarioOrganizador.Id,
+                        UsuarioIdPlanillero = s.UsuarioPlanillero.Id,
+                        TorneoId = s.Torneo.Id,
+                        EmailPlanillero = s.UsuarioPlanillero.Mail,
+                        NombrePlanillero = s.UsuarioPlanillero.Nombre,
+                        FechaTorneo = s.Torneo.Fecha,
+                        NombreTorneo = s.Torneo.Nombre,
+
+                    }).ToList();
+
+                }
+
+                return Ok(autPlanillerosDTO);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Permite obtener el listado de todas las autorizaciones que el organizador le brindó a un determinado planillero
+        /// </summary>
+        /// <remarks>
+        /// Este endpoint permite obtener el listado de todas las autorizaciones que el organizador le brindó a un determinado planillero
+        /// </remarks>
+        /// <response code="200">OK.</response>
+        /// <response code="400">Validaciones varias no conformadas</response>
+        [ProducesResponseType(typeof(List<AutorizacionPlanilleroDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "PLANILLERO")]
+        [HttpGet("ObtenerAutorizacionesOrganizador/{organizadorId}")]
+        public async Task<IActionResult> ObtenerListadoAutorizacionesOrganizador(int organizadorId)
+        {
+            try
+            {
+                if (organizadorId < 1) BadRequest("No existe autorizacion de planillero");
+                List<AutorizacionPlanilleroDTO> autPlanillerosDTO = new();
+
+                List<AutorizacionPlanillero> autPlanilleros = await _autorizacionPlanilleroService.ObtenerAutorizacionesPlanilleroOrganizador(organizadorId);
+
+                if (autPlanilleros.Count > 0)
+                {
+                    autPlanillerosDTO = autPlanilleros.Select(s => new AutorizacionPlanilleroDTO()
+                    {
+                        Id = s.Id,
                         UsuarioIdOrganizador = s.UsuarioOrganizador.Id,
                         UsuarioIdPlanillero = s.UsuarioPlanillero.Id,
                         TorneoId = s.Torneo.Id,
@@ -139,7 +186,7 @@ namespace WebApiTorneus.Controllers
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = "PLANILLERO")]
-        [HttpDelete("EliminarAutorizacionTorneo")]
+        [HttpDelete("EliminarAutorizacionTorneo/{torneoId}")]
         public async Task<IActionResult> QuitarAutorizacionesTorneo(int torneoId)
         {
             try

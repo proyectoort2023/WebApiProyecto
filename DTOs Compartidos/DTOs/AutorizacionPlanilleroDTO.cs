@@ -8,6 +8,7 @@ namespace DTOs_Compartidos.DTOs
 {
     public class AutorizacionPlanilleroDTO
     {
+        public int Id { get; set; }
         public int UsuarioIdOrganizador { get; set; }
         public int UsuarioIdPlanillero { get; set; }
         public string NombrePlanillero { get; set; }
