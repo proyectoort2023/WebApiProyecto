@@ -1,5 +1,6 @@
 ﻿using BDTorneus;
 using DTOs_Compartidos.DTOs;
+using Microsoft.AspNetCore.Components;
 using Negocio.DTOs;
 using System.Drawing.Text;
 using TorneusClienteWeb.Servicios_de_Datos;
@@ -10,19 +11,30 @@ namespace TorneusClienteWeb.Servicios
     public class NotificacionServicio
     {
         private readonly NotificacionServicioDatos _notificacionServicioDatos;
+        [Inject] private UsuarioServicio _usuarioServicio { get; set; }
 
         private List<NotificacionDTO> Notificaciones = new();
 
-        public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos)
+        private bool cargadasNotificaciones = false;
+
+        public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos, UsuarioServicio usuarioServicio)
         {
             _notificacionServicioDatos = notificacionServicioDatos;
+            _usuarioServicio = usuarioServicio;
         }
 
 
         public async Task SetNotificacion(NotificacionDTO notificacion)
         {
-            Notificaciones.Add(notificacion);
-            Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
+            if (!cargadasNotificaciones)
+            {
+                await ObtenerNotificacionesDatos(_usuarioServicio.ObtenerUsuarioLogueado());
+            }
+            else
+            {
+                Notificaciones.Add(notificacion);
+                Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
+            }
         }
 
         public async Task<bool> RegistrarNotificacion(string mensaje, EquipoDTO equipo, TorneoDTO torneo, bool general)
@@ -45,13 +57,13 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task<List<NotificacionDTO>> ObtenerNotificaciones(UsuarioLogueado usuario)
+        public async Task<List<NotificacionDTO>> ObtenerNotificaciones()
         {
             try
             {
-                if (Notificaciones.Count == 0)
+                if (cargadasNotificaciones)
                 {
-                    await ObtenerNotificacionesDatos(usuario);
+                    await ObtenerNotificacionesDatos(_usuarioServicio.ObtenerUsuarioLogueado());
                 }
                 return Notificaciones;
             }
@@ -67,6 +79,8 @@ namespace TorneusClienteWeb.Servicios
             try
             {
                 Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuario);
+                Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
+                cargadasNotificaciones = true;
             }
             catch (Exception ex)
             {

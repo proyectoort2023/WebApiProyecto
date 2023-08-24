@@ -1,4 +1,5 @@
-﻿using DTOs_Compartidos.Models;
+﻿using BDTorneus;
+using DTOs_Compartidos.Models;
 using Microsoft.AspNetCore.SignalR;
 using Negocio.DTOs;
 using WebApiTorneus.Services;
@@ -17,7 +18,7 @@ namespace WebApiTorneus.HubSignalR
         public async Task EnviarMensajeCierreInscripciones(string torneoId)
         {
          
-                await Clients.All.SendAsync("RecibidorCierreInscripciones",torneoId);
+            await Clients.All.SendAsync("RecibidorCierreInscripciones",torneoId);
 
 
             //// Obtenemos el ID de conexión del cliente emisor
@@ -50,15 +51,6 @@ namespace WebApiTorneus.HubSignalR
 
         public async Task EnviarNotificacionSuspensionTorneo(bool suspendido,int torneoId)
         {
-           //// Obtenemos el ID de conexión del cliente emisor
-           //// var connectionId = Context.ConnectionId;
-
-           //// Obtenemos todos los clientes conectados excepto el emisor
-           //// var otrosClientes = Clients.AllExcept(connectionId);
-
-           //// Enviamos la notificación a los clientes restantes
-           ////await otrosClientes.SendAsync("RecibidorNotficacionSuspension", suspendido, torneoId);
-
             await Clients.All.SendAsync("RecibidorNotficacionSuspension", suspendido, torneoId);
         }
 
@@ -87,6 +79,14 @@ namespace WebApiTorneus.HubSignalR
             await _fixtureTiempoReal.ActualizarPartidos(partidos);
             await Clients.All.SendAsync("RecibirActualizarPartidos", partidos);
         }
+
+        public async Task EnviarNuevaNotificacion(Notificacion notificacion)
+        {
+            await Clients.All.SendAsync("RecibirNuevaNotificacion", notificacion);
+        }
+
+
+
 
     }
 }

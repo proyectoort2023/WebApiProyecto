@@ -1,0 +1,65 @@
+﻿
+.card-general-relativo2 {
+    position: relative;
+    margin-top: 40px;
+    margin-left: 10px;
+    width: 95% !important;
+    overflow: visible;
+    color: white;
+    padding: 30px 20px 10px 20px;
+    border-radius: 10px 20px 10px 20px;
+    font-size: 0.9rem;
+}
+
+.letra-oscura {
+    color: black;
+    font-size: 0.9rem;
+}
+
+.card-general-encabezado2 {
+    position: absolute;
+    top: -25px;
+    left: -20px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, rgba(22,0,36,0.9276960784313726) 0%, rgba(97,9,121,0.8968837535014006) 35%, rgba(245,83,220,0.9080882352941176) 100%);
+    border-radius: 8px 15px 8px 15px;
+    box-sizing: border-box;
+    width: 80%;
+    border: 5px solid white;
+}
+
+
+    .card-general-encabezado2 span {
+        width: 100%;
+        height: auto;
+        padding: 10px;
+    }
+
+.card-general-relativo2 span {
+    padding: 5px;
+}
+
+.notify-general-verde {
+    background-color: greenyellow;
+}
+
+.gradiente-verde {
+    background: linear-gradient(90deg, rgba(0, 36, 7, 0.928) 0%, rgba(9, 121, 39, 0.897) 35%, rgba(83, 245, 99, 0.908) 100%);
+}
+
+.gradiente-violeta {
+    background: linear-gradient(90deg, rgba(22,0,36,0.9276960784313726) 0%, rgba(97,9,121,0.8968837535014006) 35%, rgba(245,83,220,0.9080882352941176) 100%);
+}
+
+.notify-general-violeta {
+    background-color: violet;
+}
+
+
+.titulo-equipo-notificacion {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.928) 0%, rgba(15, 15, 15, 0.897) 35%, rgba(25, 25, 25, 0.908) 100%);
+    color: snow;
+    padding: 2px 10px !important;
+    border-radius: 10px !important;
+    font-size: 0.8rem;
+}
