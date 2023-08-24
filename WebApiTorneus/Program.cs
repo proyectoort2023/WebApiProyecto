@@ -99,6 +99,7 @@ builder.Services.AddScoped<JugadorService>();
 builder.Services.AddScoped<MedioPagoService>();
 builder.Services.AddScoped<FixtureService>();
 builder.Services.AddScoped<AutorizacionPlanilleroService>();
+builder.Services.AddScoped<NotificacionService>();
 
 builder.Services.AddSingleton<FixtureTiempoReal>();
 
