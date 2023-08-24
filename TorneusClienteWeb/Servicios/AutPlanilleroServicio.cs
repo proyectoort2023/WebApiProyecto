@@ -25,6 +25,7 @@ namespace TorneusClienteWeb.Servicios
                 if (autorizacionId > 0)
                 {
                     autorizacionDTO.Id = autorizacionId;
+                    AutorizacionPlanilleros.Add(autorizacionDTO);
                     // actualizar signalr
                     return true;
                 }
@@ -95,6 +96,8 @@ namespace TorneusClienteWeb.Servicios
             try
             {
                 var eliminado = await _autPlanilleroServicioDatos.EliminarAutorizacion(autorizacionDTO);
+                if (eliminado) AutorizacionPlanilleros.RemoveAll(r => r.Id == autorizacionDTO.Id);
+
                 return eliminado;
             }
             catch (Exception ex)

@@ -108,7 +108,7 @@ namespace WebApiTorneus.Controllers
         /// <response code="400">Validaciones varias no conformadas</response>
         [ProducesResponseType(typeof(List<AutorizacionPlanilleroDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "PLANILLERO")]
+        [Authorize(Roles = "ORGANIZADOR")]
         [HttpGet("ObtenerAutorizacionesOrganizador/{organizadorId}")]
         public async Task<IActionResult> ObtenerListadoAutorizacionesOrganizador(int organizadorId)
         {
