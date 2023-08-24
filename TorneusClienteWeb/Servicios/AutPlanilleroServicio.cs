@@ -1,5 +1,7 @@
 ﻿using DTOs_Compartidos.DTOs;
+using Negocio.DTOs;
 using TorneusClienteWeb.Servicios_de_Datos;
+using Utilidades;
 
 namespace TorneusClienteWeb.Servicios
 {
@@ -37,11 +39,31 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task<List<AutorizacionPlanilleroDTO>> ObtenerAutorizaciones()
+        public async Task<List<AutorizacionPlanilleroDTO>> ObtenerAutorizaciones(UsuarioLogueado usuarioLogueado)
         {
-            return AutorizacionPlanilleros;
+            if (AutorizacionPlanilleros.Count > 0)
+            {
+                return AutorizacionPlanilleros;
+            }
+            else
+            {
+                if (usuarioLogueado != null)
+                {
+                    if (usuarioLogueado.Rol == Util.Roles.PLANILLERO.ToString())
+                    {
+                        await ObtenerAutorizacionesMarcacionesParaPlanilleros(usuarioLogueado.Id);
+                    }
+                    if (usuarioLogueado.Rol == Util.Roles.ORGANIZADOR.ToString())
+                    {
+                        await ObtenerAutorizacionesMarcacionesParaOrganizadores(usuarioLogueado.Id);
+                    }
+                }
+                return AutorizacionPlanilleros;
+            }
         }
-        public async Task ObtenerAutorizacionesMarcacionesParaPlanilleros(int planilleroId)
+
+
+        private async Task ObtenerAutorizacionesMarcacionesParaPlanilleros(int planilleroId)
         {
             try
             {
@@ -54,7 +76,7 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-        public async Task ObtenerAutorizacionesMarcacionesParaOrganizadores(int organizadorId)
+        private async Task ObtenerAutorizacionesMarcacionesParaOrganizadores(int organizadorId)
         {
             try
             {
@@ -94,10 +116,21 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-
-
-
-
-
+        public async Task<AutorizacionPlanilleroDTO> ObtenerUsuarioAAutorizar(string mail)
+        {
+            try
+            {
+                AutorizacionPlanilleroDTO usuarioEncontrado = await _autPlanilleroServicioDatos.ObtenerUsuarioAAutorizar(mail);
+                return usuarioEncontrado;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+
+
+
+
+    }
 }

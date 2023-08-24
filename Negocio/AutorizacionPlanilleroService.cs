@@ -1,11 +1,13 @@
 ﻿using BDTorneus;
 using DTOs_Compartidos.DTOs;
+using DTOs_Compartidos.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utilidades;
 
 namespace Negocio
 {
@@ -107,7 +109,29 @@ namespace Negocio
             return listado;
         }
 
+        public async Task<AutorizacionPlanilleroDTO> ObtenerUsuarioParaAutorizar(string mail)
+        {
+            try
+            {
+                var usuario = await _db.Usuarios.SingleOrDefaultAsync(us => us.Mail == mail);
 
+                if (usuario == null) throw new Exception("No se encuentra el usuario. W106");
+
+                if (usuario.Rol != Util.Roles.PLANILLERO.ToString()) throw new Exception("El mail no corresponde a un usuario de tipo planillero. W202");
+
+                var datosPlanillero = new AutorizacionPlanilleroDTO()
+                {
+                    UsuarioIdPlanillero = usuario.Id,
+                    NombrePlanillero = usuario.Nombre,
+                    EmailPlanillero = usuario.Mail
+                };
+                return datosPlanillero;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
 

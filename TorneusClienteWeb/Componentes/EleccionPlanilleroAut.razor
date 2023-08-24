@@ -1,0 +1,150 @@
+﻿@inject AutPlanilleroServicio _autPlanilleroServicio 
+@inject TorneoServicio _servicioTorneo
+@inject IConfiguration _config
+@inject ISnackbar _snackbar
+@inject UsuarioServicio _servicioUsuario
+
+
+<MudDialog>
+    <DialogContent>
+
+
+
+
+
+        <MudSelect T="int"
+                   Label="Elegir torneo"
+                   Placeholder="Elige un torneo"
+                   Variant="Variant.Outlined"
+                   AdornmentIcon="@Icons.Material.Filled.Search"
+                   ValueChanged="CambioValorSelect">
+
+            @foreach (var torneo in Torneos)
+            {
+                <MudSelectItem Value="torneo.Id">
+                    <img src="@UrlImagenes(torneo.Logo)" height="25" class="mr-1" />
+                    @torneo.Nombre
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+        <EspacioVertical Altura="15px" />
+
+        <MudTextField @bind-Value="Mail"
+                      Label="Ingrese email planillero ha autorizar"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense" />
+        <EspacioVertical Altura="10px" />
+
+
+
+
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="AgregarAutorizacionPlanillero">Agregar autorización</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="Cerrar">Cancelar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    public AutorizacionPlanilleroDTO planilleroTorneo { get; set; } = new();
+
+    private List<TorneoDTO> Torneos = new();
+
+    private string baseURLImagenes;
+    private string Mail;
+
+    protected async override Task OnInitializedAsync()
+    {
+        baseURLImagenes = _config[Util.URL_BASE_CONFIG_IMAGENES];
+        await CargarTorneos();
+    }
+
+    private async Task CargarTorneos()
+    {
+        Torneos = _servicioTorneo.ObtenerTorneos().Where(w => w.Suspendido != true && w.Cerrrado != true).ToList();
+    }
+
+    private string UrlImagenes(string nombreImagen)
+    {
+        string url = $"{baseURLImagenes}{nombreImagen}";
+        return url;
+    }
+
+    private async Task CambioValorSelect(int torneoId)
+    {
+        var torneoSeleccionado = Torneos.SingleOrDefault(s => s.Id == torneoId);
+
+        if (torneoSeleccionado == null)
+        {
+            _snackbar.Add("Debe elegir un torneo", Severity.Warning);
+            return;
+        }
+
+        planilleroTorneo.TorneoId = torneoSeleccionado.Id;
+        planilleroTorneo.NombreTorneo = torneoSeleccionado.Nombre;
+        planilleroTorneo.FechaTorneo = torneoSeleccionado.Fecha;
+    }
+
+    private async Task AgregarAutorizacionPlanillero()
+    {
+        try
+        {
+            if (planilleroTorneo.TorneoId < 1)
+            {
+                _snackbar.Add("Debe seleccionar un torneo", Severity.Warning);
+                return;
+            }
+            bool encontradoPlanillero = await BuscarPlanilleroPorMail();
+
+            if (!encontradoPlanillero) return;
+
+            planilleroTorneo.UsuarioIdOrganizador = _servicioUsuario.ObtenerUsuarioLogueado().Id;
+
+            if (!VerificarDatos()) return;
+
+            MudDialog.Close(DialogResult.Ok(planilleroTorneo));
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+
+    }
+
+    private async Task<bool> BuscarPlanilleroPorMail()
+    {
+        try
+        {
+            AutorizacionPlanilleroDTO datosPlanillero = await _autPlanilleroServicio.ObtenerUsuarioAAutorizar(Mail);
+
+            if (datosPlanillero == null) throw new Exception("El mail no existe en el sistema o el mail no corresponde a un usuario planillero");
+
+            planilleroTorneo.UsuarioIdPlanillero = datosPlanillero.UsuarioIdPlanillero;
+            planilleroTorneo.NombrePlanillero = datosPlanillero.NombrePlanillero;
+            planilleroTorneo.EmailPlanillero = datosPlanillero.EmailPlanillero;
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+            return false;
+        }
+    }
+
+    private void Cerrar() => MudDialog.Cancel();
+
+    private bool VerificarDatos()
+    {
+        bool verificado = planilleroTorneo.UsuarioIdOrganizador > 0 && planilleroTorneo.UsuarioIdOrganizador > 0 && planilleroTorneo.TorneoId > 0;
+
+        return verificado;
+    }
+
+
+}

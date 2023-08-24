@@ -1,0 +1,118 @@
+﻿@page "/ORGANIZADOR/GestorPlanilleros"
+@inject IDialogService _dialogService
+@inject ServicioMenu _servicioMenu
+@inject AutPlanilleroServicio _servicioAutorizacionPlanillero
+@inject UsuarioServicio _servicioUsuario
+@inject ISnackbar _snackbar
+
+@if (PlanillerosTorneosGrupos == null)
+{ 
+    <Cargando />
+}
+else if (PlanillerosTorneosGrupos.Count == 0)
+{
+    <h3>Le informamos que no tiene autorizaciones agregadas</h3>
+
+}
+else
+{
+    @foreach (var torneo in PlanillerosTorneosGrupos)
+    {
+        <h4 class="h4-vis-grupos">@torneo.NombreTorneo</h4>
+
+        <ul>
+            @foreach (var planillero in torneo.PlanillasTorneos)
+            {
+                <div class="listaBox d-flex justify-content-around align-items-center">
+                <li>@planillero.NombrePlanillero - @planillero.EmailPlanillero </li>
+                <MudIcon Icon=@Icons.Material.Filled.DeleteForever Title="Eliminar" Size="Size.Large" Color="Color.Error" @onclick="() => QuitarAutorizacion(planillero)" />
+                </div>
+                <EspacioVertical Altura="7px" />
+            }
+        </ul>
+        <EspacioVertical Altura="75px" />
+    }
+}
+
+<MudFab Style="@_servicioMenu.ClassFabColor()" StartIcon="@Icons.Material.Filled.Add" Size="Size.Large" OnClick="NuevaAutorizacionModal" />
+
+
+
+
+
+
+
+
+
+
+@code {
+    List<PlanilleroTorneoGrupo> PlanillerosTorneosGrupos;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await ActualizarListado();
+    }
+
+    private async Task ActualizarListado()
+    {
+        List<AutorizacionPlanilleroDTO> planillerosTorneos = await _servicioAutorizacionPlanillero.ObtenerAutorizaciones(_servicioUsuario.ObtenerUsuarioLogueado());
+
+        PlanillerosTorneosGrupos = planillerosTorneos.GroupBy(g => g.NombreTorneo)
+                                                     .Select(s => new PlanilleroTorneoGrupo()
+                                                         {
+                                                             NombreTorneo = s.Key,
+                                                             PlanillasTorneos = s.Select(s => s).ToList()
+                                                         }).ToList();
+    }
+
+    private async Task NuevaAutorizacionModal()
+    {
+        try
+        {
+            var result = await _dialogService.Show<EleccionPlanilleroAut>("Agregar nueva autorización a planillero").Result;
+
+            if (result.Canceled) return;
+
+            var planilleroAAgregar = (AutorizacionPlanilleroDTO)result.Data;
+
+            bool agregado = await _servicioAutorizacionPlanillero.RegistrarAutorizacion(planilleroAAgregar);
+
+            if (agregado)
+            {
+                await ActualizarListado();
+                _snackbar.Add("Usuario planillero autorizado correctamente", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+
+    }
+
+    private async Task QuitarAutorizacion(AutorizacionPlanilleroDTO planillero)
+    {
+        try
+        {
+            var result = await _dialogService.Show<DialogComponent>("Confirma eliminación de autorización del planillero seleccionado?").Result;
+
+            if (result.Canceled) return;
+
+
+            bool quitado = await _servicioAutorizacionPlanillero.EliminarAutorizacion(planillero);
+
+            if (quitado)
+            {
+                await ActualizarListado();
+                _snackbar.Add("Autorización eliminada correctamente", Severity.Success);
+            }
+        }
+        catch (Exception ex)
+        {
+            _snackbar.Add(ex.Message, Severity.Warning);
+        }
+
+    }
+
+
+}
