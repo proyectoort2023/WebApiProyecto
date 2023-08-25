@@ -81,8 +81,16 @@
             @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null && Partido.EstadoPartido == Util.EstadoPartido.PENDIENTE.ToString())
             {
                 <div class="playPartido">
+
+                     <a href="" @onclick="NotificarComienzoAEquipos" @onclick:preventDefault>
+                        <img src="/imagenes/enviarPartido.png" alt="" class="imgPlay">
+                    </a>
+
+                    <EspacioVertical Altura="3px" />
+
                     <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
                         <img src="/imagenes/@ImagenPlay" alt="" class="imgPlay">
+
                     </a>
                 </div>
             }
