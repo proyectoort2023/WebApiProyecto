@@ -1,6 +1,7 @@
 ﻿using BDTorneus;
 using DTOs_Compartidos.DTOs;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using Negocio.DTOs;
 using System.Drawing.Text;
 using TorneusClienteWeb.Servicios_de_Datos;
@@ -12,15 +13,17 @@ namespace TorneusClienteWeb.Servicios
     {
         private readonly NotificacionServicioDatos _notificacionServicioDatos;
         [Inject] private UsuarioServicio _usuarioServicio { get; set; }
+        [Inject] private HubConnection _hubConnection { get; set; }
 
         private List<NotificacionDTO> Notificaciones = new();
 
         private bool cargadasNotificaciones = false;
 
-        public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos, UsuarioServicio usuarioServicio)
+        public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos, UsuarioServicio usuarioServicio, HubConnection hubConnection)
         {
             _notificacionServicioDatos = notificacionServicioDatos;
             _usuarioServicio = usuarioServicio;
+            _hubConnection = hubConnection;
         }
 
 
@@ -48,8 +51,10 @@ namespace TorneusClienteWeb.Servicios
                     Torneo = torneo,
                     General = general
                 };
-                bool registrado = await _notificacionServicioDatos.RegistrarNotificacion(notificacion);
-                return registrado;
+                NotificacionDTO registrado = await _notificacionServicioDatos.RegistrarNotificacion(notificacion);
+
+                await _hubConnection.SendAsync("EnviarNuevaNotificacion", registrado);
+                return registrado != null;
             }
             catch (Exception ex)
             {

@@ -48,7 +48,7 @@ namespace WebApiTorneus.Controllers
 
                 if (registrada != null)
                 {
-                    return Ok(registrada.Id > 0);
+                    return Ok(registrada);
                 }
                 else
                 {

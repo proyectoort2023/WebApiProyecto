@@ -6,6 +6,7 @@
 @inject HubConnection _hubConnection
 @inject NotificacionesSignalRService _servicioNotificacionesSignalR
 @inject AutPlanilleroServicio _servicioAutPlanillero
+@inject NotificacionServicio _servicioNotificacion
 
 
 @if (Partido != null)
@@ -162,8 +163,7 @@
 
     private async Task ComenzarPartido()
     {
-        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null &&
-            Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0)
+        if (HabilitacionEquiposPartido())
         {
             if (_servicioFixture.HayCanchaLibre())
             {
@@ -274,10 +274,10 @@
         Partido.Fin = DateTime.Now;
         var partidos = await _servicioFixture.TerminoPartido(Partido);
 
-            if (await _servicioFixture.ActualizarPartidoTorneo(Partido))
-            {
-                _snackBar.Add("Partido finalizado y actualizado", Severity.Success);
-            }
+        if (await _servicioFixture.ActualizarPartidoTorneo(Partido))
+        {
+            _snackBar.Add("Partido finalizado y actualizado", Severity.Success);
+        }
 
         await ActualizarPartidosTermino(partidos);
     }
@@ -337,6 +337,45 @@
         esToqueLArgo = false;
     }
 
+    private bool HabilitacionEquiposPartido()
+    {
+        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
+        {
+           if (Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+
+     private async Task NotificarComienzoAEquipos()
+    {
+        if (HabilitacionEquiposPartido())
+        {
+            if (_servicioFixture.HayCanchaLibre())
+            {
+                bool notificacionsoloAEquipo = false;
+                string mensaje = "Presentarse a jugar en cancha";
+                bool notificadoLocal = await _servicioNotificacion.RegistrarNotificacion(mensaje, Partido.EquipoLocal, _servicioTorneo.ObtenerTorneoActual(), notificacionsoloAEquipo);
+                bool notificadoVisitante = await _servicioNotificacion.RegistrarNotificacion(mensaje, Partido.EquipoVisitante, _servicioTorneo.ObtenerTorneoActual(), notificacionsoloAEquipo);
+
+                if (notificadoLocal && notificadoVisitante)
+                {
+                    _snackBar.Add("Equipos notificados", Severity.Success);
+                }
+            }
+            else
+            {
+                _snackBar.Add("No hay canchas disopnibles aun", Severity.Info);
+            }
+        }
+        else
+        {
+            _snackBar.Add("Todavia no hay dos equipos confirmados", Severity.Info);
+        }
+    }
 
 
 
