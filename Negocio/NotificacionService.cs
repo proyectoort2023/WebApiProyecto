@@ -86,8 +86,8 @@ namespace Negocio
                 notificaciones.AddRange(notificacionGeneral);
                 notificaciones.AddRange(notificacionesEquipo);
 
-                notificaciones = notificaciones.OrderByDescending(w => w.FechaHora).ToList();
-                return notificaciones;
+                var notificacionesOrdenadas = notificaciones.OrderByDescending(w => w.FechaHora).ToList();
+                return notificacionesOrdenadas;
             }
             catch (Exception ex)
             {

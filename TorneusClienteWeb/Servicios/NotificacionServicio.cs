@@ -17,28 +17,11 @@ namespace TorneusClienteWeb.Servicios
 
         private List<NotificacionDTO> Notificaciones = new();
 
-        private bool cargadasNotificaciones = false;
-
         public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos, UsuarioServicio usuarioServicio, HubConnection hubConnection)
         {
             _notificacionServicioDatos = notificacionServicioDatos;
             _usuarioServicio = usuarioServicio;
             _hubConnection = hubConnection;
-        }
-
-
-        public async Task SetNotificacion(NotificacionDTO notificacion)
-        {
-            if (!cargadasNotificaciones)
-            {
-                await ObtenerNotificacionesDatos(_usuarioServicio.ObtenerUsuarioLogueado());
-                cargadasNotificaciones = true;
-            }
-            else
-            {
-                Notificaciones.Add(notificacion);
-            }
-            Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
         }
 
         public async Task<bool> RegistrarNotificacion(string mensaje, EquipoDTO equipo, TorneoDTO torneo, bool general)
@@ -67,26 +50,10 @@ namespace TorneusClienteWeb.Servicios
         {
             try
             {
-                if (!cargadasNotificaciones)
-                {
-                    await ObtenerNotificacionesDatos(_usuarioServicio.ObtenerUsuarioLogueado());
-                }
+                var usuarioLogueado = _usuarioServicio.ObtenerUsuarioLogueado();
+                Notificaciones = new();
+                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuarioLogueado);
                 return Notificaciones;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-
-        private async Task ObtenerNotificacionesDatos(UsuarioLogueado usuario)
-        {
-            try
-            {
-                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuario);
-                Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
-                cargadasNotificaciones = true;
             }
             catch (Exception ex)
             {
