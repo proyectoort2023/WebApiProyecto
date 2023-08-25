@@ -36,8 +36,8 @@ namespace TorneusClienteWeb.Servicios
             else
             {
                 Notificaciones.Add(notificacion);
-                Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
             }
+            Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
         }
 
         public async Task<bool> RegistrarNotificacion(string mensaje, EquipoDTO equipo, TorneoDTO torneo, bool general)
@@ -66,7 +66,7 @@ namespace TorneusClienteWeb.Servicios
         {
             try
             {
-                if (cargadasNotificaciones)
+                if (!cargadasNotificaciones)
                 {
                     await ObtenerNotificacionesDatos(_usuarioServicio.ObtenerUsuarioLogueado());
                 }
