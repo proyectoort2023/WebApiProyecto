@@ -54,7 +54,7 @@
 
         _hubConnection.On<NotificacionDTO>("RecibirNuevaNotificacion", async (notificacion) =>
         {
-            if (notificacion.General || notificacion.Equipo.Usuario.Id == _usuarioServicio.ObtenerUsuarioLogueado().Id)
+            if (notificacion.General || notificacion.Equipo.UsuarioId == _usuarioServicio.ObtenerUsuarioLogueado().Id)
             {
                 _servicioMenu.NuevaNotificacionIcono();
             }

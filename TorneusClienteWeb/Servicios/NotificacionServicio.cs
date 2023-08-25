@@ -32,6 +32,7 @@ namespace TorneusClienteWeb.Servicios
             if (!cargadasNotificaciones)
             {
                 await ObtenerNotificacionesDatos(_usuarioServicio.ObtenerUsuarioLogueado());
+                cargadasNotificaciones = true;
             }
             else
             {

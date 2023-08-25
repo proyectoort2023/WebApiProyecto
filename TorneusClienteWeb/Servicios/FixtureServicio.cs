@@ -535,14 +535,15 @@ namespace TorneusClienteWeb.Servicios
                 if (Partidos.Count > 0)
                 {
                     var partidosFinalizados = Partidos.Where(w => w.EstadoPartido == Util.EstadoPartido.FINALIZADO.ToString()).ToList();
+                    int cantidadPartidosFinalizados = partidosFinalizados.Count;
 
                     int promedio = 0;
-
-                    foreach (var partido in partidosFinalizados)
-                    {
-                        promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
-                    }
-                    TiempoPromedioMinutos = (int)(promedio / partidosFinalizados.Count);
+                   
+                        foreach (var partido in partidosFinalizados)
+                        {
+                            promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
+                        }
+                        TiempoPromedioMinutos = cantidadPartidosFinalizados > 0 ? (int)(promedio / cantidadPartidosFinalizados) : 0;
                 }
             }
         }
