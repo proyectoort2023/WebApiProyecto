@@ -4,6 +4,7 @@ using BDTorneus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BDTorneus.Migrations
 {
     [DbContext(typeof(TorneoContext))]
-    partial class TorneoContextModelSnapshot : ModelSnapshot
+    [Migration("20230823111345_AutorizacionPlanillero")]
+    partial class AutorizacionPlanillero
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,19 +36,19 @@ namespace BDTorneus.Migrations
                     b.Property<int>("TorneoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsuarioOrganizadorId")
+                    b.Property<int>("UsuarioIdOrganizadorId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UsuarioPlanilleroId")
+                    b.Property<int>("UsuarioIdPlanilleroId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("TorneoId");
 
-                    b.HasIndex("UsuarioOrganizadorId");
+                    b.HasIndex("UsuarioIdOrganizadorId");
 
-                    b.HasIndex("UsuarioPlanilleroId");
+                    b.HasIndex("UsuarioIdPlanilleroId");
 
                     b.ToTable("AutorizacionesPlanilleros");
                 });
@@ -452,23 +455,23 @@ namespace BDTorneus.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BDTorneus.Usuario", "UsuarioOrganizador")
+                    b.HasOne("BDTorneus.Usuario", "UsuarioIdOrganizador")
                         .WithMany()
-                        .HasForeignKey("UsuarioOrganizadorId")
+                        .HasForeignKey("UsuarioIdOrganizadorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BDTorneus.Usuario", "UsuarioPlanillero")
+                    b.HasOne("BDTorneus.Usuario", "UsuarioIdPlanillero")
                         .WithMany()
-                        .HasForeignKey("UsuarioPlanilleroId")
+                        .HasForeignKey("UsuarioIdPlanilleroId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Torneo");
 
-                    b.Navigation("UsuarioOrganizador");
+                    b.Navigation("UsuarioIdOrganizador");
 
-                    b.Navigation("UsuarioPlanillero");
+                    b.Navigation("UsuarioIdPlanillero");
                 });
 
             modelBuilder.Entity("BDTorneus.Equipo", b =>

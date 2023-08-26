@@ -19,6 +19,7 @@ else
         {
             <PartidoMarcador Partido="partido" SiguientePartido="SiguientePartido" />
         }
+
         <span class="posicionTiempoProm globo-propiedad">Tiempo prom. partidos: @_servicioFixture.TiempoPromedioMinutos min</span>
 
         @if (_servicioFixture.HayEtapaGrupos())
@@ -32,6 +33,12 @@ else
         <h3>No tiene ningun partido para puntuar</h3>
     }
 }
+
+<EspacioVertical Altura="60px" />
+
+
+
+
 
 
 
@@ -47,7 +54,13 @@ else
     {
         Partidos = _servicioFixture.ObtenerPartidos();
         await _servicioFixture.CrearTablaPosiciones();
+        await _servicioFixture.ActualizarTiempoPromedioPartidos();
         _servicioFixture.OnActualizarPartidosEvent += Actualizar;
+
+        _hubConnection.On<List<PartidoDTO>>("RecibirActualizarPartidos", async (partidos) =>
+      {
+          await _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
+      });
     }
 
     private void SiguientePartido()

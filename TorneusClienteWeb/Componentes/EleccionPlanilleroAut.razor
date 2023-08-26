@@ -1,44 +1,37 @@
-﻿@inject AutorizacionPlanillero _servicioAutorizacionPlanillero
+﻿@inject AutPlanilleroServicio _autPlanilleroServicio 
 @inject TorneoServicio _servicioTorneo
 @inject IConfiguration _config
 @inject ISnackbar _snackbar
-@inject UsuarioServicio _servicioUsuario 
+@inject UsuarioServicio _servicioUsuario
 
 
 <MudDialog>
     <DialogContent>
 
+      
+        <MudSelect T="int"
+                   Label="Elegir torneo"
+                   Placeholder="Elige un torneo"
+                   Variant="Variant.Outlined"
+                   AdornmentIcon="@Icons.Material.Filled.Search"
+                   ValueChanged="CambioValorSelect">
 
+            @foreach (var torneo in Torneos)
+            {
+                <MudSelectItem Value="torneo.Id">
+                    <img src="@UrlImagenes(torneo.Logo)" height="25" class="mr-1" />
+                    @torneo.Nombre
+                </MudSelectItem>
+            }
+        </MudSelect>
 
+        <EspacioVertical Altura="15px" />
 
-
-            <MudSelect T="int"
-                       Label="Elegir torneo"
-                       Placeholder="Elige un torneo"
-                       Variant="Variant.Outlined"
-                       AdornmentIcon="@Icons.Material.Filled.Search"
-                       ValueChanged="CambioValorSelect">
-
-                @foreach (var torneo in Torneos)
-                {
-                    <MudSelectItem Value="torneo.Id">
-                        <img src="@UrlImagenes(torneo.Logo)" height="25" class="mr-1" />
-                        @torneo.Nombre
-                    </MudSelectItem>
-                }
-            </MudSelect>
-
-            <EspacioVertical Altura="15px" />
-
-            <MudTextField @bind-Value="Mail"
-                          Label="Ingrese email planillero ha autorizar"
-                          Variant="Variant.Outlined"
-                          Margin="Margin.Dense" />
-            <EspacioVertical Altura="10px" />
-
-
-
-
+        <MudTextField @bind-Value="Mail"
+                      Label="Ingrese email planillero ha autorizar"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense" />
+        <EspacioVertical Altura="10px" />
 
     </DialogContent>
     <DialogActions>
@@ -52,7 +45,7 @@
 @code {
 
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
-    public PlanilleroTorneo planilleroTorneo { get; set; } = new();
+    public AutorizacionPlanilleroDTO planilleroTorneo { get; set; } = new();
 
     private List<TorneoDTO> Torneos = new();
 
@@ -121,7 +114,7 @@
     {
         try
         {
-            DatosPlanillero datosPlanillero = await _servicioAutorizacionPlanillero.ObtenerIdPlanillero(Mail);
+            AutorizacionPlanilleroDTO datosPlanillero = await _autPlanilleroServicio.ObtenerUsuarioAAutorizar(Mail);
 
             if (datosPlanillero == null) throw new Exception("El mail no existe en el sistema o el mail no corresponde a un usuario planillero");
 

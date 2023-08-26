@@ -5,6 +5,7 @@
 @inject NotificacionesSignalRService _servicioNotificacionesSignalR
 @inject NavigationManager _nav
 @inject HubConnection _hubConnection
+@inject AutPlanilleroServicio _servicioAutPlanilleroServicio
 
 
 
@@ -39,20 +40,24 @@ else
     {
         ActualizarMenu();
         ActualizarTorneos();
-        await RecibidoresNotificacones();
+        await Iniciar();
     }
     protected async override Task OnAfterRenderAsync(bool firstRender)
     {
         ActualizarMenu();
     }
 
-    private async Task RecibidoresNotificacones()
+    private async Task Iniciar()
     {
         if (_hubConnection.State == HubConnectionState.Disconnected)
         {
             await _hubConnection.StartAsync();
         }
-        await _hubConnection.SendAsync("AgregarAGrupo", "GENERAL");
+
+        if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
+        {
+            await _servicioAutPlanilleroServicio.ObtenerAutorizaciones(_servicioUsuario.ObtenerUsuarioLogueado());
+        }
     }
 
     private void ActualizarMenu()

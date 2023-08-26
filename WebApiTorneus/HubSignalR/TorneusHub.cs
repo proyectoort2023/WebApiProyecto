@@ -19,7 +19,7 @@ namespace WebApiTorneus.HubSignalR
         public async Task EnviarMensajeCierreInscripciones(string torneoId)
         {
          
-                await Clients.All.SendAsync("RecibidorCierreInscripciones",torneoId);
+            await Clients.All.SendAsync("RecibidorCierreInscripciones",torneoId);
 
 
             //// Obtenemos el ID de conexión del cliente emisor
@@ -81,10 +81,12 @@ namespace WebApiTorneus.HubSignalR
             await Clients.All.SendAsync("RecibirActualizarPartidos", partidos);
         }
 
-        public async Task EnviarMensajeNotificacion(NotificacionDTO notificacion)
+        public async Task EnviarNuevaNotificacion(NotificacionDTO notificacion)
         {
-            await Clients.All.SendAsync("RecibirMensajeNotificacion", notificacion);
+            await Clients.All.SendAsync("RecibirNuevaNotificacion", notificacion);
         }
+
+
 
     }
 }

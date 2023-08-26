@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using BDTorneus;
-using DTOs_Compartidos.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Negocio;
 using Negocio.DTOs;
-using WebApiTorneus.HubSignalR;
-using WebApiTorneus.Services;
+using Negocio;
 using static Utilidades.Util;
+using WebApiTorneus.HubSignalR;
+using DTOs_Compartidos.DTOs;
 
 namespace WebApiTorneus.Controllers
 {
@@ -55,7 +54,7 @@ namespace WebApiTorneus.Controllers
                 {
                     return BadRequest("No se puedo registrar");
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -109,7 +108,7 @@ namespace WebApiTorneus.Controllers
         {
             try
             {
-                if (torneoId < 0 ) throw new Exception("No se ha recibido ningun torneo");
+                if (torneoId < 0) throw new Exception("No se ha recibido ningun torneo");
 
                 bool borrados = await _notificacionService.BorrarNotificacionesTerminoPartido(torneoId);
 
@@ -121,11 +120,6 @@ namespace WebApiTorneus.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
-
-
-
 
 
     }

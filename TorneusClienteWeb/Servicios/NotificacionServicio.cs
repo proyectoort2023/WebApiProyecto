@@ -11,30 +11,23 @@ namespace TorneusClienteWeb.Servicios
 {
     public class NotificacionServicio
     {
-
-        private readonly NotificacionServicioDatos  _notificacionServicioDatos;
+        private readonly NotificacionServicioDatos _notificacionServicioDatos;
+        [Inject] private UsuarioServicio _usuarioServicio { get; set; }
+        [Inject] private HubConnection _hubConnection { get; set; }
 
         private List<NotificacionDTO> Notificaciones = new();
 
-        [Inject] private HubConnection _hubConnection { get; set; }
-
-        public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos, HubConnection hubConnection)
+        public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos, UsuarioServicio usuarioServicio, HubConnection hubConnection)
         {
             _notificacionServicioDatos = notificacionServicioDatos;
+            _usuarioServicio = usuarioServicio;
             _hubConnection = hubConnection;
-         }
-
-
-        public async Task SetNotificacion(NotificacionDTO notificacion)
-        {
-            Notificaciones.Add(notificacion);
-            Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
         }
 
         public async Task<bool> RegistrarNotificacion(string mensaje, EquipoDTO equipo, TorneoDTO torneo, bool general)
-        { 
-            try 
-	            {	  
+        {
+            try
+            {
                 NotificacionDTO notificacion = new NotificacionDTO()
                 {
                     Mensaje = mensaje,
@@ -42,28 +35,10 @@ namespace TorneusClienteWeb.Servicios
                     Torneo = torneo,
                     General = general
                 };
-                    var registrado = await _notificacionServicioDatos.RegistrarNotificacion(notificacion);
-                await _hubConnection.SendAsync("EnviarMensajeNotificacion", registrado);
+                NotificacionDTO registrado = await _notificacionServicioDatos.RegistrarNotificacion(notificacion);
 
-                if (registrado == null) throw new Exception("No se pudo registrar la notificación");
-                
-                 return true;
-            }
-	        catch (Exception ex)
-	        {
-                    throw new Exception(ex.Message);
-	        }
-        }
-
-        public async Task<List<NotificacionDTO>> ObtenerNotificaciones(UsuarioLogueado usuario)
-        {
-            try
-            {
-                if (Notificaciones.Count == 0)
-                {
-                    await ObtenerNotificacionesDatos(usuario);
-                }
-                return Notificaciones;
+                await _hubConnection.SendAsync("EnviarNuevaNotificacion", registrado);
+                return registrado != null;
             }
             catch (Exception ex)
             {
@@ -71,12 +46,14 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-
-        private async Task ObtenerNotificacionesDatos(UsuarioLogueado usuario)
+        public async Task<List<NotificacionDTO>> ObtenerNotificaciones()
         {
             try
             {
-                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuario);
+                var usuarioLogueado = _usuarioServicio.ObtenerUsuarioLogueado();
+                Notificaciones = new();
+                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuarioLogueado);
+                return Notificaciones;
             }
             catch (Exception ex)
             {
@@ -97,11 +74,6 @@ namespace TorneusClienteWeb.Servicios
                 throw new Exception(ex.Message);
             }
         }
-
-
-
-
-
 
 
     }

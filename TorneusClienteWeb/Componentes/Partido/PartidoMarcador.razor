@@ -5,7 +5,7 @@
 @inject ISnackbar _snackBar
 @inject HubConnection _hubConnection
 @inject NotificacionesSignalRService _servicioNotificacionesSignalR
-@inject AutorizacionPlanillero _servicioAutorizacionPlanillero
+@inject AutPlanilleroServicio _servicioAutPlanillero
 @inject NotificacionServicio _servicioNotificacion
 
 
@@ -76,20 +76,22 @@
             <EspacioVertical Altura="20px" />
         }
 
-        @if (_servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString() && existenciaAutorizacion)
+        @if (usuarioAutorizadoMarcador)
         {
             @if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null && Partido.EstadoPartido == Util.EstadoPartido.PENDIENTE.ToString())
             {
 
                 <div class="playPartido">
-                      <a href="" @onclick="NotificarComienzoAEQuipos" @onclick:preventDefault>
-                        <img src="/imagenes/@ImagenNotificar" alt="" class="imgPlay">
+
+                     <a href="" @onclick="NotificarComienzoAEquipos" @onclick:preventDefault>
+                        <img src="/imagenes/enviarPartido.png" alt="" class="imgPlay">
                     </a>
 
                     <EspacioVertical Altura="3px" />
 
                     <a href="" @onclick="ComenzarPartido" @onclick:preventDefault>
                         <img src="/imagenes/@ImagenPlay" alt="" class="imgPlay">
+
                     </a>
                 </div>
             }
@@ -132,6 +134,10 @@
     private DateTime HorarioInicioPartido;
 
     private bool touchLargoCorriendo = false;
+    private bool usuarioAutorizadoMarcador = false;
+
+    private bool esToqueLArgo = false;
+    private Timer toqueLargoTimer;
 
     int idUsuario = 0;
     bool existenciaAutorizacion = false;
@@ -157,15 +163,7 @@
         puntajeMaximoSegunSet = PuntajeMax;
         if (Partido.PuntajeLocal > 0 || Partido.PuntajeVisitante > 0) EsconderIconoPlay = true;
 
-        idUsuario = _servicioUsuario.ObtenerUsuarioLogueado().Id;
-        existenciaAutorizacion = await _servicioAutorizacionPlanillero.ExistenciaAutorizacionPlanillero(_servicioTorneo.ObtenerTorneoActual().Id, idUsuario);
-
-
-        _hubConnection.On<List<PartidoDTO>>("RecibirActualizarPartidos", async (partidos) =>
-        {
-            await _servicioNotificacionesSignalR.ActualizarPartidosSignalR(partidos);
-        });
-
+        usuarioAutorizadoMarcador = await _servicioAutPlanillero.ExistenciaAutorizacionPlanillero(_servicioTorneo.ObtenerTorneoActual().Id);
     }
 
     private string ActualizarLinkImagen(string imagenRef)
@@ -181,8 +179,7 @@
 
     private async Task ComenzarPartido()
     {
-        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null &&
-            Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0)
+        if (HabilitacionEquiposPartido())
         {
             if (_servicioFixture.HayCanchaLibre())
             {
@@ -205,7 +202,7 @@
 
     private async Task AumentarMarcador(string tipoEquipo)
     {
-        if (existenciaAutorizacion && _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
+        if(usuarioAutorizadoMarcador)
         {
             if (!esToqueLArgo)
             {
@@ -255,13 +252,11 @@
         return false;
     }
 
-
-
     private async Task DecrementarMarcador(string tipoEquipo)
     {
-        if (existenciaAutorizacion && _servicioUsuario.ObtenerUsuarioLogueado().Rol == Util.Roles.PLANILLERO.ToString())
+        if (usuarioAutorizadoMarcador)
         {
-            if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0) 
+            if (tipoEquipo == "LOCAL" && Partido.MarcadorLocal > 0)
             {
                 Partido.MarcadorLocal -= 1;
             }
@@ -337,7 +332,6 @@
     }
 
 
-
     private async Task ComienzoToqueLargo(TouchEventArgs e, string tipoEquipo)
     {
         esToqueLArgo = true;
@@ -362,12 +356,22 @@
         esToqueLArgo = false;
     }
 
-
-
-    private async Task NotificarComienzoAEQuipos()
+    private bool HabilitacionEquiposPartido()
     {
-        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null &&
-           Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0)
+        if (Partido.EquipoLocal != null && Partido.EquipoVisitante != null)
+        {
+           if (Partido.EquipoLocal.Id > 0 && Partido.EquipoVisitante.Id > 0){
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+
+     private async Task NotificarComienzoAEquipos()
+    {
+        if (HabilitacionEquiposPartido())
         {
             if (_servicioFixture.HayCanchaLibre())
             {

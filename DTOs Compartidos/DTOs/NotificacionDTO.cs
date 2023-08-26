@@ -1,5 +1,4 @@
-﻿using BDTorneus;
-using Negocio.DTOs;
+﻿using Negocio.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;

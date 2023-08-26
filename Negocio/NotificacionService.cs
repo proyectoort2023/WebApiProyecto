@@ -1,7 +1,6 @@
 ﻿using BDTorneus;
 using Microsoft.EntityFrameworkCore;
 using Negocio.DTOs;
-using Negocio.Validaciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,35 +50,33 @@ namespace Negocio
 
         public async Task<List<Notificacion>> ObtenerSegunUsuario(UsuarioLogueado usuario)
         {
-           
-
             List<Notificacion> notificaciones = new List<Notificacion>();
             List<Notificacion> notificacionesEquipo = new();
 
 
             try
             {
-                    var notificacionGeneral = await _db.Notificaciones.Include(i => i.Torneo)
-                                                                      .Include(i => i.Equipo)
-                                                                      .Where(w => w.General == true)
-                                                                      .ToListAsync();
+                var notificacionGeneral = await _db.Notificaciones.Include(i => i.Torneo)
+                                                                  .Include(i => i.Equipo)
+                                                                  .Where(w => w.General == true)
+                                                                  .ToListAsync();
 
                 if (usuario.Rol == Util.Roles.EQUIPO.ToString())
                 {
                     var inscrpciones = await _inscripcionService.ObtenerInscripcionesSegunUsuario(usuario.Id);
                     List<int> listaIdTorneos = new();
 
-                    foreach(var inscripcion in inscrpciones)
+                    foreach (var inscripcion in inscrpciones)
                     {
                         listaIdTorneos.Add(inscripcion.Torneo.Id);
                     }
 
                     if (listaIdTorneos.Count > 0)
                     {
-                       notificacionesEquipo = await _db.Notificaciones.Include(i => i.Torneo)
-                                                                 .Include(i => i.Equipo)
-                                                                 .Where(w => listaIdTorneos.Contains(w.Torneo.Id))
-                                                                 .ToListAsync();
+                        notificacionesEquipo = await _db.Notificaciones.Include(i => i.Torneo)
+                                                                  .Include(i => i.Equipo)
+                                                                  .Where(w => listaIdTorneos.Contains(w.Torneo.Id))
+                                                                  .ToListAsync();
                     }
 
                 }
@@ -87,8 +84,8 @@ namespace Negocio
                 notificaciones.AddRange(notificacionGeneral);
                 notificaciones.AddRange(notificacionesEquipo);
 
-                notificaciones = notificaciones.OrderByDescending(w => w.FechaHora).ToList();
-                return notificaciones;
+                var notificacionesOrdenadas = notificaciones.OrderByDescending(w => w.FechaHora).ToList();
+                return notificacionesOrdenadas;
             }
             catch (Exception ex)
             {

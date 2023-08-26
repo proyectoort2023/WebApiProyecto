@@ -16,6 +16,7 @@ namespace BlazorTorneusClient.Servicios
         public bool nuevaNotificacion = false;
 
         public event Action OnActualizarMenu;
+        public bool nuevaNotificacion = false;
 
         public void ActualizarItems(List<MenuItem> nuevoMenuItems)
         {
@@ -56,5 +57,6 @@ namespace BlazorTorneusClient.Servicios
             nuevaNotificacion = true;
             ActualizarMenu();
         }
+
     }
 }

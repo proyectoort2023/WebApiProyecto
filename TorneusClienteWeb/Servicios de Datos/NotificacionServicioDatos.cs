@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using TorneusClienteWeb.Servicios;
 
+
 namespace TorneusClienteWeb.Servicios_de_Datos
 {
     public class NotificacionServicioDatos
@@ -100,8 +101,6 @@ namespace TorneusClienteWeb.Servicios_de_Datos
                 throw new Exception(ex.Message);
             }
         }
-
-
 
 
     }

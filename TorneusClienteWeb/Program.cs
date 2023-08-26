@@ -35,7 +35,7 @@ builder.Services.AddScoped(sp =>
     var options = new JsonSerializerOptions
     {
         ReferenceHandler = ReferenceHandler.Preserve,
-        // Otras opciones de configuración si es necesario
+        // Otras opciones de configuraciÃ³n si es necesario
     };
 
     return options;
@@ -96,8 +96,8 @@ builder.Services.AddScoped<MedioPagoServicioDatos>();
 builder.Services.AddScoped<FixtureServicio>();
 builder.Services.AddScoped<FixtureServicioDatos>();
 
-builder.Services.AddScoped<AutorizacionPlanillero>();
-builder.Services.AddScoped<AutorizacionPlanilleroDatos>();
+builder.Services.AddScoped<AutPlanilleroServicio>();
+builder.Services.AddScoped<AutPlanilleroServicioDatos>();
 
 builder.Services.AddScoped<NotificacionServicio>();
 builder.Services.AddScoped<NotificacionServicioDatos>();

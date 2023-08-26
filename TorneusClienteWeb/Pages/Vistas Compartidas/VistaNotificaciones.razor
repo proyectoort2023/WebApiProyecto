@@ -33,12 +33,10 @@ else
 
         await Actualizar();
 
-        _hubConnection.On<NotificacionDTO>("RecibirMensajeNotificacion", async (notificacion) =>
+        _hubConnection.On<NotificacionDTO>("RecibirNuevaNotificacion", async (notificacion) =>
        {
-       if (notificacion.General || notificacion.Equipo.UsuarioId == _servicioUsuario.ObtenerUsuarioLogueado().Id)
-       {
-               await _servicioNotificaciones.SetNotificacion(notificacion);
-               _servicioMenu.NuevaNotificacionIcono();
+           if (notificacion.General || notificacion.Equipo.UsuarioId == _servicioUsuario.ObtenerUsuarioLogueado().Id)
+           {
                await Actualizar();
                StateHasChanged();
            }
@@ -48,6 +46,7 @@ else
 
     private async Task Actualizar()
     {
-        Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones(_servicioUsuario.ObtenerUsuarioLogueado());
+        Notificaciones = await _servicioNotificaciones.ObtenerNotificaciones();
     }
 }
+
