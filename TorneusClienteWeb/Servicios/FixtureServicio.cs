@@ -535,6 +535,7 @@ namespace TorneusClienteWeb.Servicios
                 if (Partidos.Count > 0)
                 {
                     var partidosFinalizados = Partidos.Where(w => w.EstadoPartido == Util.EstadoPartido.FINALIZADO.ToString()).ToList();
+                    int cantidadPartidosFinalizados = partidosFinalizados.Count;
 
                     int promedio = 0;
 
@@ -542,7 +543,7 @@ namespace TorneusClienteWeb.Servicios
                     {
                         promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
                     }
-                    TiempoPromedioMinutos = (int)(promedio / partidosFinalizados.Count);
+                    TiempoPromedioMinutos = cantidadPartidosFinalizados > 0 ? (int)(promedio / cantidadPartidosFinalizados) : 0;
                 }
             }
         }
