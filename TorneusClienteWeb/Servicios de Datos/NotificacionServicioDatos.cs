@@ -11,6 +11,7 @@ namespace TorneusClienteWeb.Servicios_de_Datos
 {
     public class NotificacionServicioDatos
     {
+
         private readonly HttpClient _httpClient;
         [Inject] private UsuarioServicio _usuarioServicio { get; set; }
 
@@ -100,7 +101,6 @@ namespace TorneusClienteWeb.Servicios_de_Datos
                 throw new Exception(ex.Message);
             }
         }
-
 
 
     }

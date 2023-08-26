@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BDTorneus;
+using DTOs_Compartidos.DTOs;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Negocio.DTOs;
 
@@ -36,8 +38,8 @@ namespace TorneusClienteWeb.Servicios
             int idTorneo = torneoDTO.Id;
             RemoverItemTorneoLista(idTorneo);
             AgregarTorneoALista(torneoDTO);
-           await _torneoServicio.SeleccionTorneo(idTorneo);
-           await _torneoServicio.OrdenarTorneoPorFecha();
+            await _torneoServicio.SeleccionTorneo(idTorneo);
+            await _torneoServicio.OrdenarTorneoPorFecha();
         }
 
         private void RemoverItemTorneoLista(int torneoId)
@@ -68,11 +70,13 @@ namespace TorneusClienteWeb.Servicios
                 await _fixtureServicio.ActualizarTiempoPromedioPartidos();
                 await _fixtureServicio.ActualizarListadoPartidosFront();
             }
-          
+
         }
-     
+
         #endregion
 
+
+       
 
 
 

@@ -28,7 +28,6 @@
             <span>@_servicioMenu.Titulo</span>
         </div>
     </section>
-
     @if (_servicioMenu.nuevaNotificacion)
     {
         <button class="menu-button" @onclick="NotificacionLeida">
@@ -50,6 +49,15 @@
 
     protected async override Task OnInitializedAsync()
     {
+        _hubConnection.On<NotificacionDTO>("RecibirMensajeNotificacion", async (notificacion) =>
+     {
+         if (notificacion.General || notificacion.Equipo.UsuarioId == _usuarioServicio.ObtenerUsuarioLogueado().Id)
+         {
+             _servicioMenu.NuevaNotificacionIcono();
+             Actualizar();
+         }
+     });
+
         _servicioMenu.OnActualizarMenu += Actualizar;
 
         _hubConnection.On<NotificacionDTO>("RecibirNuevaNotificacion", async (notificacion) =>
@@ -80,7 +88,7 @@
     {
         StateHasChanged();
     }
-
+          
     private async Task NotificacionLeida()
     {
         _servicioMenu.nuevaNotificacion = false;

@@ -50,8 +50,6 @@ namespace Negocio
 
         public async Task<List<Notificacion>> ObtenerSegunUsuario(UsuarioLogueado usuario)
         {
-
-
             List<Notificacion> notificaciones = new List<Notificacion>();
             List<Notificacion> notificacionesEquipo = new();
 
@@ -111,9 +109,6 @@ namespace Negocio
                 throw new Exception(ex.Message);
             }
         }
-
-
-
 
 
 
