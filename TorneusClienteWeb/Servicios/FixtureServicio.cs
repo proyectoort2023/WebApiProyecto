@@ -23,7 +23,7 @@ namespace TorneusClienteWeb.Servicios
         public int TiempoPromedioMinutos = 0;
 
         public event Action OnActualizarPartidosEvent;
-        public int TiempoPromedioMinutos = 0;
+
         [Inject] private TorneoServicio _torneoServicio { get; set; }
         [Inject] private HubConnection _hubConnection { get; set; }
 
