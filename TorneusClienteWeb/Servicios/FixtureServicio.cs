@@ -548,12 +548,12 @@ namespace TorneusClienteWeb.Servicios
                     int cantidadPartidosFinalizados = partidosFinalizados.Count;
 
                     int promedio = 0;
-                   
-                        foreach (var partido in partidosFinalizados)
-                        {
-                            promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
-                        }
-                        TiempoPromedioMinutos = cantidadPartidosFinalizados > 0 ? (int)(promedio / cantidadPartidosFinalizados) : 0;
+
+                    foreach (var partido in partidosFinalizados)
+                    {
+                        promedio += Util.TiempoEnMinutos(partido.Inicio, partido.Fin);
+                    }
+                    TiempoPromedioMinutos = cantidadPartidosFinalizados > 0 ? (int)(promedio / cantidadPartidosFinalizados) : 0;
                 }
             }
         }

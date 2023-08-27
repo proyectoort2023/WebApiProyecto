@@ -50,9 +50,9 @@ namespace TorneusClienteWeb.Servicios
         {
             try
             {
-                var usuarioLogueado = _usuarioServicio.ObtenerUsuarioLogueado();
-                Notificaciones = new();
-                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuarioLogueado);
+                UsuarioLogueado usuario = _usuarioServicio.ObtenerUsuarioLogueado();
+                Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuario);
+                Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
                 return Notificaciones;
             }
             catch (Exception ex)
@@ -60,7 +60,6 @@ namespace TorneusClienteWeb.Servicios
                 throw new Exception(ex.Message);
             }
         }
-
 
         public async Task<bool> BorrarNotificacionesDatos(int torneoId)
         {
