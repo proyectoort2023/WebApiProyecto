@@ -17,8 +17,6 @@ namespace TorneusClienteWeb.Servicios
 
         private List<NotificacionDTO> Notificaciones = new();
 
-        private bool cargadasNotificaciones = false;
-
         public NotificacionServicio(NotificacionServicioDatos notificacionServicioDatos, UsuarioServicio usuarioServicio, HubConnection hubConnection)
         {
             _notificacionServicioDatos = notificacionServicioDatos;
@@ -48,7 +46,6 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-
         public async Task<List<NotificacionDTO>> ObtenerNotificaciones()
         {
             try
@@ -64,7 +61,6 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
-
         public async Task<bool> BorrarNotificacionesDatos(int torneoId)
         {
             try
@@ -77,8 +73,6 @@ namespace TorneusClienteWeb.Servicios
                 throw new Exception(ex.Message);
             }
         }
-
-
 
 
     }

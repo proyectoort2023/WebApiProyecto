@@ -102,6 +102,7 @@ builder.Services.AddScoped<AutorizacionPlanilleroService>();
 builder.Services.AddScoped<NotificacionService>();
 
 builder.Services.AddSingleton<FixtureTiempoReal>();
+builder.Services.AddSingleton<AutorizacionesPlanilleros>();
 
 
 var app = builder.Build();

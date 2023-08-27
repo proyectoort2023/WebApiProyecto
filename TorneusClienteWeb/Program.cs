@@ -35,7 +35,7 @@ builder.Services.AddScoped(sp =>
     var options = new JsonSerializerOptions
     {
         ReferenceHandler = ReferenceHandler.Preserve,
-        // Otras opciones de configuración si es necesario
+        // Otras opciones de configuraciÃ³n si es necesario
     };
 
     return options;

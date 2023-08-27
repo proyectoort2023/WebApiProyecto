@@ -50,8 +50,6 @@ namespace Negocio
 
         public async Task<List<Notificacion>> ObtenerSegunUsuario(UsuarioLogueado usuario)
         {
-
-
             List<Notificacion> notificaciones = new List<Notificacion>();
             List<Notificacion> notificacionesEquipo = new();
 
@@ -86,8 +84,8 @@ namespace Negocio
                 notificaciones.AddRange(notificacionGeneral);
                 notificaciones.AddRange(notificacionesEquipo);
 
-                notificaciones = notificaciones.OrderByDescending(w => w.FechaHora).ToList();
-                return notificaciones;
+                var notificacionesOrdenadas = notificaciones.OrderByDescending(w => w.FechaHora).ToList();
+                return notificacionesOrdenadas;
             }
             catch (Exception ex)
             {
@@ -111,9 +109,6 @@ namespace Negocio
                 throw new Exception(ex.Message);
             }
         }
-
-
-
 
 
 

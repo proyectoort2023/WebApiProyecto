@@ -20,8 +20,10 @@ namespace TorneusClienteWeb.Servicios
         List<PartidoDTO> Partidos = new List<PartidoDTO>();
         List<TablaPosicion> TablaPosiciones = new List<TablaPosicion>();
 
-        public event Action OnActualizarPartidosEvent;
         public int TiempoPromedioMinutos = 0;
+
+        public event Action OnActualizarPartidosEvent;
+
         [Inject] private TorneoServicio _torneoServicio { get; set; }
         [Inject] private HubConnection _hubConnection { get; set; }
 
@@ -85,7 +87,9 @@ namespace TorneusClienteWeb.Servicios
 
                 Partidos.AddRange(partidosUltimaFase);
 
-                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
+                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
+
+                Partidos.ForEach(o =>  o.Fecha = fecha);
 
                 return true;
             }
@@ -127,7 +131,10 @@ namespace TorneusClienteWeb.Servicios
 
                 Partidos.AddRange(partidosUltimaFase);
 
-                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
+                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
+
+                Partidos.ForEach(o => o.Fecha = fecha);
+
                 return true;
             }
             catch (Exception ex)
@@ -148,8 +155,11 @@ namespace TorneusClienteWeb.Servicios
                 FixtureEliminacionDirecta fixtureElimDirecta = new();
 
                 Partidos = fixtureElimDirecta.Crear(equipos);
-                Partidos.ForEach(o => o.Fecha = _torneoServicio.ObtenerTorneoActual().Fecha);
 
+
+                DateTime fecha = _torneoServicio.ObtenerTorneoActual().Fecha;
+
+                Partidos.ForEach(o => o.Fecha = fecha);
                 return true;
             }
             catch (Exception ex)
@@ -547,9 +557,6 @@ namespace TorneusClienteWeb.Servicios
                 }
             }
         }
-
-
-
 
 
 

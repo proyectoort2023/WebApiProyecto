@@ -11,6 +11,5 @@ namespace DTOs_Compartidos.Models
     {
         public string NombreTorneo { get; set; }
         public List<AutorizacionPlanilleroDTO> PlanillasTorneos { get; set; }
-
     }
 }
