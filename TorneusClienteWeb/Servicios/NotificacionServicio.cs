@@ -26,20 +26,6 @@ namespace TorneusClienteWeb.Servicios
             _hubConnection = hubConnection;
         }
 
-
-        public async Task SetNotificacion(NotificacionDTO notificacion)
-        {
-            if (!cargadasNotificaciones)
-            {
-                await ObtenerNotificacionesDatos(_usuarioServicio.ObtenerUsuarioLogueado());
-            }
-            else
-            {
-                Notificaciones.Add(notificacion);
-                Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
-            }
-        }
-
         public async Task<bool> RegistrarNotificacion(string mensaje, EquipoDTO equipo, TorneoDTO torneo, bool general)
         {
             try
@@ -62,30 +48,15 @@ namespace TorneusClienteWeb.Servicios
             }
         }
 
+
         public async Task<List<NotificacionDTO>> ObtenerNotificaciones()
         {
             try
             {
-                if (cargadasNotificaciones)
-                {
-                    await ObtenerNotificacionesDatos(_usuarioServicio.ObtenerUsuarioLogueado());
-                }
-                return Notificaciones;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-
-        private async Task ObtenerNotificacionesDatos(UsuarioLogueado usuario)
-        {
-            try
-            {
+                UsuarioLogueado usuario = _usuarioServicio.ObtenerUsuarioLogueado();
                 Notificaciones = await _notificacionServicioDatos.ObtenerListadoNotificaciones(usuario);
                 Notificaciones = Notificaciones.OrderByDescending(o => o.FechaHora).ToList();
-                cargadasNotificaciones = true;
+                return Notificaciones;
             }
             catch (Exception ex)
             {
